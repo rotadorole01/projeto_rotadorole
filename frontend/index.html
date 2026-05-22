@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rota do Rolê - Eventos da Cidade</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <a href="index.html" class="logo">
+                <i class="fas fa-map-marker-alt"></i>
+                Rota do Rolê
+            </a>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Início</a></li>
+                    <li><a href="eventos.html">Eventos</a></li>
+                    <li><a href="cadastro.html">Cadastrar Evento</a></li>
+                    <li><a href="nos.html">Sobre nós</a></li>
+                </ul>
+                <button id="themeToggle" title="Alternar Modo Escuro">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    
+
+    <div class="container">
+        <div class="carousel-container" id="mainCarousel">
+            <div class="carousel">
+                <div class="carousel-item active" style="background-image: url('https://images.unsplash.com/photo-1511192336575-5a79af67a629?auto=format&fit=crop&w=1200&q=80');">
+                    <div class="carousel-item-overlay">
+                        <h3>Festival de Jazz na Praça</h3>
+                        <p>Um evento cultural incrível com os melhores músicos da região. Não perca!</p>
+                        <a href="eventos.html" class="btn">Ver Mais Eventos</a>
+                    </div>
+                </div>
+                <div class="carousel-item" style="background-image: url('https://images.unsplash.com/photo-1498038432885-c6f3f1b912ee?auto=format&fit=crop&w=1200&q=80');">
+                    <div class="carousel-item-overlay">
+                        <h3>Noite do Rock no Bar do Zé</h3>
+                        <p>As melhores bandas de rock clássico a noite toda. Venha se divertir!</p>
+                        <a href="eventos.html" class="btn">Ver Mais Eventos</a>
+                    </div>
+                </div>
+            </div>
+            <button class="carousel-btn prev">&#10094;</button>
+            <button class="carousel-btn next">&#10095;</button>
+            <div class="carousel-controls">
+                <span class="carousel-dot active"></span>
+                <span class="carousel-dot"></span>
+            </div>
+        </div>
+    </div>
+
+    <section id="categorias">
+        <div class="container">
+            <h2>Explore por Categoria</h2>
+            <div class="categories-grid">
+                <div class="category-card" onclick="window.location.href='eventos.html?categoria=shows'">
+                    <i class="fas fa-music"></i>
+                    <h3>Shows</h3>
+                </div>
+                <div class="category-card" onclick="window.location.href='eventos.html?categoria=bares'">
+                    <i class="fas fa-beer"></i>
+                    <h3>Bares</h3>
+                </div>
+                <div class="category-card" onclick="window.location.href='eventos.html?categoria=restaurantes'">
+                    <i class="fas fa-utensils"></i>
+                    <h3>Restaurantes</h3>
+                </div>
+                <div class="category-card" onclick="window.location.href='eventos.html?categoria=cultural'">
+                    <i class="fas fa-theater-masks"></i>
+                    <h3>Cultural</h3>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="parceiros">
+        <div class="container">
+            <h2>Nossos Parceiros</h2>
+            <div class="carousel-container" id="partnersCarousel" style="height: 300px;">
+                <div class="carousel">
+                    <div class="carousel-item active" style="background-image: url('https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=1200&q=80');">
+                        <div class="carousel-item-overlay">
+                            <h3>Apoio Local</h3>
+                            <p>Conheça nossos parceiros que tornam a Rota do Rolê possível!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="text-align: center; margin-top: 2rem;">
+                <p style="margin-bottom: 1rem; font-size: 1.1rem;">Tem um negócio e quer mais visibilidade na cidade?</p>
+                <a href="parceria.html" class="btn btn-secondary"><i class="fas fa-handshake"></i> Seja um Parceiro / Patrocinador</a>
+            </div>
+        </div>
+    </section>
+    
+    <button id="btn-traducao" title="Traduzir página">
+        <i class="fas fa-language"></i>
+    </button>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Apoio Institucional</h4>
+                    <div class="fatec-banner">
+                        <a href="https://fatectq.cps.sp.gov.br/" target="_blank" rel="noopener noreferrer">
+                            <img src="img/Fatec_Taquaritinga_Logo.png" alt="Logo Fatec Taquaritinga" style="max-height: 40px;">
+                        </a>
+                    </div>
+                    <p style="margin-top: 1rem; font-size: 0.9rem;">Projeto acadêmico desenvolvido por alunos da Fatec Taquaritinga.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Links Úteis</h4>
+                    <ul>
+                        <li><a href="eventos.html">Eventos</a></li>
+                        <li><a href="cadastro.html">Cadastrar Evento</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Contato</h4>
+                    <ul>
+                        <li><a href="mailto:contato@rotadorole.com">contato@rotadorole.com</a></li>
+                        <li><a href="tel:+5511999999999">(11) 99999-9999</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Rota do Rolê. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <div vw class="enabled">
+        <div vw-access-button class="active"></div>
+        <div vw-plugin-wrapper>
+            <div class="vw-plugin-top-wrapper"></div>
+        </div>
+    </div>
+    
+    <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+    <script src="https://unpkg.com/i18next/dist/umd/i18next.min.js">
+    const resources = {
+    en: {
+       translation: {
+       "nav_inicio": "Home",
+       "nav_eventos": "Events",
+       "titulo_eventos": "All Events",
+       "placeholder_busca": "Search events...",
+       "btn_buscar": "Search",
+       "cat_shows": "Concerts"
+      }
+    },
+    pt: {
+    translation: {
+      "nav_inicio": "Início",
+      "nav_eventos": "Eventos",
+      "titulo_eventos": "Todos os Eventos",
+      "placeholder_busca": "Buscar eventos...",
+      "btn_buscar": "Buscar",
+      "cat_shows": "Shows"
+    }
+  }
+};
+    </script>
+    <script>
+        new window.VLibras.Widget('https://vlibras.gov.br/app');
+    </script>
+
+    <script src="js/script.js"></script>
+</body>
+</html>

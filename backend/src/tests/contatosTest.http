@@ -1,0 +1,36 @@
+# url ou dominio
+@URL = http://localhost
+# Porta do servidor
+@PORT = 3600
+# endpoint ou rota do teste
+@ENDPOINT = contatos
+# uri - rota final do teste
+@URI = {{URL}}:{{PORT}}/{{ENDPOINT}}
+
+GET {{URI}}
+###
+GET {{URI}}/5
+
+###
+POST {{URI}}
+Content-Type: application/json; charset=utf-8
+
+  {
+      "login": "carlose@gmail.cm",
+      "password": "567",
+      "name": "carlos"
+    }
+
+###
+PUT {{URI}}/5
+Content-Type: application/json; charset=utf-8
+
+  {
+      "login": "MANOEL.teste@gmail.cm",
+      "password": "890",
+      "name": "manoel"
+    }
+
+
+###
+DELETE {{URI}}/3

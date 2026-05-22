@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seja um Parceiro - Rota do Rolê</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <a href="index.html" class="logo">
+                <i class="fas fa-map-marker-alt"></i>
+                Rota do Rolê
+            </a>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Início</a></li>
+                    <li><a href="eventos.html">Eventos</a></li>
+                    <li><a href="cadastro.html">Cadastrar Evento</a></li>
+                    <li><a href="nos.html">Sobre nós</a></li>
+                </ul>
+                <button id="themeToggle" title="Alternar Modo Escuro">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <section id="parceria" style="margin-top: 0;">
+        <div style="background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%); padding: 4rem 20px; text-align: center; color: white;">
+            <h1 style="font-size: 2.5rem; margin-bottom: 1rem;">Conecte sua marca à Rota do Rolê!</h1>
+            <p style="font-size: 1.2rem; max-width: 800px; margin: 0 auto;">Destaque o seu negócio para milhares de pessoas que buscam diversão, cultura e gastronomia na cidade.</p>
+        </div>
+
+        <div class="container" style="margin-top: -3rem; position: relative; z-index: 10;">
+            <div style="max-width: 700px; margin: 0 auto; background: var(--card-bg); padding: 2.5rem; border-radius: 12px; box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);">
+                <h2 style="color: var(--secondary-color); margin-bottom: 2rem; font-size: 1.8rem; text-align: center;">Solicitar Contato Comercial</h2>
+                
+                <form id="partnerForm" onsubmit="event.preventDefault(); alert('Solicitação enviada! Nossa equipe entrará em contato em até 48 horas.'); this.reset();">
+                    
+                    <div class="form-group">
+                        <label for="empresaNome">Nome da Empresa / Negócio *</label>
+                        <input type="text" id="empresaNome" name="empresaNome" placeholder="Ex: Cervejaria Artesanal TQ" required>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="cnpj">CNPJ</label>
+                            <input type="text" id="cnpj" name="cnpj" placeholder="00.000.000/0000-00">
+                        </div>
+                        <div class="form-group">
+                            <label for="areaAtuacao">Área de Atuação *</label>
+                            <select id="areaAtuacao" name="areaAtuacao" required>
+                                <option value="">Selecione...</option>
+                                <option value="gastronomia">Gastronomia / Restaurante</option>
+                                <option value="bar">Bar / Balada</option>
+                                <option value="entretenimento">Entretenimento / Casa de Shows</option>
+                                <option value="servicos">Serviços Gerais</option>
+                                <option value="outro">Outro</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="responsavel">Nome do Responsável *</label>
+                            <input type="text" id="responsavel" name="responsavel" placeholder="Seu nome" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="telefoneComercial">Telefone / WhatsApp *</label>
+                            <input type="tel" id="telefoneComercial" name="telefoneComercial" placeholder="(16) 99999-9999" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="emailComercial">Email Corporativo *</label>
+                        <input type="email" id="emailComercial" name="emailComercial" placeholder="contato@suaempresa.com.br" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="tipoParceria">Qual é o seu interesse principal? *</label>
+                        <select id="tipoParceria" name="tipoParceria" required>
+                            <option value="">Selecione...</option>
+                            <option value="patrocinio_site">Banner e Patrocínio no Site</option>
+                            <option value="destaque_eventos">Destacar meus Eventos</option>
+                            <option value="parceria_divulgacao">Parceria de Divulgação Mútua</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="mensagem">Mensagem Adicional (Opcional)</label>
+                        <textarea id="mensagem" name="mensagem" placeholder="Conte um pouco sobre sua empresa e o que espera da parceria..."></textarea>
+                    </div>
+
+                    <button type="submit" class="btn" style="width: 100%; font-size: 1.1rem; padding: 1rem;">
+                        <i class="fas fa-paper-plane"></i> Enviar Solicitação
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <button id="btn-traducao" title="Traduzir página">
+        <i class="fas fa-language"></i>
+    </button>
+    
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Apoio Institucional</h4>
+                    <div class="fatec-banner">
+                        <a href="https://fatectq.cps.sp.gov.br/" target="_blank" rel="noopener noreferrer">
+                            <img src="https://fatectq.cps.sp.gov.br/wp-content/uploads/2022/04/logo-fatec-tq.png" alt="Logo Fatec Taquaritinga" style="max-height: 60px;">
+                        </a>
+                    </div>
+                    <p style="margin-top: 1rem; font-size: 0.9rem;">Projeto acadêmico desenvolvido na Fatec Taquaritinga.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Links Úteis</h4>
+                    <ul>
+                        <li><a href="eventos.html">Eventos</a></li>
+                        <li><a href="cadastro.html">Cadastrar Evento</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Contato</h4>
+                    <ul>
+                        <li><a href="mailto:contato@rotadorole.com">contato@rotadorole.com</a></li>
+                        <li><a href="tel:+5516999999999">(16) 99999-9999</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Redes Sociais</h4>
+                    <ul>
+                        <li><a href="#"><i class="fab fa-facebook"></i> Facebook</a></li>
+                        <li><a href="#"><i class="fab fa-instagram"></i> Instagram</a></li>
+                        <li><a href="#"><i class="fab fa-twitter"></i> Twitter</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Rota do Rolê. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <div vw class="enabled">
+        <div vw-access-button class="active"></div>
+        <div vw-plugin-wrapper>
+            <div class="vw-plugin-top-wrapper"></div>
+        </div>
+    </div>
+    <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+    <script>
+        new window.VLibras.Widget('https://vlibras.gov.br/app');
+    </script>
+
+    <script src="js/script.js"></script>
+</body>
+</html>

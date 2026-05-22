@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <title>Sobre Nós - Rota do Rolê</title>
+
+    <style>
+    /* ===== RESET E VARIÁVEIS ===== */
+    * { 
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    :root {
+        --primary-color: #ff6b35;
+        --secondary-color: #004e89;
+        --accent-color: #f7b801;
+        --light-bg: #f8f9fa;
+        --dark-text: #2c3e50;
+        --card-bg: #ffffff;
+        --border-color: #ddd;
+        --border-radius: 12px;
+        --transition: all 0.3s ease;
+    }
+
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        color: var(--dark-text);
+        background-color: var(--light-bg);
+        line-height: 1.6;
+    }
+
+    /* ===== HEADER E NAVEGAÇÃO ===== */
+    header {
+        background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%);
+        color: white;
+        padding: 1rem 0;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+    }
+
+    .header-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .logo {
+        font-size: 1.8rem;
+        font-weight: bold;
+        text-decoration: none;
+        color: white;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .logo:hover {
+        opacity: 0.9;
+    }
+
+    nav {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+    }
+
+    nav ul {
+        list-style: none;
+        display: flex;
+        gap: 2rem;
+        align-items: center;
+    }
+
+    nav a {
+        color: white;
+        text-decoration: none;
+        transition: var(--transition);
+        font-weight: 500;
+    }
+
+    nav a:hover, nav a.active {
+        color: var(--accent-color);
+        border-bottom: 2px solid var(--accent-color);
+    }
+
+    /* ===== BOTÃO DE TEMA (FIXO IGUAL À HOME) ===== */
+    #themeToggle {
+        position: fixed;
+        right: 10px;    
+        bottom: 520px;  
+        z-index: 9999; 
+        background: #2D68C4;
+        border: 1px solid white;
+        color: white;
+        border-radius: 7px;
+        width: 43px;
+        height: 43px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: var(--transition);
+    }
+
+    #themeToggle:hover {
+        background: #1a4a8e; /* Um tom mais escuro no hover */
+    }
+
+    /* ===== CONTEÚDO DA PÁGINA ===== */
+.hero {
+    background: url('https://images.unsplash.com/photo-1507874457470-272b3c8d8ee2') center center/cover no-repeat;
+    height: 450px;
+    margin-top: 0;
+    padding-top: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+    .hero h2 {
+        font-size: 40px;
+        color: white;
+        background: rgba(0,0,0,0.5);
+        padding: 10px 20px;
+        border-radius: var(--border-radius);
+    }
+
+    .container {
+        padding: 50px 10%;
+    }
+
+    .section {
+        margin-bottom: 40px;
+    }
+
+    .section h3 {
+        color: var(--secondary-color);
+        margin-bottom: 15px;
+        font-size: 26px;
+    }
+
+    .cards {
+        display: flex;
+        gap: 20px;
+        flex-wrap: wrap;
+    }
+
+    .card {
+        flex: 1;
+        min-width: 250px;
+        background: var(--card-bg);
+        padding: 20px;
+        border-radius: var(--border-radius);
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        text-align: center;
+        transition: var(--transition);
+    }
+
+    .card:hover {
+        transform: translateY(-5px);
+    }
+
+    .card h4 {
+        margin-bottom: 10px;
+        color: var(--primary-color);
+    }
+
+    /* ===== FOOTER ===== */
+    footer {
+        background-color: var(--secondary-color);
+        color: white;
+        padding: 3rem 0 1rem;
+        margin-top: 4rem;
+    }
+
+    .footer-content {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 2rem;
+        margin-bottom: 2rem;
+    }
+
+    .footer-section h4 {
+        margin-bottom: 1rem;
+        color: var(--accent-color);
+    }
+
+    .footer-section ul {
+        list-style: none;
+    }
+
+    .footer-section ul li {
+        margin-bottom: 0.5rem;
+    }
+
+    .footer-section a {
+        color: #ddd;
+        text-decoration: none;
+        transition: var(--transition);
+    }
+
+    .footer-section a:hover {
+        color: var(--accent-color);
+    }
+
+    .footer-bottom {
+        text-align: center;
+        padding-top: 2rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        color: #aaa;
+    }
+</style>
+</head>
+<body>
+
+<header>
+    <div class="header-container">
+        <a href="index.html" class="logo">
+            <i class="fas fa-map-marker-alt"></i>
+            Rota do Rolê
+        </a>
+        <nav>
+            <ul>
+                <li><a href="index.html">Início</a></li>
+                <li><a href="eventos.html">Eventos</a></li>
+                <li><a href="cadastro.html">Cadastrar Evento</a></li>
+                <li><a href="nos.html" class="active">Sobre nós</a></li>
+            </ul>
+        </nav>
+    </div>
+</header>
+
+    <section class="hero">
+    <h2>Sobre Nós</h2>
+</section>
+
+<div class="container">
+
+    <div class="section">
+        <h3>Quem Somos</h3>
+        <p>O <strong>Rota do Rolê</strong> conecta pessoas aos melhores eventos da cidade.</p>
+    </div>
+
+    <div class="section">
+        <h3>Nossa Missão</h3>
+        <p>Promover a cultura local e valorizar eventos da cidade.</p>
+    </div>
+
+    <div class="section">
+        <h3>O que você encontra aqui</h3>
+
+        <div class="cards">
+            <div class="card">
+                <h4>🎵 Shows</h4>
+                <p>Eventos musicais ao vivo.</p>
+            </div>
+
+            <div class="card">
+                <h4>🍻 Bares</h4>
+                <p>Os melhores rolês noturnos.</p>
+            </div>
+
+            <div class="card">
+                <h4>🍴 Restaurantes</h4>
+                <p>Experiências gastronômicas.</p>
+            </div>
+
+            <div class="card">
+                <h4>🎭 Cultural</h4>
+                <p>Eventos culturais diversos.</p>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<button id="themeToggle" title="Alternar Modo Escuro">
+    <i class="fas fa-moon"></i>
+</button>
+
+<button id="btn-traducao" title="Traduzir página">
+    <i class="fas fa-language"></i>
+</button>
+
+</body>
+
+<!-- NOVO FOOTER -->
+<footer>
+    <div class="container">
+        <div class="footer-content">
+            
+            <div class="footer-section">
+                <h4>Apoio Institucional</h4>
+                <div class="fatec-banner">
+                    <a href="https://fatectq.cps.sp.gov.br/" target="_blank">
+                        <img src="img/Fatec_Taquaritinga_Logo.png" alt="Logo Fatec Taquaritinga" style="max-height: 40px;">
+                    </a>
+                </div>
+                <p style="margin-top: 1rem; font-size: 0.9rem;">
+                    Projeto acadêmico desenvolvido por alunos da Fatec Taquaritinga.
+                </p>
+            </div>
+
+            <div class="footer-section">
+                <h4>Links Úteis</h4>
+                <ul>
+                    <li><a href="eventos.html">Eventos</a></li>
+                    <li><a href="cadastro.html">Cadastrar Evento</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h4>Contato</h4>
+                <ul>
+                    <li><a href="mailto:contato@rotadorole.com">contato@rotadorole.com</a></li>
+                    <li><a href="tel:+5511999999999">(11) 99999-9999</a></li>
+                </ul>
+            </div>
+
+        </div>
+
+        <div class="footer-bottom">
+            <p>&copy; 2026 Rota do Rolê. Todos os direitos reservados.</p>
+        </div>
+    </div>
+</footer>
+
+<script src="js/script.js"></script>
+
+<!-- VLibras -->
+<div vw class="enabled">
+    <div vw-access-button class="active"></div>
+    <div vw-plugin-wrapper>
+        <div class="vw-plugin-top-wrapper"></div>
+    </div>
+</div>
+
+<script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+<script>
+    new window.VLibras.Widget('https://vlibras.gov.br/app');
+</script>
+
+
+</body>
+</html>
