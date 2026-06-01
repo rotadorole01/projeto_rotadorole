@@ -6,7 +6,7 @@ const path = require("path");
 const { fileURLToPath } = require("url");
 // importações do projeto
 const uploads = require("./utils/upload.js");
-const routes = require("./view/routes");
+const routes = require("./view/routes.js");
 
 
 // instancia o dotenv para uso
@@ -24,14 +24,15 @@ const { db } = require('./databases/DatabaseContext.js');
 // informa ao express que iremos trabalhar com json
 app.use(express.json());
 
+// inejta o cord no express
+app.use( cors())
+// app.use(cors({
+//     origin: 'http://localhost:3600'
+// }));
+
+
 // injeta como midlare routes no express
 app.use( routes );
-
-// inejta o cord no express
-//app.use( cors())
-app.use(cors({
-    origin: 'http://localhost:3600'
-}));
 
 // metodo para visualizar a imagem diretamente na rota da api
 // metodo-1 - Servindo arquivos estáticos da pasta "upload"
@@ -58,8 +59,8 @@ async function startServer() {
     // carrega a api , deixa a api monitorando a porta informada
     app.listen( Port, ()=>{        
         console.log(`Servidor rodando na porta: ${Port}\n Pressione CRTL+C cancelar servidor!`);
-        console.log(`Aula-08 - 17/04/2026`);
-        console.log(`Carlos Filho`);
+        console.log(`Projeto Integrador - 11/06/2026`);
+        console.log(`Yasmin e Gustavo`);
     });
    
 }

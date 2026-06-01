@@ -1,4 +1,4 @@
-const myModel = require("../model/contatosModel")
+const myModel = require("../model/categoriasModel.js")
 
 async function Get(req,res){
      const responseData = await myModel.Get(req);

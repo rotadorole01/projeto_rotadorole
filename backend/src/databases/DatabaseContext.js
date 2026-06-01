@@ -1,5 +1,5 @@
-const {pool} = require("./connectionMysql.js");
-const {getDbConnection}  = require("./connectionSqllite.js"); // Função que criamos antes
+const {pool} = require("./connections/mysqlconnection.js");
+const {getDbConnection}  = require("./connections/sqliteconnection.js"); // Função que criamos antes
 const {MySQLStrategy, SQLiteStrategy } = require("./DatabaseStrategy.js");
 const { DatabaseSchemaMysql } = require("./schemas/mysqlSchema.js");
 const { DatabaseSchemaSqlite } = require("./schemas/sqliteSchema.js")

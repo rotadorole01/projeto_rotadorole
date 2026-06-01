@@ -1,5 +1,5 @@
 const Routes = require("express");
-const myController = require("../controller/contatosControllers");
+const myController = require("../controller/eventosControllers");
 
 const routes = Routes();
 

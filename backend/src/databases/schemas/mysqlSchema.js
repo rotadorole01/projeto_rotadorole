@@ -8,18 +8,50 @@ class DatabaseSchemaMysql {
                 id INTEGER PRIMARY KEY AUTO_INCREMENT,
                 name TEXT NOT NULL,
                 login TEXT NOT NULL,
-                password TEXT NOT NULL
+                password TEXT NOT NULL,
+                validated BIT NOT NULL DEFAULT(0)
             )`,
 
-            `CREATE TABLE IF NOT EXISTS contatos (
+            `CREATE TABLE IF NOT EXISTS eventos (
                 id INTEGER PRIMARY KEY AUTO_INCREMENT,
-                nome TEXT NOT NULL,
-                apelido TEXT NULL,
-                telefone TEXT NOT NULL,
-                email TEXT NULL,
-                endreco TEXT NULL,
+                titulo TEXT NOT NULL,
+                data DATETIME NOT NULL,
+                local TEXT NULL,
+                descricao TEXT NOT NULL,
                 foto TEXT NULL
             )`,
+
+            `CREATE TABLE IF NOT EXISTS categorias (
+                id INTEGER PRIMARY KEY AUTO_INCREMENT,
+                categoria TEXT NOT NULL
+            )`,
+
+            `CREATE TABLE IF NOT EXISTS locais (
+                id INTEGER PRIMARY KEY AUTO_INCREMENT,
+                localnome TEXT NOT NULL,
+                endereco TEXT NOT NULL
+            )`,
+
+             `CREATE TABLE IF NOT EXISTS parceiros (
+                id INTEGER PRIMARY KEY AUTO_INCREMENT,
+                name TEXT NOT NULL,
+                nameempresa TEXT NOT NULL,
+                cnpj VARCHAR(20) NOT NULL,
+                telefone VARCHAR(15) NOT NULL,
+                emailcorporativo TEXT NOT NULL,
+                interesse TEXT NOT NULL,
+                area TEXT NOT NULL,
+                mensagem TEXT,
+                validated BIT NOT NULL DEFAULT(0)
+            )`,
+
+               `CREATE TABLE IF NOT EXISTS logins (
+                id INTEGER PRIMARY KEY AUTO_INCREMENT,
+                name TEXT NOT NULL,
+                email TEXT NOT NULL,
+                password TEXT NOT NULL,
+                validated BIT NOT NULL DEFAULT(0)
+            )`
 
         ];
 

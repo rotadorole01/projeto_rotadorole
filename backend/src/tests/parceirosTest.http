@@ -3,7 +3,7 @@
 # Porta do servidor
 @PORT = 3600
 # endpoint ou rota do teste
-@ENDPOINT = contatos
+@ENDPOINT = locais
 # uri - rota final do teste
 @URI = {{URL}}:{{PORT}}/{{ENDPOINT}}
 
@@ -16,21 +16,21 @@ POST {{URI}}
 Content-Type: application/json; charset=utf-8
 
   {
-      "login": "carlose@gmail.cm",
-      "password": "567",
-      "name": "carlos"
+      "localnome": "Boate da joana",
+      "endereco": "Av São Joao, 305 - Centro - Matão"
+    
     }
 
 ###
-PUT {{URI}}/5
+PUT {{URI}}/2
 Content-Type: application/json; charset=utf-8
 
   {
-      "login": "MANOEL.teste@gmail.cm",
-      "password": "890",
-      "name": "manoel"
-    }
+      "localnome": "Boate da joana",
+      "endereco": "Av São Joao, 305 - Centro - Matão"
+    
+  }
 
 
 ###
-DELETE {{URI}}/3
+DELETE {{URI}}/1

@@ -88,15 +88,15 @@ class Carousel {
         this.dots[index].classList.add('active');
     }
 
-    next() {
-        this.currentIndex = (this.currentIndex + 1) % this.items.length;
-        this.showSlide(this.currentIndex);
-    }
+    // next() {
+    //     this.currentIndex = (this.currentIndex + 1) % this.items.length;
+    //     this.showSlide(this.currentIndex);
+    // }
 
-    prev() {
-        this.currentIndex = (this.currentIndex - 1 + this.items.length) % this.items.length;
-        this.showSlide(this.currentIndex);
-    }
+    // prev() {
+    //     this.currentIndex = (this.currentIndex - 1 + this.items.length) % this.items.length;
+    //     this.showSlide(this.currentIndex);
+    // }
 
     goToSlide(index) {
         this.currentIndex = index;
@@ -200,6 +200,22 @@ class FormValidator {
         if (errorMsg) errorMsg.remove();
     }
 }
+
+// login 
+const form = document.getElementById('cadastroForm');
+
+form.addEventListener('submit', function(event){
+  event.preventDefault();
+
+  const nome = document.getElementById('nome').value;
+  const email = document.getElementById('email').value;
+
+  alert(
+    `Cadastro realizado com sucesso!\n\nNome: ${nome}\nE-mail: ${email}`
+  );
+
+  form.reset();
+});
 
 // ===== INICIALIZAR QUANDO O DOM ESTIVER PRONTO =====
 document.addEventListener('DOMContentLoaded', function() {

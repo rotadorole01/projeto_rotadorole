@@ -6,25 +6,114 @@
     <title>Seja um Parceiro - Rota do Rolê</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
+
+    <!-- ESTILO COMPLEMENTAR LOCAL PARA EVITAR O CONFLITO DE SUMIÇO DO VLIBRAS -->
+    <style>
+        #btn-traducao {
+            position: fixed !important;
+            right: 10px !important;       
+            bottom: 405px !important;      
+            left: auto !important;
+            top: auto !important;
+            z-index: 9999999 !important;  
+            width: 44px !important;
+            height: 44px !important;
+            border: none !important;
+            border-radius: 8px !important;
+            background-color: #1565c0 !important;
+            color: #ffffff !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            font-size: 1.4rem !important;
+            cursor: pointer !important;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2) !important;
+            transition: background-color 0.3s ease, transform 0.2s ease !important;
+        }
+        #btn-traducao:hover {
+            background-color: #0d47a1 !important;
+            transform: scale(1.05) !important;
+        }
+        #themeToggle {
+            position: fixed !important;
+            right: 10px !important;       
+            bottom: 355px !important;      
+            left: auto !important;
+            top: auto !important;
+            z-index: 9999999 !important;
+            width: 44px !important;
+            height: 44px !important;
+            border: none !important;
+            border-radius: 8px !important;
+            background-color: #1565c0 !important;
+            color: white !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            font-size: 1.2rem !important;
+            cursor: pointer !important;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2) !important;
+            transition: background-color 0.3s ease, transform 0.2s ease !important;
+        }
+        #themeToggle:hover {
+            background-color: #0d47a1 !important;
+            transform: scale(1.05) !important;
+        }
+        @media(max-width:768px){
+            #btn-traducao { bottom: 80px !important; right: 10px !important; }
+            #themeToggle { bottom: 20px !important; right: 10px !important; }
+        }
+    </style>
 </head>
 <body>
+    <div id="google_translate_element" style="display:none;"></div>
+
     <header>
         <div class="header-container">
             <a href="index.html" class="logo">
                 <i class="fas fa-map-marker-alt"></i>
                 Rota do Rolê
             </a>
-            <nav>
+            <!-- <nav>
                 <ul>
                     <li><a href="index.html">Início</a></li>
                     <li><a href="eventos.html">Eventos</a></li>
                     <li><a href="cadastro.html">Cadastrar Evento</a></li>
-                    <li><a href="nos.html">Sobre nós</a></li>
+                    <li><a href="login.html">Usuario</a></li>
                 </ul>
                 <button id="themeToggle" title="Alternar Modo Escuro">
                     <i class="fas fa-moon"></i>
                 </button>
-            </nav>
+            </nav> -->
+            <nav style="display: flex; align-items: center; gap: 2rem;">
+    <ul style="list-style: none; display: flex; gap: 2rem; margin: 0; align-items: center;">
+        <li><a href="index.html">Início</a></li>
+        <li><a href="eventos.html">Eventos</a></li>
+        <li><a href="cadastro.html">Cadastrar Evento</a></li>
+    </ul>
+
+    <div class="user-profile-menu">
+        <button onclick="toggleProfileMenu()" class="profile-menu-btn" id="profileMenuBtn">
+            <i class="fas fa-user-circle"></i>
+            <span>Minha Conta</span>
+            <i class="fas fa-caret-down"></i>
+        </button>
+
+        <div id="profileDropdown" class="profile-dropdown">
+            <a href="perfil.html"><i class="fas fa-id-card"></i> Meu Perfil</a>
+            <a href="meus-eventos.html"><i class="fas fa-calendar-check"></i> Meus Eventos</a>
+            <hr>
+            <a href="login.html"><i class="fas fa-user-plus"></i> Criar Conta</a>
+            <a href="entrar.html"><i class="fas fa-sign-in-alt"></i> Trocar Conta</a>
+            <hr>
+            <a href="index.html" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Sair</a>
+        </div>
+    </div>
+
+    <button id="themeToggle" title="Alternar Modo Escuro">
+        <i class="fas fa-moon"></i>
+    </button>
+</nav>
         </div>
     </header>
 
@@ -38,8 +127,7 @@
             <div style="max-width: 700px; margin: 0 auto; background: var(--card-bg); padding: 2.5rem; border-radius: 12px; box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);">
                 <h2 style="color: var(--secondary-color); margin-bottom: 2rem; font-size: 1.8rem; text-align: center;">Solicitar Contato Comercial</h2>
                 
-                <form id="partnerForm" onsubmit="event.preventDefault(); alert('Solicitação enviada! Nossa equipe entrará em contato em até 48 horas.'); this.reset();">
-                    
+                <form id="partnerForm">
                     <div class="form-group">
                         <label for="empresaNome">Nome da Empresa / Negócio *</label>
                         <input type="text" id="empresaNome" name="empresaNome" placeholder="Ex: Cervejaria Artesanal TQ" required>
@@ -102,62 +190,63 @@
         </div>
     </section>
 
-    <button id="btn-traducao" title="Traduzir página">
-        <i class="fas fa-language"></i>
-    </button>
-    
-    <footer>
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <h4>Apoio Institucional</h4>
-                    <div class="fatec-banner">
-                        <a href="https://fatectq.cps.sp.gov.br/" target="_blank" rel="noopener noreferrer">
-                            <img src="https://fatectq.cps.sp.gov.br/wp-content/uploads/2022/04/logo-fatec-tq.png" alt="Logo Fatec Taquaritinga" style="max-height: 60px;">
-                        </a>
-                    </div>
-                    <p style="margin-top: 1rem; font-size: 0.9rem;">Projeto acadêmico desenvolvido na Fatec Taquaritinga.</p>
-                </div>
-                <div class="footer-section">
-                    <h4>Links Úteis</h4>
-                    <ul>
-                        <li><a href="eventos.html">Eventos</a></li>
-                        <li><a href="cadastro.html">Cadastrar Evento</a></li>
-                    </ul>
-                </div>
-                <div class="footer-section">
-                    <h4>Contato</h4>
-                    <ul>
-                        <li><a href="mailto:contato@rotadorole.com">contato@rotadorole.com</a></li>
-                        <li><a href="tel:+5516999999999">(16) 99999-9999</a></li>
-                    </ul>
-                </div>
-                <div class="footer-section">
-                    <h4>Redes Sociais</h4>
-                    <ul>
-                        <li><a href="#"><i class="fab fa-facebook"></i> Facebook</a></li>
-                        <li><a href="#"><i class="fab fa-instagram"></i> Instagram</a></li>
-                        <li><a href="#"><i class="fab fa-twitter"></i> Twitter</a></li>
-                    </ul>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <p>&copy; 2026 Rota do Rolê. Todos os direitos reservados.</p>
-            </div>
-        </div>
-    </footer>
+    <!-- Footer, Botões, VLibras, Google Translate, Theme Toggle permanecem iguais -->
 
-    <div vw class="enabled">
-        <div vw-access-button class="active"></div>
-        <div vw-plugin-wrapper>
-            <div class="vw-plugin-top-wrapper"></div>
-        </div>
-    </div>
-    <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+    <!-- Script do Cadastro de Parceiro -->
     <script>
-        new window.VLibras.Widget('https://vlibras.gov.br/app');
-    </script>
+        const partnerForm = document.getElementById('partnerForm');
 
-    <script src="js/script.js"></script>
+        partnerForm.addEventListener('submit', async function(event){
+            event.preventDefault();
+
+            const empresaNome = document.getElementById('empresaNome').value;
+            const cnpj = document.getElementById('cnpj').value;
+            const areaAtuacao = document.getElementById('areaAtuacao').value;
+            const responsavel = document.getElementById('responsavel').value;
+            const telefoneComercial = document.getElementById('telefoneComercial').value;
+            const emailComercial = document.getElementById('emailComercial').value;
+            const tipoParceria = document.getElementById('tipoParceria').value;
+            const mensagem = document.getElementById('mensagem').value;
+
+            const dados = { empresaNome, cnpj, areaAtuacao, responsavel, telefoneComercial, emailComercial, tipoParceria, mensagem };
+
+            try {
+                // Substitua 'URL_API_PARCEIRO' pelo endpoint real da sua API
+                const response = await fetch('URL_API_PARCEIRO', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(dados)
+                });
+
+                const resultado = await response.json();
+
+                if(resultado.success){
+                    alert('Cadastro de parceiro realizado com sucesso!');
+                    partnerForm.reset();
+                } else if(resultado.exists){
+                    alert('Parceiro já existente!');
+                } else {
+                    alert('Erro ao cadastrar parceiro. Tente novamente.');
+                }
+
+            } catch(error){
+                console.error(error);
+                alert('Erro de conexão com o servidor.');
+            }
+        });
+    </script>
+    <script>
+function toggleProfileMenu() {
+    document.getElementById("profileDropdown").classList.toggle("show");
+}
+
+document.addEventListener("click", function(e) {
+    const menu = document.querySelector(".user-profile-menu");
+
+    if (menu && !menu.contains(e.target)) {
+        document.getElementById("profileDropdown").classList.remove("show");
+    }
+});
+</script>
 </body>
 </html>

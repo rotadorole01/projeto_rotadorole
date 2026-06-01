@@ -3,7 +3,7 @@ const { valuesParams, extrair_dados,  gerar_sqlFields ,
    gerar_sqlParams, gerar_sqlSets } = require( "../utils/sqlcomandos.js")
 
 // nome da tabele = a nome do endpoint   
-const tableName = 'contatos';
+const tableName = 'logins';
 
 
 // selecionar todos os usuarios 

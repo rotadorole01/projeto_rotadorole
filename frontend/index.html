@@ -6,21 +6,192 @@
     <title>Rota do Rolê - Eventos da Cidade</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
+    <style>
+        /*ESTILOS DO MENU DROPDOWN DE PERFIL (HEADER)*/
+        .user-profile-menu {
+            position: relative;
+            display: inline-block;
+        }
+
+        .profile-menu-btn {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            padding: 5px 10px;
+            border-radius: 4px;
+            transition: background 0.3s ease;
+        }
+
+        .profile-menu-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .profile-dropdown {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 100%;
+            background-color: var(--card-bg, #ffffff);
+            min-width: 180px;
+            box-shadow: 0px 8px 16px rgba(0,0,0,0.15);
+            border-radius: 8px;
+            padding: 8px 0;
+            z-index: 1000;
+            margin-top: 10px;
+            border: 1px solid var(--border-color, #ddd);
+        }
+
+        .profile-dropdown a {
+            color: var(--dark-text, #2c3e50) !important;
+            padding: 10px 16px;
+            text-decoration: none;
+            display: block;
+            font-size: 0.95rem;
+            border-bottom: none !important;
+            transition: background 0.2s ease;
+        }
+
+        .profile-dropdown a:hover {
+            background-color: var(--light-bg, #f8f9fa);
+            color: var(--primary-color, #ff6b35) !important;
+        }
+
+        .profile-dropdown i {
+            margin-right: 8px;
+            width: 16px;
+            text-align: center;
+        }
+
+        .profile-dropdown hr {
+            border: 0;
+            border-top: 1px solid var(--border-color, #ddd);
+            margin: 6px 0;
+        }
+
+        .profile-dropdown .logout-btn {
+            color: #d32f2f !important;
+            font-weight: bold;
+        }
+
+        .profile-dropdown .logout-btn:hover {
+            background-color: #ffebee;
+        }
+
+        /*ESTILOS DO CARROSSEL DE PATROCINADORES*/
+        #partnersCarousel {
+            position: relative;
+            overflow: hidden;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        #partnersCarousel .carousel-track {
+            display: flex;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.5s ease-in-out;
+        }
+
+        #partnersCarousel .carousel-item {
+            min-width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            display: none; /* Controlado via JS */
+        }
+
+        #partnersCarousel .carousel-item.active {
+            display: block;
+        }
+
+        #partnersCarousel .carousel-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            padding: 12px 16px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background 0.3s;
+            z-index: 10;
+        }
+
+        #partnersCarousel .carousel-btn:hover {
+            background: var(--primary-color, #ff6b35);
+        }
+
+        #partnersCarousel .carousel-btn.prev { left: 15px; }
+        #partnersCarousel .carousel-btn.next { right: 15px; }
+
+        #partnersDots {
+            position: absolute;
+            bottom: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 8px;
+            z-index: 10;
+        }
+
+        #partnersDots .dot {
+            width: 12px;
+            height: 12px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.3s;
+        }
+
+        #partnersDots .dot.active {
+            background: var(--primary-color, #ff6b35);
+            transform: scale(1.2);
+        }
+    </style>
 </head>
 <body>
+    <div id="google_translate_element" style="display:none;"></div>
+    
     <header>
         <div class="header-container">
             <a href="index.html" class="logo">
                 <i class="fas fa-map-marker-alt"></i>
                 Rota do Rolê
             </a>
-            <nav>
-                <ul>
+            <nav style="display: flex; align-items: center; gap: 2rem;">
+                <ul style="list-style: none; display: flex; gap: 2rem; margin: 0; align-items: center;">
                     <li><a href="index.html">Início</a></li>
                     <li><a href="eventos.html">Eventos</a></li>
                     <li><a href="cadastro.html">Cadastrar Evento</a></li>
-                    <li><a href="nos.html">Sobre nós</a></li>
                 </ul>
+                
+                <div class="user-profile-menu">
+                    <button onclick="toggleProfileMenu()" class="profile-menu-btn" id="profileMenuBtn">
+                        <i class="fas fa-user-circle" style="font-size: 1.5rem; color: var(--accent-color, #f7b801);"></i>
+                        <span>Minha Conta</span>
+                        <i class="fas fa-caret-down" style="font-size: 0.8rem;"></i>
+                    </button>
+                    
+                    <div id="profileDropdown" class="profile-dropdown">
+                        <a href="perfil.html"><i class="fas fa-id-card" style="color: var(--secondary-color, #004e89);"></i> Meu Perfil</a>
+                        <a href="meus-eventos.html"><i class="fas fa-calendar-check" style="color: var(--primary-color, #ff6b35);"></i> Meus Eventos</a>
+                        <hr>
+                        <a href="login.html"><i class="fas fa-user-plus"></i> Criar Conta</a>
+                        <a href="entrar.html"><i class="fas fa-sign-in-alt"></i> Trocar Conta</a>
+                        <hr>
+                        <a href="index.html" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Sair</a>
+                    </div>
+                </div>
+
                 <button id="themeToggle" title="Alternar Modo Escuro">
                     <i class="fas fa-moon"></i>
                 </button>
@@ -28,32 +199,12 @@
         </div>
     </header>
 
-    
-
     <div class="container">
         <div class="carousel-container" id="mainCarousel">
-            <div class="carousel">
-                <div class="carousel-item active" style="background-image: url('https://images.unsplash.com/photo-1511192336575-5a79af67a629?auto=format&fit=crop&w=1200&q=80');">
-                    <div class="carousel-item-overlay">
-                        <h3>Festival de Jazz na Praça</h3>
-                        <p>Um evento cultural incrível com os melhores músicos da região. Não perca!</p>
-                        <a href="eventos.html" class="btn">Ver Mais Eventos</a>
-                    </div>
-                </div>
-                <div class="carousel-item" style="background-image: url('https://images.unsplash.com/photo-1498038432885-c6f3f1b912ee?auto=format&fit=crop&w=1200&q=80');">
-                    <div class="carousel-item-overlay">
-                        <h3>Noite do Rock no Bar do Zé</h3>
-                        <p>As melhores bandas de rock clássico a noite toda. Venha se divertir!</p>
-                        <a href="eventos.html" class="btn">Ver Mais Eventos</a>
-                    </div>
-                </div>
-            </div>
-            <button class="carousel-btn prev">&#10094;</button>
-            <button class="carousel-btn next">&#10095;</button>
-            <div class="carousel-controls">
-                <span class="carousel-dot active"></span>
-                <span class="carousel-dot"></span>
-            </div>
+            <div class="carousel" id="carousel"></div>
+            <button class="carousel-btn prev" id="prevBtn">&#10094;</button>
+            <button class="carousel-btn next" id="nextBtn">&#10095;</button>
+            <div class="carousel-controls" id="carouselDots"></div>
         </div>
     </div>
 
@@ -85,27 +236,56 @@
         <div class="container">
             <h2>Nossos Parceiros</h2>
             <div class="carousel-container" id="partnersCarousel" style="height: 300px;">
-                <div class="carousel">
+                <div class="carousel-track" id="partnersTrack">
+                    
+                    <div class="carousel-item" style="background-image: url('img/Patrocinadores.webp'); filter: hue-rotate(45deg);">
+                        <div class="carousel-item-overlay">
+                            <h3>Fatec Taquaritinga</h3>
+                            <p>Nosso Patrocinador Educativo e Institucional!</p>
+                        </div>
+                    </div>
+                    
                     <div class="carousel-item active" style="background-image: url('https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=1200&q=80');">
                         <div class="carousel-item-overlay">
-                            <h3>Apoio Local</h3>
+                            <h3>Apoio Local - Estabelecimentos</h3>
                             <p>Conheça nossos parceiros que tornam a Rota do Rolê possível!</p>
                         </div>
                     </div>
+
+                    
+
+                    <!-- <div class="carousel-item" style="background-image: url('img/Patrocinadores.webp'); filter: hue-rotate(180deg);">
+                        <div class="carousel-item-overlay">
+                            <h3>Novo Patrocinador da Cidade</h3>
+                            <p>Fortalecendo o comércio, os shows e o turismo regional.</p>
+                        </div>
+                    </div> -->
+
+                </div>
+
+                <button class="carousel-btn prev" onclick="movePartnerCarousel(-1)">&#10094;</button>
+                <button class="carousel-btn next" onclick="movePartnerCarousel(1)">&#10095;</button>
+
+                <div id="partnersDots">
+                    <span class="dot active" onclick="currentPartnerSlide(0)"></span>
+                    <span class="dot" onclick="currentPartnerSlide(1)"></span>
+                    <!-- <span class="dot" onclick="currentPartnerSlide(2)"></span> -->
                 </div>
             </div>
             
             <div style="text-align: center; margin-top: 2rem;">
                 <p style="margin-bottom: 1rem; font-size: 1.1rem;">Tem um negócio e quer mais visibilidade na cidade?</p>
-                <a href="parceria.html" class="btn btn-secondary"><i class="fas fa-handshake"></i> Seja um Parceiro / Patrocinador</a>
+                <a href="parceria.html" class="btn btn-secondary">
+                    <i class="fas fa-handshake"></i> Seja um Parceiro / Patrocinador
+                </a>
             </div>
         </div>
     </section>
-    
+
     <button id="btn-traducao" title="Traduzir página">
         <i class="fas fa-language"></i>
     </button>
-
+    
     <footer>
         <div class="container">
             <div class="footer-content">
@@ -123,6 +303,8 @@
                     <ul>
                         <li><a href="eventos.html">Eventos</a></li>
                         <li><a href="cadastro.html">Cadastrar Evento</a></li>
+                        <li><a href="parceria.html">Seja um Patrocinador</a></li>
+                        <li><a href="nos.html">Sobre Nós</a></li>
                     </ul>
                 </div>
                 <div class="footer-section">
@@ -145,36 +327,139 @@
             <div class="vw-plugin-top-wrapper"></div>
         </div>
     </div>
+
+    <script>
+        // --- CONTROLE DO DROPDOWN DE PERFIL ---
+        function toggleProfileMenu() {
+            const dropdown = document.getElementById("profileDropdown");
+            if (dropdown.style.display === "block") {
+                dropdown.style.display = "none";
+            } else {
+                dropdown.style.display = "block";
+            }
+        }
+
+        window.addEventListener('click', function(event) {
+            const btn = document.getElementById("profileMenuBtn");
+            const dropdown = document.getElementById("profileDropdown");
+            if (btn && dropdown && !btn.contains(event.target) && !dropdown.contains(event.target)) {
+                dropdown.style.display = "none";
+            }
+        });
+
+        // --- DINÂMICA DO CARROSSEL DE PATROCINADORES ---
+        let partnerIndex = 0;
+        const partnerSlides = document.querySelectorAll("#partnersCarousel .carousel-item");
+        const partnerDots = document.querySelectorAll("#partnersDots .dot");
+        let partnerAutoCycle = setInterval(() => movePartnerCarousel(1), 4000); // Roda automático a cada 4 segundos
+
+        function showPartnerSlide(index) {
+            if (index >= partnerSlides.length) partnerIndex = 0;
+            if (index < 0) partnerIndex = partnerSlides.length - 1;
+            
+            partnerSlides.forEach(slide => slide.classList.remove("active"));
+            partnerDots.forEach(dot => dot.classList.remove("active"));
+            
+            partnerSlides[partnerIndex].classList.add("active");
+            partnerDots[partnerIndex].classList.add("active");
+        }
+
+        function movePartnerCarousel(step) {
+            partnerIndex += step;
+            showPartnerSlide(partnerIndex);
+            resetPartnerTimer();
+        }
+
+        function currentPartnerSlide(index) {
+            partnerIndex = index;
+            showPartnerSlide(partnerIndex);
+            resetPartnerTimer();
+        }
+
+        function resetPartnerTimer() {
+            clearInterval(partnerAutoCycle);
+            partnerAutoCycle = setInterval(() => movePartnerCarousel(1), 4000);
+        }
+
+        // --- GESTÃO DO MODO ESCURO ---
+        const themeToggle = document.getElementById("themeToggle");
+        const savedTheme = localStorage.getItem("theme");
+        if (savedTheme) {
+            document.documentElement.setAttribute("data-theme", savedTheme);
+        }
+        themeToggle.addEventListener("click", () => {
+            const currentTheme = document.documentElement.getAttribute("data-theme");
+            if (currentTheme === "dark") {
+                document.documentElement.setAttribute("data-theme", "light");
+                localStorage.setItem("theme", "light");
+            } else {
+                document.documentElement.setAttribute("data-theme", "dark");
+                localStorage.setItem("theme", "dark");
+            }
+        });
+    </script>
     
     <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
-    <script src="https://unpkg.com/i18next/dist/umd/i18next.min.js">
-    const resources = {
-    en: {
-       translation: {
-       "nav_inicio": "Home",
-       "nav_eventos": "Events",
-       "titulo_eventos": "All Events",
-       "placeholder_busca": "Search events...",
-       "btn_buscar": "Search",
-       "cat_shows": "Concerts"
-      }
-    },
-    pt: {
-    translation: {
-      "nav_inicio": "Início",
-      "nav_eventos": "Eventos",
-      "titulo_eventos": "Todos os Eventos",
-      "placeholder_busca": "Buscar eventos...",
-      "btn_buscar": "Buscar",
-      "cat_shows": "Shows"
-    }
-  }
-};
+    <script src="https://unpkg.com/i18next/dist/umd/i18next.min.js"></script>
+    <script>
+        const resources = {
+            en: {
+                translation: {
+                    "nav_inicio": "Home",
+                    "nav_eventos": "Events",
+                    "titulo_eventos": "All Events",
+                    "placeholder_busca": "Search events...",
+                    "btn_buscar": "Search",
+                    "cat_shows": "Concerts"
+                }
+            },
+            pt: {
+                translation: {
+                    "nav_inicio": "Início",
+                    "nav_eventos": "Eventos",
+                    "titulo_eventos": "Todos os Eventos",
+                    "placeholder_busca": "Buscar eventos...",
+                    "btn_buscar": "Buscar",
+                    "cat_shows": "Shows"
+                }
+            }
+        };
     </script>
     <script>
         new window.VLibras.Widget('https://vlibras.gov.br/app');
     </script>
-
+    <script>
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement(
+                {
+                    pageLanguage: 'pt',
+                    includedLanguages: 'pt,en,es',
+                    autoDisplay: false
+                },
+                'google_translate_element'
+            );
+        }
+    </script>
+    <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const btnTraducao = document.getElementById("btn-traducao");
+            btnTraducao.addEventListener("click", function () {
+                const combo = document.querySelector(".goog-te-combo");
+                if (combo) {
+                    if (combo.value === "en") {
+                        combo.value = "pt";
+                    } else {
+                        combo.value = "en";
+                    }
+                    combo.dispatchEvent(new Event("change"));
+                } else {
+                    alert("Tradutor ainda não carregou. Aguarde alguns segundos e tente novamente.");
+                }
+            });
+        });
+    </script>
     <script src="js/script.js"></script>
+    <script src="js/eventos.js"></script>
 </body>
 </html>

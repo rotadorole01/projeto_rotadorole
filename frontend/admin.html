@@ -115,6 +115,44 @@
         </div>
     </div>
 
+    <script>
+    const themeToggle =
+    document.getElementById("themeToggle");
+
+/* carregar tema salvo */
+    const savedTheme =
+    localStorage.getItem("theme");
+
+        if(savedTheme){
+        document.documentElement
+        .setAttribute("data-theme", savedTheme);
+    }
+
+/* alternar tema */
+    themeToggle.addEventListener("click", () => {
+
+    const currentTheme =
+    document.documentElement
+    .getAttribute("data-theme");
+
+    if(currentTheme === "dark"){
+
+        document.documentElement
+        .setAttribute("data-theme","light");
+
+        localStorage.setItem("theme","light");
+
+    }
+    else{
+        document.documentElement
+        .setAttribute("data-theme","dark");
+        localStorage.setItem("theme","dark");
+    }
+  }
+);
+
+    </script>
+
     <script src="js/script.js"></script>
 </body>
 </html>
