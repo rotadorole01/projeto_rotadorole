@@ -332,64 +332,14 @@ function googleTranslateElementInit() {
 <script type="text/javascript"
 src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit">
 </script>
-    <script src="js/script.js"></script>
+    <script src="js/apieventos.js"></script>
 
     <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
     <script>
         new window.VLibras.Widget('https://vlibras.gov.br/app');
     </script>
 
-    <!-- Script Adicionado para verificar título duplicado -->
-    <script>
-const eventForm = document.getElementById('eventForm');
-
-eventForm.addEventListener('submit', async function(e) {
-    e.preventDefault();
-
-    // Coletando dados do formulário
-    const titulo = document.getElementById('titulo').value;
-    const categoria = document.getElementById('categoria').value;
-    const descricao = document.getElementById('descricao').value;
-    const data = document.getElementById('data').value;
-    const horario = document.getElementById('horario').value;
-    const duracao = document.getElementById('duracao').value;
-    const localizacao = document.getElementById('localizacao').value;
-    const cidade = document.getElementById('cidade').value;
-    const bairro = document.getElementById('bairro').value;
-    const ingresso = document.getElementById('ingresso').value;
-    const preco = document.getElementById('preco').value;
-    const link = document.getElementById('link').value;
-    const nome = document.getElementById('nome').value;
-    const email = document.getElementById('email').value;
-    const telefone = document.getElementById('telefone').value;
-
-    const dados = { titulo, categoria, descricao, data, horario, duracao, localizacao, cidade, bairro, ingresso, preco, link, nome, email, telefone };
-
-    try {
-        // Substitua 'URL_API_EVENTO' pelo endpoint real da sua API
-        const response = await fetch('URL_API_EVENTO', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(dados)
-        });
-
-        const resultado = await response.json();
-
-        if (resultado.success) {
-            alert('Evento cadastrado com sucesso!');
-            eventForm.reset();
-        } else if (resultado.exists) {
-            alert('Evento já existente!');
-        } else {
-            alert('Erro ao cadastrar evento. Tente novamente.');
-        }
-
-    } catch (error) {
-        console.error(error);
-        alert('Erro de conexão com o servidor.');
-    }
-});
-    </script>
+ 
     <script>
 function toggleProfileMenu() {
     document.getElementById("profileDropdown").classList.toggle("show");

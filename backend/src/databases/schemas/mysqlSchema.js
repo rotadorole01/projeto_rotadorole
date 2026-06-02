@@ -15,10 +15,22 @@ class DatabaseSchemaMysql {
             `CREATE TABLE IF NOT EXISTS eventos (
                 id INTEGER PRIMARY KEY AUTO_INCREMENT,
                 titulo TEXT NOT NULL,
+                horario TIME NOT NULL,
                 data DATETIME NOT NULL,
-                local TEXT NULL,
+                categoria TEXT NOT NULL,
+                duracao INT,
+                localizacao TEXT NOT NULL,
+                preco INT,
+                ingresso TEXT ,
+                cidade TEXT NOT NULL,
+                bairro TEXT NOT NULL,
                 descricao TEXT NOT NULL,
-                foto TEXT NULL
+                link TEXT,
+                nome TEXT NOT NULL,
+                email TEXT NOT NULL,
+                telefone VARCHAR(20) NOT NULL,
+                descricao TEXT NOT NULL,
+                imagem TEXT NULL
             )`,
 
             `CREATE TABLE IF NOT EXISTS categorias (

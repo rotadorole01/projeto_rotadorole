@@ -43,7 +43,7 @@ function renderizarCarousel(eventos) {
             item.classList.add("active");
           }
 
-         item.style.backgroundImage = `url('${evento.foto}')`;
+         item.style.backgroundImage = `url('http://localhost:3600/uploads/${evento.foto}')`;
          //item.style.backgroundImage = `url(http://localhost:3600/uploads/1.png)`;
 
         item.innerHTML = `
