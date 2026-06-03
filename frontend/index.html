@@ -200,12 +200,104 @@
     </header>
 
     <div class="container">
-        <div class="carousel-container" id="mainCarousel">
-            <div class="carousel" id="carousel"></div>
-            <button class="carousel-btn prev" id="prevBtn">&#10094;</button>
-            <button class="carousel-btn next" id="nextBtn">&#10095;</button>
-            <div class="carousel-controls" id="carouselDots"></div>
+        <style>
+            #frontImgCarousel .front-carousel {
+                position: relative;
+                width: 100%;
+                height: 100%;
+            }
+
+            #frontImgCarousel .front-carousel-item {
+                position: absolute;
+                inset: 0;
+                opacity: 0;
+                background-size: cover;
+                background-position: center;
+                transition: opacity 0.5s ease-in-out;
+            }
+
+            #frontImgCarousel .front-carousel-item.active {
+                opacity: 1;
+            }
+
+            #frontImgCarousel .front-carousel-dot {
+                width: 12px;
+                height: 12px;
+                border-radius: 50%;
+                background-color: rgba(255, 255, 255, 0.5);
+                cursor: pointer;
+                transition: var(--transition);
+            }
+
+            #frontImgCarousel .front-carousel-dot.active {
+                background-color: var(--accent-color);
+                transform: scale(1.3);
+            }
+
+            #legacyCarouselHooks {
+                display: none;
+            }
+        </style>
+
+        <div class="carousel-container" id="frontImgCarousel">
+            <div class="front-carousel" id="frontCarousel">
+                <div class="front-carousel-item active" style="background-image: url('img/fateccarrossel.png');">
+                    <div class="carousel-item-overlay">
+                        <h3>Fatec Taquaritinga</h3>
+                        <p>Eventos e oportunidades para a comunidade.</p>
+                    </div>
+                </div>
+
+                <div class="front-carousel-item" style="background-image: url('img/Fatec inscrições.png');">
+                    <div class="carousel-item-overlay">
+                        <h3>Inscrições Fatec</h3>
+                        <p>Fique por dentro das novidades acadêmicas.</p>
+                    </div>
+                </div>
+
+            <button class="carousel-btn prev" id="frontPrevBtn">&#10094;</button>
+            <button class="carousel-btn next" id="frontNextBtn">&#10095;</button>
+            <div class="carousel-controls" id="frontCarouselDots">
+                <span class="front-carousel-dot active"></span>
+                <span class="front-carousel-dot"></span>
+            </div>
         </div>
+
+        <div id="legacyCarouselHooks" aria-hidden="true">
+            <div id="carousel"></div>
+            <button id="prevBtn" type="button"></button>
+            <button id="nextBtn" type="button"></button>
+            <div id="carouselDots"></div>
+        </div>
+
+        <script>
+            (() => {
+                const slides = document.querySelectorAll("#frontImgCarousel .front-carousel-item");
+                const dots = document.querySelectorAll("#frontImgCarousel .front-carousel-dot");
+                const prevBtn = document.getElementById("frontPrevBtn");
+                const nextBtn = document.getElementById("frontNextBtn");
+                let currentSlide = 0;
+
+                function showSlide(index) {
+                    currentSlide = (index + slides.length) % slides.length;
+
+                    slides.forEach(slide => slide.classList.remove("active"));
+                    dots.forEach(dot => dot.classList.remove("active"));
+
+                    slides[currentSlide].classList.add("active");
+                    dots[currentSlide].classList.add("active");
+                }
+
+                prevBtn.addEventListener("click", () => showSlide(currentSlide - 1));
+                nextBtn.addEventListener("click", () => showSlide(currentSlide + 1));
+
+                dots.forEach((dot, index) => {
+                    dot.addEventListener("click", () => showSlide(index));
+                });
+
+                setInterval(() => showSlide(currentSlide + 1), 5000);
+            })();
+        </script>
     </div>
 
     <section id="categorias">

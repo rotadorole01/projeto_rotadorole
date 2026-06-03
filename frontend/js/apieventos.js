@@ -109,22 +109,22 @@ function carregarDados() {
         if(el) el.value = valor;
     };
 
-    setInput('titulo', 'Vestibular Fatec');
-    setInput('email', 'Secretaria@fatectq.edu.br');
+    setInput('titulo', 'teste');
+    setInput('email', 'teste@fatectq.edu.br');
     setInput('data', '2026-04-07'); 
-    setInput('categoria', 'Cultural');
-    setInput('descricao', 'Inscrições para o processo seletivo da Fatec, venha fazer seu curso superior gratuito e ficar em outro nível, inscrições abertas do dia 07/04/2026 até as 15hrs de 01/06/2026.');
-    setInput('horario', '15:00:00');
-    setInput('duracao', '5');
-    setInput('localizacao', 'Fatec Taquaritinga, Av. Dr. Flávio Henrique Lemos 585');
+    setInput('categoria', 'cultural');
+    setInput('descricao', 'teste@teste.gmail.coma');
+    setInput('horario', '17:00:00');
+    setInput('duracao', '4');
+    setInput('localizacao', 'rua dos bobos');
     setInput('cidade', 'Taquaritinga');
-    setInput('bairro', 'Portal Itamaracá - 15906-522');
-    setInput('ingresso', 'Pago');
-    setInput('preco', '80');
+    setInput('bairro', 'Portal da serra');
+    setInput('ingresso', 'gratuito');
+    setInput('preco', '');
     setInput('imagem', ''); // campo manual
-    setInput('link', 'https://fatectq.cps.sp.gov.br/');
-    setInput('nome', 'Marcus');
-    setInput('telefone', '(16) 3252-5250');
+    setInput('link', '');
+    setInput('nome', 'teste');
+    setInput('telefone', '(16) 3252-5555');
 }
 
 document.addEventListener('DOMContentLoaded', carregarDados);
