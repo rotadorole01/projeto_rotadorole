@@ -109,21 +109,21 @@ function carregarDados() {
         if(el) el.value = valor;
     };
 
-    setInput('titulo', 'teste');
+    setInput('titulo', 'Festival de Jazz na Praça');
     setInput('email', 'teste@fatectq.edu.br');
-    setInput('data', '2026-04-07'); 
-    setInput('categoria', 'cultural');
-    setInput('descricao', 'teste@teste.gmail.coma');
-    setInput('horario', '17:00:00');
+    setInput('data', '2026-05-15'); 
+    setInput('categoria', 'shows');
+    setInput('descricao', 'Um evento cultural incrível com os melhores músicos da região. Entrada gratuita para todos!');
+    setInput('horario', '18:00:00');
     setInput('duracao', '4');
-    setInput('localizacao', 'rua dos bobos');
+    setInput('localizacao', 'Praça Central');
     setInput('cidade', 'Taquaritinga');
     setInput('bairro', 'Portal da serra');
     setInput('ingresso', 'gratuito');
     setInput('preco', '');
-    setInput('imagem', ''); // campo manual
+    setInput('imagem', 'FestivaldeJazz.webp'); // campo manual
     setInput('link', '');
-    setInput('nome', 'teste');
+    setInput('nome', 'lulu');
     setInput('telefone', '(16) 3252-5555');
 }
 
