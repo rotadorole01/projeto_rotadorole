@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entrar - Rota do Rolê</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        /* ===================================================
+           ESTILOS ESPECÍFICOS DO FORMULÁRIO DE LOGIN
+        =================================================== */
+        .login-container {
+            max-width: 600px;
+            margin: 60px auto;
+            background: var(--card-bg, #ffffff);
+            padding: 40px;
+            border-radius: var(--border-radius, 12px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            border: 1px solid var(--border-color, #ddd);
+            transition: background-color .3s ease;
+        }
+
+        .login-title {
+            color: var(--secondary-color, #004e89);
+            text-align: center;
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .title-underline {
+            width: 50px;
+            height: 4px;
+            background-color: var(--primary-color, #ff6b35);
+            margin: 0 auto 30px auto;
+            border-radius: 2px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--dark-text, #2c3e50);
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid var(--border-color, #ddd);
+            background-color: var(--light-bg, #f8f9fa);
+            color: var(--dark-text, #2c3e50);
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary-color, #ff6b35);
+        }
+
+        .btn-login {
+            width: 100%;
+            background-color: var(--primary-color, #ff6b35);
+            color: white;
+            border: none;
+            padding: 12px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.2s ease, background-color 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .btn-login:hover {
+            background-color: #e55a2b;
+            transform: scale(1.01);
+        }
+
+        .form-footer {
+            text-align: center;
+            margin-top: 25px;
+            font-size: 0.95rem;
+            color: var(--dark-text, #2c3e50);
+        }
+
+        .form-footer a {
+            color: var(--primary-color, #ff6b35);
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+
+        .form-footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div id="google_translate_element" style="display:none;"></div>
+
+    <!-- HEADER -->
+    <header>
+        <div class="header-container">
+            <a href="index.html" class="logo">
+                <i class="fas fa-map-marker-alt"></i>
+                Rota do Rolê
+            </a>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Início</a></li>
+                    <li><a href="eventos.html">Eventos</a></li>
+                    <li><a href="cadastro.html">Cadastrar Evento</a></li>
+                    <li><a href="login.html" >Usuario</a></li>
+                    <li><a href="entrar.html">Usuario</a></li>
+                </ul>
+                <button id="themeToggle" title="Alternar Modo Escuro">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- FORMULÁRIO DE LOGIN -->
+    <main class="container">
+        <div class="login-container">
+            <h2 class="login-title">
+                <i class="fas fa-sign-in-alt"></i> Entrar na Conta
+            </h2>
+            <div class="title-underline"></div>
+
+            <form action="#" method="POST">
+                <div class="form-group">
+                    <label for="email">E-mail *</label>
+                    <input type="email" id="email" name="email" placeholder="Digite seu e-mail cadastrado" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="senha">Senha *</label>
+                    <input type="password" id="senha" name="senha" placeholder="Digite sua senha" required>
+                </div>
+
+                <button type="submit" class="btn-login">Entrar</button>
+            </form>
+
+            <div class="form-footer">
+                <p>Ainda não tem uma conta? <a href="login.html">Cadastre-se aqui</a></p>
+            </div>
+        </div>
+    </main>
+
+    <!-- BOTÃO FLUTUANTE DE TRADUÇÃO -->
+    <button id="btn-traducao" title="Traduzir página" style="position: fixed; bottom: 80px; right: 10px; z-index: 9999999; width: 43px; height: 43px; background: #1565c0; color: white; border: none; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.4rem;">
+        <i class="fas fa-language"></i>
+    </button>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Apoio Institucional</h4>
+                    <div class="fatec-banner">
+                        <a href="https://fatectq.cps.sp.gov.br/" target="_blank" rel="noopener noreferrer">
+                            <img src="img/Fatec_Taquaritinga_Logo.png" alt="Logo Fatec Taquaritinga" style="max-height: 40px;">
+                        </a>
+                    </div>
+                    <p style="margin-top: 1rem; font-size: 0.9rem;">Projeto acadêmico desenvolvido por alunos da Fatec Taquaritinga.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Links Úteis</h4>
+                    <ul>
+                        <li><a href="eventos.html">Eventos</a></li>
+                        <li><a href="cadastro.html">Cadastrar Evento</a></li>
+                        <li><a href="parceria.html">Seja um Patrocinador</a></li>
+                        <li><a href="nos.html">Sobre Nós</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Contato</h4>
+                    <ul>
+                        <li><a href="mailto:contato@rotadorole.com">contato@rotadorole.com</a></li>
+                        <li><a href="tel:+5511999999999">(11) 99999-9999</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Rota do Rolê. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <div vw class="enabled">
+        <div vw-access-button class="active"></div>
+        <div vw-plugin-wrapper>
+            <div class="vw-plugin-top-wrapper"></div>
+        </div>
+    </div>
+
+    <!-- SCRIPTS -->
+    <script>
+        const themeToggle = document.getElementById("themeToggle");
+        const savedTheme = localStorage.getItem("theme");
+
+        if(savedTheme){
+            document.documentElement.setAttribute("data-theme", savedTheme);
+        }
+
+        themeToggle.addEventListener("click", () => {
+            const currentTheme = document.documentElement.getAttribute("data-theme");
+            if(currentTheme === "dark"){
+                document.documentElement.setAttribute("data-theme","light");
+                localStorage.setItem("theme","light");
+            } else {
+                document.documentElement.setAttribute("data-theme","dark");
+                localStorage.setItem("theme","dark");
+            }
+        });
+    </script>
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement(
+                { pageLanguage: 'pt', autoDisplay: false },
+                'google_translate_element'
+            );
+        }
+    </script>
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+    <script>
+        new window.VLibras.Widget('https://vlibras.gov.br/app');
+    </script>
+    <script src="js/script.js"></script>
+</body>
+</html>

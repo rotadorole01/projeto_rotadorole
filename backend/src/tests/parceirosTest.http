@@ -1,0 +1,36 @@
+# url ou dominio
+@URL = http://localhost
+# Porta do servidor
+@PORT = 3600
+# endpoint ou rota do teste
+@ENDPOINT = locais
+# uri - rota final do teste
+@URI = {{URL}}:{{PORT}}/{{ENDPOINT}}
+
+GET {{URI}}
+###
+GET {{URI}}/5
+
+###
+POST {{URI}}
+Content-Type: application/json; charset=utf-8
+
+  {
+      "localnome": "Boate da joana",
+      "endereco": "Av São Joao, 305 - Centro - Matão"
+    
+    }
+
+###
+PUT {{URI}}/2
+Content-Type: application/json; charset=utf-8
+
+  {
+      "localnome": "Boate da joana",
+      "endereco": "Av São Joao, 305 - Centro - Matão"
+    
+  }
+
+
+###
+DELETE {{URI}}/1

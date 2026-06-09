@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seja um Parceiro - Rota do Rolê</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+
+    <!-- ESTILO COMPLEMENTAR LOCAL PARA EVITAR O CONFLITO DE SUMIÇO DO VLIBRAS -->
+    <style>
+        #btn-traducao {
+            position: fixed !important;
+            right: 10px !important;       
+            bottom: 405px !important;      
+            left: auto !important;
+            top: auto !important;
+            z-index: 9999999 !important;  
+            width: 44px !important;
+            height: 44px !important;
+            border: none !important;
+            border-radius: 8px !important;
+            background-color: #1565c0 !important;
+            color: #ffffff !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            font-size: 1.4rem !important;
+            cursor: pointer !important;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2) !important;
+            transition: background-color 0.3s ease, transform 0.2s ease !important;
+        }
+        #btn-traducao:hover {
+            background-color: #0d47a1 !important;
+            transform: scale(1.05) !important;
+        }
+        #themeToggle {
+            position: fixed !important;
+            right: 10px !important;       
+            bottom: 355px !important;      
+            left: auto !important;
+            top: auto !important;
+            z-index: 9999999 !important;
+            width: 44px !important;
+            height: 44px !important;
+            border: none !important;
+            border-radius: 8px !important;
+            background-color: #1565c0 !important;
+            color: white !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            font-size: 1.2rem !important;
+            cursor: pointer !important;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2) !important;
+            transition: background-color 0.3s ease, transform 0.2s ease !important;
+        }
+        #themeToggle:hover {
+            background-color: #0d47a1 !important;
+            transform: scale(1.05) !important;
+        }
+        @media(max-width:768px){
+            #btn-traducao { bottom: 80px !important; right: 10px !important; }
+            #themeToggle { bottom: 20px !important; right: 10px !important; }
+        }
+    </style>
+</head>
+<body>
+    <div id="google_translate_element" style="display:none;"></div>
+
+    <header>
+        <div class="header-container">
+            <a href="index.html" class="logo">
+                <i class="fas fa-map-marker-alt"></i>
+                Rota do Rolê
+            </a>
+            <!-- <nav>
+                <ul>
+                    <li><a href="index.html">Início</a></li>
+                    <li><a href="eventos.html">Eventos</a></li>
+                    <li><a href="cadastro.html">Cadastrar Evento</a></li>
+                    <li><a href="login.html">Usuario</a></li>
+                </ul>
+                <button id="themeToggle" title="Alternar Modo Escuro">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </nav> -->
+            <nav style="display: flex; align-items: center; gap: 2rem;">
+    <ul style="list-style: none; display: flex; gap: 2rem; margin: 0; align-items: center;">
+        <li><a href="index.html">Início</a></li>
+        <li><a href="eventos.html">Eventos</a></li>
+        <li><a href="cadastro.html">Cadastrar Evento</a></li>
+    </ul>
+
+    <div class="user-profile-menu">
+        <button onclick="toggleProfileMenu()" class="profile-menu-btn" id="profileMenuBtn">
+            <i class="fas fa-user-circle"></i>
+            <span>Minha Conta</span>
+            <i class="fas fa-caret-down"></i>
+        </button>
+
+        <div id="profileDropdown" class="profile-dropdown">
+            <a href="perfil.html"><i class="fas fa-id-card"></i> Meu Perfil</a>
+            <a href="meus-eventos.html"><i class="fas fa-calendar-check"></i> Meus Eventos</a>
+            <hr>
+            <a href="login.html"><i class="fas fa-user-plus"></i> Criar Conta</a>
+            <a href="entrar.html"><i class="fas fa-sign-in-alt"></i> Trocar Conta</a>
+            <hr>
+            <a href="index.html" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Sair</a>
+        </div>
+    </div>
+
+    <button id="themeToggle" title="Alternar Modo Escuro">
+        <i class="fas fa-moon"></i>
+    </button>
+</nav>
+        </div>
+    </header>
+
+    <section id="parceria" style="margin-top: 0;">
+        <div style="background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%); padding: 4rem 20px; text-align: center; color: white;">
+            <h1 style="font-size: 2.5rem; margin-bottom: 1rem;">Conecte sua marca à Rota do Rolê!</h1>
+            <p style="font-size: 1.2rem; max-width: 800px; margin: 0 auto;">Destaque o seu negócio para milhares de pessoas que buscam diversão, cultura e gastronomia na cidade.</p>
+        </div>
+
+        <div class="container" style="margin-top: -3rem; position: relative; z-index: 10;">
+            <div style="max-width: 700px; margin: 0 auto; background: var(--card-bg); padding: 2.5rem; border-radius: 12px; box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);">
+                <h2 style="color: var(--secondary-color); margin-bottom: 2rem; font-size: 1.8rem; text-align: center;">Solicitar Contato Comercial</h2>
+                
+                <form id="partnerForm">
+                    <div class="form-group">
+                        <label for="empresaNome">Nome da Empresa / Negócio *</label>
+                        <input type="text" id="empresaNome" name="empresaNome" placeholder="Ex: Cervejaria Artesanal TQ" required>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="cnpj">CNPJ</label>
+                            <input type="text" id="cnpj" name="cnpj" placeholder="00.000.000/0000-00">
+                        </div>
+                        <div class="form-group">
+                            <label for="areaAtuacao">Área de Atuação *</label>
+                            <select id="areaAtuacao" name="areaAtuacao" required>
+                                <option value="">Selecione...</option>
+                                <option value="gastronomia">Gastronomia / Restaurante</option>
+                                <option value="bar">Bar / Balada</option>
+                                <option value="entretenimento">Entretenimento / Casa de Shows</option>
+                                <option value="servicos">Serviços Gerais</option>
+                                <option value="outro">Outro</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="responsavel">Nome do Responsável *</label>
+                            <input type="text" id="responsavel" name="responsavel" placeholder="Seu nome" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="telefoneComercial">Telefone / WhatsApp *</label>
+                            <input type="tel" id="telefoneComercial" name="telefoneComercial" placeholder="(16) 99999-9999" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="emailComercial">Email Corporativo *</label>
+                        <input type="email" id="emailComercial" name="emailComercial" placeholder="contato@suaempresa.com.br" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="tipoParceria">Qual é o seu interesse principal? *</label>
+                        <select id="tipoParceria" name="tipoParceria" required>
+                            <option value="">Selecione...</option>
+                            <option value="patrocinio_site">Banner e Patrocínio no Site</option>
+                            <option value="destaque_eventos">Destacar meus Eventos</option>
+                            <option value="parceria_divulgacao">Parceria de Divulgação Mútua</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="mensagem">Mensagem Adicional (Opcional)</label>
+                        <textarea id="mensagem" name="mensagem" placeholder="Conte um pouco sobre sua empresa e o que espera da parceria..."></textarea>
+                    </div>
+
+                    <button type="submit" class="btn" style="width: 100%; font-size: 1.1rem; padding: 1rem;">
+                        <i class="fas fa-paper-plane"></i> Enviar Solicitação
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer, Botões, VLibras, Google Translate, Theme Toggle permanecem iguais -->
+
+    <!-- Script do Cadastro de Parceiro -->
+    <script>
+        const partnerForm = document.getElementById('partnerForm');
+
+        partnerForm.addEventListener('submit', async function(event){
+            event.preventDefault();
+
+            const empresaNome = document.getElementById('empresaNome').value;
+            const cnpj = document.getElementById('cnpj').value;
+            const areaAtuacao = document.getElementById('areaAtuacao').value;
+            const responsavel = document.getElementById('responsavel').value;
+            const telefoneComercial = document.getElementById('telefoneComercial').value;
+            const emailComercial = document.getElementById('emailComercial').value;
+            const tipoParceria = document.getElementById('tipoParceria').value;
+            const mensagem = document.getElementById('mensagem').value;
+
+            const dados = { empresaNome, cnpj, areaAtuacao, responsavel, telefoneComercial, emailComercial, tipoParceria, mensagem };
+
+            try {
+                // Substitua 'URL_API_PARCEIRO' pelo endpoint real da sua API
+                const response = await fetch('URL_API_PARCEIRO', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(dados)
+                });
+
+                const resultado = await response.json();
+
+                if(resultado.success){
+                    alert('Cadastro de parceiro realizado com sucesso!');
+                    partnerForm.reset();
+                } else if(resultado.exists){
+                    alert('Parceiro já existente!');
+                } else {
+                    alert('Erro ao cadastrar parceiro. Tente novamente.');
+                }
+
+            } catch(error){
+                console.error(error);
+                alert('Erro de conexão com o servidor.');
+            }
+        });
+    </script>
+    <script>
+function toggleProfileMenu() {
+    document.getElementById("profileDropdown").classList.toggle("show");
+}
+
+document.addEventListener("click", function(e) {
+    const menu = document.querySelector(".user-profile-menu");
+
+    if (menu && !menu.contains(e.target)) {
+        document.getElementById("profileDropdown").classList.remove("show");
+    }
+});
+</script>
+</body>
+</html>

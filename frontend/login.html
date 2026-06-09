@@ -1,0 +1,282 @@
+<!DOCTYPE html> 
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Cadastro de Usuário - Rota do Rolê</title>
+
+    <!-- FONT AWESOME -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/style.css">
+
+    <!-- ESTILO COMPLEMENTAR LOCAL PARA ANIMAÇÃO DO CNPJ -->
+    <style>
+        .fade-in-field {
+            display: block;
+            animation: fadeIn 0.4s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ELEMENTO DO GOOGLE TRANSLATE (Mantido oculto como na Home) -->
+    <div id="google_translate_element" style="display:none;"></div>
+
+    <!-- HEADER -->
+    <header>
+        <div class="header-container">
+            <a href="index.html" class="logo">
+                <i class="fas fa-map-marker-alt"></i>
+                Rota do Rolê
+            </a>
+
+            <nav>
+                <ul>
+                    <li><a href="index.html">Início</a></li>
+                    <li><a href="eventos.html">Eventos</a></li>
+                    <li><a href="cadastro.html">Cadastrar Evento</a></li>
+                    <li><a href="login.html">Usuario</a></li>
+                </ul>
+
+                <button id="themeToggle" title="Alternar Modo Escuro">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- CADASTRO -->
+    <section id="cadastroUsuario">
+        <div class="container">
+            <div class="title-area">
+                <h1>Cadastro de Usuário</h1>
+                <div class="line"></div>
+                <p>Crie sua conta para acessar todos os recursos da plataforma.</p>
+            </div>
+
+            <div class="form-box">
+                <h2>👤 Informações de Acesso</h2>
+
+                <form id="formCadastroUsuario">
+                    
+                    <!-- NOVO CAMPO: SELEÇÃO DE TIPO DE CONTA -->
+                    <div class="input-group">
+                        <label for="tipoConta">Tipo de Conta *</label>
+                        <select id="tipoConta" onchange="mudeTipoConta()" required style="width: 100%; padding: 0.8rem; border-radius: 8px; border: 1px solid #ccc; background: var(--card-bg); color: var(--text-color);">
+                            <option value="usuario">Apenas Usuário (Pessoa Física)</option>
+                            <option value="cnpj">Empresa / Organizador (CNPJ)</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Nome Completo *</label>
+                        <input type="text" required>
+                    </div>
+
+                    <!-- CONTAINER DO CNPJ (OCULTO POR PADRÃO) -->
+                    <div class="input-group" id="wrapper-cnpj" style="display: none;">
+                        <label for="cnpj">CNPJ *</label>
+                        <input type="text" id="cnpj" placeholder="00.000.000/0000-00">
+                    </div>
+
+                    <div class="input-group">
+                        <label>E-mail *</label>
+                        <input type="email" required>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Senha *</label>
+                        <input type="password" required>
+                    </div>
+
+                    <button type="submit" class="submit-btn">
+                        Criar Conta
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- BOTÃO TRADUÇÃO -->
+    <button id="btn-traducao" title="Traduzir página">
+        <i class="fas fa-language"></i>
+    </button>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Apoio Institucional</h4>
+                    <div class="fatec-banner">
+                        <a href="https://fatectq.cps.sp.gov.br/" target="_blank" rel="noopener noreferrer">
+                            <img src="img/Fatec_Taquaritinga_Logo.png" alt="Logo Fatec Taquaritinga" style="max-height: 40px;">
+                        </a>
+                    </div>
+                    <p style="margin-top: 1rem; font-size: 0.9rem;">Projeto acadêmico desenvolvido por alunos da Fatec Taquaritinga.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Links Úteis</h4>
+                    <ul>
+                        <li><a href="eventos.html">Eventos</a></li>
+                        <li><a href="cadastro.html">Cadastrar Evento</a></li>
+                        <li><a href="parceria.html">Seja um Patrocinador</a></li>
+                        <li><a href="nos.html">Sobre Nós</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Contato</h4>
+                    <ul>
+                        <li><a href="mailto:contato@rotadorole.com">contato@rotadorole.com</a></li>
+                        <li><a href="tel:+5511999999999">(11) 99999-9999</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Rota do Rolê. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- VLIBRAS -->
+    <div vw class="enabled">
+        <div vw-access-button class="active"></div>
+        <div vw-plugin-wrapper>
+            <div class="vw-plugin-top-wrapper"></div>
+        </div>
+    </div>
+
+    <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+    <script>
+        new window.VLibras.Widget('https://vlibras.gov.br/app');
+    </script>
+
+    <!-- LÓGICA EXIBIR/OCULTAR CNPJ -->
+    <script>
+        function mudeTipoConta() {
+            const tipoConta = document.getElementById("tipoConta").value;
+            const wrapperCnpj = document.getElementById("wrapper-cnpj");
+            const inputCnpj = document.getElementById("cnpj");
+
+            if (tipoConta === "cnpj") {
+                wrapperCnpj.style.display = "block";
+                wrapperCnpj.classList.add("fade-in-field");
+                inputCnpj.setAttribute("required", "required");
+            } else {
+                wrapperCnpj.style.display = "none";
+                wrapperCnpj.classList.remove("fade-in-field");
+                inputCnpj.removeAttribute("required");
+                inputCnpj.value = ""; 
+            }
+        }
+    </script>
+
+    <!-- SCRIPT DE CADASTRO COM MENSAGENS -->
+    <script>
+        const form = document.getElementById('formCadastroUsuario');
+
+        form.addEventListener('submit', async function (event) {
+            event.preventDefault();
+
+            const tipoConta = document.getElementById('tipoConta').value;
+            const nome = form.querySelector('input[type="text"]').value;
+            const email = form.querySelector('input[type="email"]').value;
+            const senha = form.querySelector('input[type="password"]').value;
+            const cnpjInput = document.getElementById('cnpj');
+            const cnpj = cnpjInput ? cnpjInput.value : '';
+
+            const dados = { tipoConta, nome, email, senha, cnpj };
+
+            try {
+                // Substitua 'URL_API' pelo endpoint real da sua API
+                const response = await fetch('URL_API', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(dados)
+                });
+
+                const resultado = await response.json();
+
+                if (resultado.success) {
+                    alert('Cadastro realizado com sucesso!');
+                    form.reset();
+                    mudeTipoConta();
+                } else if (resultado.exists) {
+                    alert('Usuário já cadastrado!');
+                } else {
+                    alert('Erro ao cadastrar. Tente novamente.');
+                }
+            } catch (error) {
+                console.error(error);
+                alert('Erro de conexão com o servidor.');
+            }
+        });
+    </script>
+
+    <!-- TEMA -->
+    <script>
+        const themeToggle = document.getElementById("themeToggle");
+        const savedTheme = localStorage.getItem("theme");
+
+        if (savedTheme) {
+            document.documentElement.setAttribute("data-theme", savedTheme);
+        }
+
+        themeToggle.addEventListener("click", () => {
+            const currentTheme = document.documentElement.getAttribute("data-theme");
+            if (currentTheme === "dark") {
+                document.documentElement.setAttribute("data-theme", "light");
+                localStorage.setItem("theme", "light");
+            } else {
+                document.documentElement.setAttribute("data-theme", "dark");
+                localStorage.setItem("theme", "dark");
+            }
+        });
+    </script>
+
+    <!-- GOOGLE TRANSLATE -->
+    <script>
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement(
+                {
+                    pageLanguage: 'pt',
+                    includedLanguages: 'pt,en,es',
+                    autoDisplay: false
+                },
+                'google_translate_element'
+            );
+        }
+    </script>
+    <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const btnTraducao = document.getElementById("btn-traducao");
+            btnTraducao.addEventListener("click", function () {
+                const combo = document.querySelector(".goog-te-combo");
+                if (combo) {
+                    if (combo.value === "en") {
+                        combo.value = "pt";
+                    } else {
+                        combo.value = "en";
+                    }
+                    combo.dispatchEvent(new Event("change"));
+                } else {
+                    alert("Tradutor ainda não carregou. Aguarde alguns segundos e tente novamente.");
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>

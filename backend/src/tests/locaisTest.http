@@ -1,0 +1,37 @@
+# url ou dominio
+@URL = http://localhost
+# Porta do servidor
+@PORT = 3600
+# endpoint ou rota do teste
+@ENDPOINT = locais
+# uri - rota final do teste
+@URI = {{URL}}:{{PORT}}/{{ENDPOINT}}
+
+
+GET {{URI}}
+###
+GET {{URI}}/5
+
+###
+POST {{URI}}
+Content-Type: application/json; charset=utf-8
+
+  {
+      "localnome": "Fatec",
+      "endereco": "Av. Dr. Flávio Henrique Lemos 585 (Portal Itamaracá), Taquaritinga-SP, 15906-522"
+    
+    }
+
+###
+PUT {{URI}}/2
+Content-Type: application/json; charset=utf-8
+
+  {
+      "localnome": "Ginásio",
+      "endereco": "Ginásio Poliesportivo de Taquaritinga"
+    
+  }
+
+
+###
+DELETE {{URI}}/1

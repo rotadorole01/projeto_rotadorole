@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Administrativo - Rota do Rolê</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header style="background: var(--dark-text);">
+        <div class="header-container">
+            <a href="index.html" class="logo">
+                <i class="fas fa-cogs"></i>
+                Rota do Rolê | Admin
+            </a>
+            <nav>
+                <ul>
+                    <li><a href="index.html" target="_blank">Ver Site</a></li>
+                    <li><a href="#" style="color: var(--accent-color);">Sair</a></li>
+                </ul>
+                <button id="themeToggle" title="Alternar Modo Escuro">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <section id="admin-dashboard" style="margin-top: 2rem;">
+        <div class="container">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                <h2 style="margin: 0;">Gerenciar Locais e Eventos</h2>
+                <button class="btn" onclick="adminManager.openModal()">
+                    <i class="fas fa-plus"></i> Novo Cadastro
+                </button>
+            </div>
+
+            <div class="admin-table-container">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Imagem</th>
+                            <th>Título</th>
+                            <th>Categoria</th>
+                            <th>Local</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="adminTableBody">
+                        <tr>
+                            <td>#001</td>
+                            <td><img src="https://images.unsplash.com/photo-1498038432885-c6f3f1b912ee?auto=format&fit=crop&w=100&q=80" alt="Bar" class="admin-thumb"></td>
+                            <td>Noite do Rock no Bar do Zé</td>
+                            <td><span class="badge">Bares</span></td>
+                            <td>Taquaritinga, SP</td>
+                            <td>
+                                <button class="action-btn edit" onclick="adminManager.editItem(1)" title="Editar"><i class="fas fa-edit"></i></button>
+                                <button class="action-btn delete" onclick="adminManager.deleteItem(1)" title="Excluir"><i class="fas fa-trash"></i></button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <div id="adminModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Cadastrar Novo Local</h3>
+                <button class="close-modal" onclick="adminManager.closeModal()">&times;</button>
+            </div>
+            
+            <form id="adminForm" onsubmit="adminManager.saveItem(event)">
+                <input type="hidden" id="itemId">
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="adminTitulo">Nome do Local / Evento *</label>
+                        <input type="text" id="adminTitulo" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="adminCategoria">Categoria *</label>
+                        <select id="adminCategoria" required>
+                            <option value="shows">Shows</option>
+                            <option value="bares">Bares</option>
+                            <option value="restaurantes">Restaurantes</option>
+                            <option value="cultural">Cultural</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="adminLocal">Endereço / Cidade *</label>
+                    <input type="text" id="adminLocal" placeholder="Ex: Centro, Taquaritinga" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="adminFoto">Upload de Foto (Capa) *</label>
+                    <div class="upload-area">
+                        <input type="file" id="adminFoto" accept="image/*" onchange="adminManager.previewImage(this)">
+                        <div id="adminImagePreview" class="image-preview-box">
+                            <i class="fas fa-cloud-upload-alt fa-3x" style="color: var(--border-color); margin-bottom: 10px;"></i>
+                            <p>Clique ou arraste uma imagem aqui</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" onclick="adminManager.closeModal()">Cancelar</button>
+                    <button type="submit" class="btn"><i class="fas fa-save"></i> Salvar Dados</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+    const themeToggle =
+    document.getElementById("themeToggle");
+
+/* carregar tema salvo */
+    const savedTheme =
+    localStorage.getItem("theme");
+
+        if(savedTheme){
+        document.documentElement
+        .setAttribute("data-theme", savedTheme);
+    }
+
+/* alternar tema */
+    themeToggle.addEventListener("click", () => {
+
+    const currentTheme =
+    document.documentElement
+    .getAttribute("data-theme");
+
+    if(currentTheme === "dark"){
+
+        document.documentElement
+        .setAttribute("data-theme","light");
+
+        localStorage.setItem("theme","light");
+
+    }
+    else{
+        document.documentElement
+        .setAttribute("data-theme","dark");
+        localStorage.setItem("theme","dark");
+    }
+  }
+);
+
+    </script>
+
+    <script src="js/script.js"></script>
+</body>
+</html>

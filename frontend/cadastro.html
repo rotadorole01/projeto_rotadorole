@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastrar Evento - Rota do Rolê</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+      <div id="google_translate_element"></div>
+    <header>
+        <div class="header-container">
+            <a href="index.html" class="logo">
+                <i class="fas fa-map-marker-alt"></i>
+                Rota do Rolê
+            </a>
+            <nav>
+                <!-- <ul>
+                    <li><a href="index.html">Início</a></li>
+                    <li><a href="eventos.html">Eventos</a></li>
+                    <li><a href="cadastro.html">Cadastrar Evento</a></li>
+                    <li><a href="login.html">Usuario</a></li>
+                </ul>
+                <button id="themeToggle" title="Alternar Modo Escuro">
+                    <i class="fas fa-moon"></i>
+                </button> -->
+                <nav style="display: flex; align-items: center; gap: 2rem;">
+    <ul style="list-style: none; display: flex; gap: 2rem; margin: 0; align-items: center;">
+        <li><a href="index.html">Início</a></li>
+        <li><a href="eventos.html">Eventos</a></li>
+        <li><a href="cadastro.html">Cadastrar Evento</a></li>
+    </ul>
+
+    <div class="user-profile-menu">
+        <button onclick="toggleProfileMenu()" class="profile-menu-btn" id="profileMenuBtn">
+            <i class="fas fa-user-circle"></i>
+            <span>Minha Conta</span>
+            <i class="fas fa-caret-down"></i>
+        </button>
+
+        <div id="profileDropdown" class="profile-dropdown">
+            <a href="perfil.html"><i class="fas fa-id-card"></i> Meu Perfil</a>
+            <a href="meus-eventos.html"><i class="fas fa-calendar-check"></i> Meus Eventos</a>
+            <hr>
+            <a href="login.html"><i class="fas fa-user-plus"></i> Criar Conta</a>
+            <a href="entrar.html"><i class="fas fa-sign-in-alt"></i> Trocar Conta</a>
+            <hr>
+            <a href="index.html" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Sair</a>
+        </div>
+    </div>
+
+    <button id="themeToggle" title="Alternar Modo Escuro">
+        <i class="fas fa-moon"></i>
+    </button>
+</nav>
+            </nav>
+        </div>
+    </header>
+
+    <section id="cadastro">
+        <div class="container">
+            <h2>Cadastrar um Novo Evento</h2>
+            <p style="text-align: center; color: var(--dark-text); opacity: 0.8; margin-bottom: 2rem; font-size: 1.05rem;">
+                Compartilhe seu evento com a comunidade! Preencha os dados abaixo e seu evento será publicado em breve após análise.
+            </p>
+
+            <div style="max-width: 700px; margin: 0 auto; background: var(--card-bg); padding: 2rem; border-radius: 12px; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);">
+                <form id="eventForm">
+                    <fieldset style="border: none; padding: 0; margin-bottom: 2rem;">
+                        <legend style="font-size: 1.2rem; font-weight: bold; color: var(--secondary-color); margin-bottom: 1rem;">
+                            <i class="fas fa-info-circle"></i> Informações Básicas
+                        </legend>
+
+                        <div class="form-group">
+                            <label for="titulo">Título do Evento *</label>
+                            <input type="text" id="titulo" name="titulo" placeholder="Ex: Festival de Jazz na Praça" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="categoria">Categoria *</label>
+                            <select id="categoria" name="categoria" required>
+                                <option value="">Selecione uma categoria</option>
+                                <option value="shows">Shows</option>
+                                <option value="bares">Bares</option>
+                                <option value="restaurantes">Restaurantes</option>
+                                <option value="cultural">Cultural</option>
+                                <option value="esportes">Esportes</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="descricao">Descrição do Evento *</label>
+                            <textarea id="descricao" name="descricao" placeholder="Descreva seu evento em detalhes. Quanto mais informações, melhor!" required></textarea>
+                        </div>
+                    </fieldset>
+
+                    <fieldset style="border: none; padding: 0; margin-bottom: 2rem;">
+                        <legend style="font-size: 1.2rem; font-weight: bold; color: var(--secondary-color); margin-bottom: 1rem;">
+                            <i class="fas fa-calendar-alt"></i> Data e Hora
+                        </legend>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="data">Data do Evento *</label>
+                                <input type="date" id="data" name="data" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="horario">Horário de Início *</label>
+                                <input type="time" id="horario" name="horario" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="duracao">Duração Estimada (em horas)</label>
+                            <input type="number" id="duracao" name="duracao" placeholder="Ex: 2" min="0.5" step="0.5">
+                        </div>
+                    </fieldset>
+
+                    <fieldset style="border: none; padding: 0; margin-bottom: 2rem;">
+                        <legend style="font-size: 1.2rem; font-weight: bold; color: var(--secondary-color); margin-bottom: 1rem;">
+                            <i class="fas fa-map-marker-alt"></i> Localização
+                        </legend>
+
+                        <div class="form-group">
+                            <label for="localizacao">Local do Evento *</label>
+                            <input type="text" id="localizacao" name="localizacao" placeholder="Ex: Praça Central, Rua das Flores, 123" required>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="cidade">Cidade *</label>
+                                <input type="text" id="cidade" name="cidade" placeholder="Ex: Taquaritinga" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="bairro">Bairro</label>
+                                <input type="text" id="bairro" name="bairro" placeholder="Ex: Centro">
+                            </div>
+                        </div>
+                    </fieldset>
+
+                    <fieldset style="border: none; padding: 0; margin-bottom: 2rem;">
+                        <legend style="font-size: 1.2rem; font-weight: bold; color: var(--secondary-color); margin-bottom: 1rem;">
+                            <i class="fas fa-plus-circle"></i> Informações Adicionais
+                        </legend>
+
+                        <div class="form-group">
+                            <label for="ingresso">Tipo de Entrada *</label>
+                            <select id="ingresso" name="ingresso" required>
+                                <option value="">Selecione o tipo</option>
+                                <option value="gratuito">Gratuito</option>
+                                <option value="pago">Pago</option>
+                                <option value="meia">Meia Entrada</option>
+                                <option value="convite">Apenas com Convite</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="preco">Valor do Ingresso (se aplicável)</label>
+                            <input type="number" id="preco" name="preco" placeholder="Ex: 50.00" min="0" step="0.01">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="imagem">Imagem do Evento *</label>
+                            <div style="display: flex; flex-direction: column; gap: 10px;">
+                                <input type="file" id="imagem" name="imagem" accept="image/*" required style="padding: 10px; border: 2px dashed var(--border-color); background: var(--light-bg); cursor: pointer;">
+                                <small style="color: var(--dark-text); opacity: 0.7;">Formatos aceitos: JPG, PNG. Tamanho máx: 2MB.</small>
+                                <div id="imagePreview" style="display: none; margin-top: 10px;">
+                                    <img src="" alt="Preview" style="max-width: 100%; height: 200px; object-fit: cover; border-radius: 8px;">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="link">Link para Mais Informações</label>
+                            <input type="url" id="link" name="link" placeholder="https://www.seusite.com">
+                        </div>
+                    </fieldset>
+
+                    <fieldset style="border: none; padding: 0; margin-bottom: 2rem;">
+                        <legend style="font-size: 1.2rem; font-weight: bold; color: var(--secondary-color); margin-bottom: 1rem;">
+                            <i class="fas fa-user"></i> Seus Dados
+                        </legend>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="nome">Nome Completo *</label>
+                                <input type="text" id="nome" name="nome" placeholder="Seu nome" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="email">Email *</label>
+                                <input type="email" id="email" name="email" placeholder="seu@email.com" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="telefone">Telefone</label>
+                            <input type="tel" id="telefone" name="telefone" placeholder="(16) 99999-9999">
+                        </div>
+                    </fieldset>
+
+                    <div class="form-group" style="margin-bottom: 2rem;">
+                        <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+
+    <input type="checkbox" id="termos" name="termos" required>
+
+    <label for="termos" style="font-weight: normal; color: var(--dark-text);">
+        Concordo com os
+        <a href="termos.html" target="_blank"
+           style="color: var(--secondary-color); font-weight: bold; text-decoration: underline;">
+            termos e condições da Rota do Rolê
+        </a>
+        *
+    </label>
+
+</div>
+                    </div>
+
+                    <div style="display: flex; gap: 1rem; justify-content: center;">
+                        <button type="submit" class="btn" style="flex: 1;">
+                            <i class="fas fa-check"></i> Cadastrar Evento
+                        </button>
+                        <a href="index.html" class="btn btn-outline" style="flex: 1; text-align: center;">
+                            <i class="fas fa-times"></i> Cancelar
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <button id="btn-traducao" title="Traduzir página">
+        <i class="fas fa-language"></i>
+    </button>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Apoio Institucional</h4>
+                    <div class="fatec-banner">
+                        <a href="https://fatectq.cps.sp.gov.br/" target="_blank" rel="noopener noreferrer">
+                            <img src="img/Fatec_Taquaritinga_Logo.png" alt="Logo Fatec Taquaritinga" style="max-height: 40px;">
+                        </a>
+                    </div>
+                    <p style="margin-top: 1rem; font-size: 0.9rem;">Projeto acadêmico desenvolvido por alunos da Fatec Taquaritinga.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Links Úteis</h4>
+                    <ul>
+                        <li><a href="eventos.html">Eventos</a></li>
+                        <li><a href="cadastro.html">Cadastrar Evento</a></li>
+                        <li><a href="parceria.html">Seja um Patrocinador</a></li>
+                        <li><a href="nos.html">Sobre Nós</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Contato</h4>
+                    <ul>
+                        <li><a href="mailto:contato@rotadorole.com">contato@rotadorole.com</a></li>
+                        <li><a href="tel:+5511999999999">(11) 99999-9999</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Rota do Rolê. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <div vw class="enabled">
+        <div vw-access-button class="active"></div>
+        <div vw-plugin-wrapper>
+            <div class="vw-plugin-top-wrapper"></div>
+        </div>
+    </div>
+
+    <script>
+    const themeToggle =
+    document.getElementById("themeToggle");
+
+/* carregar tema salvo */
+    const savedTheme =
+    localStorage.getItem("theme");
+
+    if(savedTheme){
+    document.documentElement
+    .setAttribute("data-theme", savedTheme);
+  }
+
+/* alternar tema */
+    themeToggle.addEventListener("click", () => {
+
+    const currentTheme =
+    document.documentElement
+    .getAttribute("data-theme");
+
+    if(currentTheme === "dark"){
+
+        document.documentElement
+        .setAttribute("data-theme","light");
+
+        localStorage.setItem("theme","light");
+
+    } 
+    else{
+
+        document.documentElement
+        .setAttribute("data-theme","dark");
+
+        localStorage.setItem("theme","dark");
+    }
+  }
+);
+
+</script>
+    <script type="text/javascript">
+function googleTranslateElementInit() {
+    new google.translate.TranslateElement(
+        {
+            pageLanguage: 'pt',
+            autoDisplay: false
+        },
+        'google_translate_element'
+    );
+}
+</script>
+
+<script type="text/javascript"
+src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit">
+</script>
+    <script src="js/apieventos.js"></script>
+
+    <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+    <script>
+        new window.VLibras.Widget('https://vlibras.gov.br/app');
+    </script>
+
+ 
+    <script>
+function toggleProfileMenu() {
+    document.getElementById("profileDropdown").classList.toggle("show");
+}
+
+document.addEventListener("click", function(e) {
+    const menu = document.querySelector(".user-profile-menu");
+
+    if (menu && !menu.contains(e.target)) {
+        document.getElementById("profileDropdown").classList.remove("show");
+    }
+});
+</script>
+</body>
+</html>

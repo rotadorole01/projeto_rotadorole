@@ -1,0 +1,63 @@
+# url ou dominio
+@URL = http://localhost
+# Porta do servidor
+@PORT = 3600
+# endpoint ou rota do teste
+@ENDPOINT = eventos
+# uri - rota final do teste
+@URI = {{URL}}:{{PORT}}/{{ENDPOINT}}
+
+### Buscar todos os eventos (GET)
+GET {{URI}}
+
+### Buscar evento por ID (GET)
+GET {{URI}}/5
+
+### Cadastrar novo evento (POST)
+POST {{URI}}
+Content-Type: application/json; charset=utf-8
+
+{
+  "titulo": "Festival de Jazz na Praça",
+  "horario": "18:00:00",
+  "data": "2026-06-22 18:00:00",
+  "categoria": "Shows",
+  "duracao": 180,
+  "localizacao": "Praça Central",
+  "preco": 0,
+  "ingresso": "Gratuito",
+  "cidade": "Taquaritinga",
+  "bairro": "Centro",
+  "descricao": "Um evento cultural incrível com os melhores músicos da região. Entrada gratuita para todos!",
+  "link": "http://exemplo.com",
+  "nome": "Pedro",
+  "email": "pedro@email.com",
+  "telefone": "16999999999",
+  "imagem": "1.png"
+}
+
+### Atualizar evento (PUT)
+PUT {{URI}}/2
+Content-Type: application/json; charset=utf-8
+
+{
+  "titulo": "Noite de Samba com Raízes",
+  "horario": "20:00:00",
+  "data": "2026-06-23 20:00:00",
+  "categoria": "Shows",
+  "duracao": 120,
+  "localizacao": "Espaço Cultural Downtown",
+  "preco": 15,
+  "ingresso": "Portaria",
+  "cidade": "Taquaritinga",
+  "bairro": "Centro",
+  "descricao": "Samba ao vivo com as melhores escolas da região. Venha dançar e se divertir!",
+  "link": "http://exemplo.com",
+  "nome": "Pedro",
+  "email": "pedro@email.com",
+  "telefone": "16999999999",
+  "imagem": "2.png"
+}
+
+### Deletar evento (DELETE)
+DELETE {{URI}}/3
