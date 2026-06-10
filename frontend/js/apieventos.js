@@ -93,12 +93,12 @@ eventForm.addEventListener('submit', async function(e) {
         } else if (resultado.exists) {
             alert('Evento já existente!');
         } else {
-            alert('Erro ao cadastrar evento. Tente novamente.');
+            //alert('Erro ao cadastrar evento. Tente novamente.');
         }
 
     } catch (error) {
         console.error("Erro na conexão com o servidor:", error);
-        alert('Erro de conexão com o servidor.');
+        //alert('Erro de conexão com o servidor.');
     }
 });
 

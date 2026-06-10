@@ -193,49 +193,64 @@
     <!-- Footer, Botões, VLibras, Google Translate, Theme Toggle permanecem iguais -->
 
     <!-- Script do Cadastro de Parceiro -->
-    <script>
-        const partnerForm = document.getElementById('partnerForm');
+<script>
+    const partnerForm = document.getElementById('partnerForm');
 
-        partnerForm.addEventListener('submit', async function(event){
-            event.preventDefault();
+    partnerForm.addEventListener('submit', async function(event){
+        event.preventDefault();
 
-            const empresaNome = document.getElementById('empresaNome').value;
-            const cnpj = document.getElementById('cnpj').value;
-            const areaAtuacao = document.getElementById('areaAtuacao').value;
-            const responsavel = document.getElementById('responsavel').value;
-            const telefoneComercial = document.getElementById('telefoneComercial').value;
-            const emailComercial = document.getElementById('emailComercial').value;
-            const tipoParceria = document.getElementById('tipoParceria').value;
-            const mensagem = document.getElementById('mensagem').value;
+        // 1. Captura os valores dos inputs do HTML usando os IDs corretos
+        const empresaNome = document.getElementById('empresaNome').value;
+        const cnpj = document.getElementById('cnpj').value;
+        const areaAtuacao = document.getElementById('areaAtuacao').value;
+        const responsavel = document.getElementById('responsavel').value;
+        const telefoneComercial = document.getElementById('telefoneComercial').value;
+        const emailComercial = document.getElementById('emailComercial').value;
+        const tipoParceria = document.getElementById('tipoParceria').value;
+        const mensagem = document.getElementById('mensagem').value;
 
-            const dados = { empresaNome, cnpj, areaAtuacao, responsavel, telefoneComercial, emailComercial, tipoParceria, mensagem };
+        // 2. Mapeia os dados estruturando as chaves com os nomes exatos esperados pela tabela do banco
+        const dados = { 
+            name: responsavel, 
+            nameempresa: empresaNome, 
+            cnpj: cnpj, 
+            telefone: telefoneComercial, 
+            emailcorporativo: emailComercial, 
+            interesse: tipoParceria, 
+            area: areaAtuacao, 
+            mensagem: mensagem 
+        };
 
-            try {
-                // Substitua 'URL_API_PARCEIRO' pelo endpoint real da sua API
-                const response = await fetch('URL_API_PARCEIRO', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(dados)
-                });
+        try {
+            // 3. Conecta com a porta 3600 do seu servidor backend
+            const response = await fetch('http://localhost:3600/parceiros', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(dados)
+            });
 
-                const resultado = await response.json();
+            const resultado = await response.json();
 
-                if(resultado.success){
-                    alert('Cadastro de parceiro realizado com sucesso!');
-                    partnerForm.reset();
-                } else if(resultado.exists){
-                    alert('Parceiro já existente!');
-                } else {
-                    alert('Erro ao cadastrar parceiro. Tente novamente.');
-                }
-
-            } catch(error){
-                console.error(error);
-                alert('Erro de conexão com o servidor.');
+            if(resultado.success){
+                alert('Cadastro de parceiro realizado com sucesso!');
+                partnerForm.reset();
+            } else if(resultado.exists){
+                alert('Parceiro já existente!');
+            } else {
+                alert('Erro ao cadastrar parceiro: ' + (resultado.message || 'Tente novamente.'));
             }
-        });
-    </script>
-    <script>
+
+        } catch(error){
+            console.error("Erro na comunicação com a API:", error);
+            alert('Erro de conexão com o servidor. Garanta que o backend está ativo na porta 3600.');
+        }
+    });
+</script>
+
+<script src="js/api.parceiros.js"></script>
+
+<script>
+// --- Controle do Menu Dropdown de Perfil ---
 function toggleProfileMenu() {
     document.getElementById("profileDropdown").classList.toggle("show");
 }
@@ -247,6 +262,7 @@ document.addEventListener("click", function(e) {
         document.getElementById("profileDropdown").classList.remove("show");
     }
 });
+
 </script>
 </body>
 </html>

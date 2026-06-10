@@ -91,6 +91,70 @@ app.post('/eventos', async (req, res) => {
     }
 });
 
+// -----------------------------------------------------
+// [NOVA] ROTA POST PATROCINADOR - SALVAR NO BANCO
+// -----------------------------------------------------
+app.post('/patrocinadores', async (req, res) => {
+    try {
+        const p = req.body;
+
+        if (!p.titulo || !p.descricao || !p.imagem) {
+            return res.status(400).json({ success: false, message: "Campos obrigatórios ausentes (titulo, descricao ou imagem)!" });
+        }
+
+        // Query apontando para a tabela nova criada pelo mysqlSchema.js
+        const query = `
+            INSERT INTO patrocinadores_carrossel (titulo, descricao, imagem)
+            VALUES (?, ?, ?)
+        `;
+
+        const params = [p.titulo, p.descricao, p.imagem];
+
+        const resultado = await db.execute(query, params);
+        res.json({ success: true, insertId: resultado.insertId });
+
+    } catch (err) {
+        console.error("Erro ao salvar patrocinador:", err);
+        res.status(500).json({ success: false, message: "Erro ao salvar patrocinador no banco" });
+    }
+});
+
+// -----------------------------------------------------
+// [NOVA] ROTA GET PATROCINADORES - LISTAR PARA O CARROSSEL
+// -----------------------------------------------------
+app.get('/api/patrocinadores', async (req, res) => {
+    try {
+        const query = `SELECT titulo, descricao, imagem FROM patrocinadores_carrossel`;
+        
+        // AJUSTADO: Desestruturando o array retornado para pegar diretamente as linhas do MySQL
+        const [linhas] = await db.execute(query);
+
+        // Garante que o resultado seja tratado como um array válido
+        const patrocinadoresValidos = Array.isArray(linhas) ? linhas : [];
+
+        // Converte o caminho relativo armazenado (/uploads/...) em uma URL completa acessível pelo frontend
+        const patrocinadoresFormatados = patrocinadoresValidos.map(p => {
+            if (!p || !p.imagem) return null;
+
+            const urlImagem = p.imagem.startsWith('http') 
+                ? p.imagem 
+                : `http://localhost:${Port}${p.imagem.startsWith('/') ? '' : '/'}${p.imagem}`;
+
+            return {
+                titulo: p.titulo,
+                descricao: p.descricao,
+                imagem: urlImagem
+            };
+        }).filter(item => item !== null); // Remove registros nulos se houver falhas
+
+        res.json(patrocinadoresFormatados);
+
+    } catch (err) {
+        console.error("Erro ao buscar patrocinadores:", err);
+        res.status(500).json({ success: false, message: "Erro ao buscar patrocinadores no banco" });
+    }
+});
+
 // -------------------
 // START SERVER
 // -------------------

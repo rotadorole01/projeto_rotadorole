@@ -62,6 +62,13 @@ class DatabaseSchemaMysql {
                 email TEXT NOT NULL,
                 password TEXT NOT NULL,
                 validated BIT NOT NULL DEFAULT(0)
+            )`,
+
+            `CREATE TABLE IF NOT EXISTS patrocinadores_carrossel (
+                id INTEGER PRIMARY KEY AUTO_INCREMENT,
+                titulo TEXT NOT NULL,
+                descricao TEXT NOT NULL,
+                imagem TEXT NOT NULL
             )`
 
         ];

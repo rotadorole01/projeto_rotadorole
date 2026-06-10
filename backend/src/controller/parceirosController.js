@@ -1,39 +1,40 @@
-const myModel = require("../model/parceirosModel")
+const myModel = require("../model/parceirosModel");
 
-async function Get(req,res){
+async function Get(req, res) {
      const responseData = await myModel.Get(req);
      return responseData;
 }
 
-async function GetById(req,res){
+async function GetById(req, res) {
   const id = req.params.id;
   const responseData = await myModel.GetById(id);
   return responseData;
 }
 
-function Post(req,res){
+// async e await para esperar a inserção no banco terminar
+async function Post(req, res) {
   const payload = req.body;
-  const responseData = myModel.Post(payload);
+  const responseData = await myModel.Post(payload);
   return responseData;
-   
 }
 
-function Put(req,res){
+// async e await para esperar a atualização terminar
+async function Put(req, res) {
   const id = req.params.id;
   const payload = req.body;
-  const responseData = myModel.Put(payload , id);
+  const responseData = await myModel.Put(payload, id);
   return responseData;
-   
 }
 
-function Delete(req,res){
+// async e await para esperar a exclusão terminar
+async function Delete(req, res) {
   const id = req.params.id;
-  const responseData = myModel.Delete(id);
+  const responseData = await myModel.Delete(id);
   return responseData;
 }
 
-function EndPointName(){
+function EndPointName() {
   return myModel.EndPointName();
 }
 
-module.exports = { Get, GetById, Post, Put, Delete , EndPointName}
+module.exports = { Get, GetById, Post, Put, Delete, EndPointName };

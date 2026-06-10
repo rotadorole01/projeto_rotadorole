@@ -101,8 +101,10 @@
         #partnersCarousel .carousel-item {
             min-width: 100%;
             height: 100%;
-            background-size: cover;
-            background-position: center;
+            background-size: contain; /* AJUSTADO: Garante que a imagem caiba inteira sem cortes */
+            background-position: center; /* AJUSTADO: Centraliza as logos e banners */
+            background-repeat: no-repeat; /* AJUSTADO: Impede repetição indesejada */
+            background-color: #1a1a1a; /* AJUSTADO: Fundo escuro elegante para preencher as laterais */
             position: relative;
             display: none; /* Controlado via JS */
         }
@@ -328,41 +330,12 @@
         <div class="container">
             <h2>Nossos Parceiros</h2>
             <div class="carousel-container" id="partnersCarousel" style="height: 300px;">
-                <div class="carousel-track" id="partnersTrack">
-                    
-                    <div class="carousel-item" style="background-image: url('img/Patrocinadores.webp'); filter: hue-rotate(45deg);">
-                        <div class="carousel-item-overlay">
-                            <h3>Fatec Taquaritinga</h3>
-                            <p>Nosso Patrocinador Educativo e Institucional!</p>
-                        </div>
-                    </div>
-                    
-                    <div class="carousel-item active" style="background-image: url('https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=1200&q=80');">
-                        <div class="carousel-item-overlay">
-                            <h3>Apoio Local - Estabelecimentos</h3>
-                            <p>Conheça nossos parceiros que tornam a Rota do Rolê possível!</p>
-                        </div>
-                    </div>
-
-                    
-
-                    <!-- <div class="carousel-item" style="background-image: url('img/Patrocinadores.webp'); filter: hue-rotate(180deg);">
-                        <div class="carousel-item-overlay">
-                            <h3>Novo Patrocinador da Cidade</h3>
-                            <p>Fortalecendo o comércio, os shows e o turismo regional.</p>
-                        </div>
-                    </div> -->
-
-                </div>
+                <div class="carousel-track" id="partnersTrack"></div>
 
                 <button class="carousel-btn prev" onclick="movePartnerCarousel(-1)">&#10094;</button>
                 <button class="carousel-btn next" onclick="movePartnerCarousel(1)">&#10095;</button>
 
-                <div id="partnersDots">
-                    <span class="dot active" onclick="currentPartnerSlide(0)"></span>
-                    <span class="dot" onclick="currentPartnerSlide(1)"></span>
-                    <!-- <span class="dot" onclick="currentPartnerSlide(2)"></span> -->
-                </div>
+                <div id="partnersDots"></div>
             </div>
             
             <div style="text-align: center; margin-top: 2rem;">
@@ -392,12 +365,14 @@
                 </div>
                 <div class="footer-section">
                     <h4>Links Úteis</h4>
-                    <ul>
-                        <li><a href="eventos.html">Eventos</a></li>
-                        <li><a href="cadastro.html">Cadastrar Evento</a></li>
-                        <li><a href="parceria.html">Seja um Patrocinador</a></li>
-                        <li><a href="nos.html">Sobre Nós</a></li>
-                    </ul>
+                    <nav aria-label="Links úteis do rodapé">
+                        <ul>
+                            <li><a href="eventos.html">Eventos</a></li>
+                            <li><a href="cadastro.html">Cadastrar Evento</a></li>
+                            <li><a href="parceria.html">Seja um Patrocinador</a></li>
+                            <li><a href="nos.html">Sobre Nós</a></li>
+                        </ul>
+                    </nav>
                 </div>
                 <div class="footer-section">
                     <h4>Contato</h4>
@@ -439,21 +414,68 @@
             }
         });
 
-        // --- DINÂMICA DO CARROSSEL DE PATROCINADORES ---
+        // --- DINÂMICA DO CARROSSEL DE PATROCINADORES DINÂMICO ---
         let partnerIndex = 0;
-        const partnerSlides = document.querySelectorAll("#partnersCarousel .carousel-item");
-        const partnerDots = document.querySelectorAll("#partnersDots .dot");
-        let partnerAutoCycle = setInterval(() => movePartnerCarousel(1), 4000); // Roda automático a cada 4 segundos
+        let partnerAutoCycle;
+
+        document.addEventListener("DOMContentLoaded", async () => {
+            const partnersTrack = document.getElementById("partnersTrack");
+            const partnersDots = document.getElementById("partnersDots");
+
+            try {
+                // 1. Puxa os dados da rota correta com o prefixo /api configurado no server.js
+                const response = await fetch("http://localhost:3600/api/patrocinadores");
+                const patrocinadores = await response.json();
+
+                // 2. Se houver registros cadastrados, preenche o HTML
+                if (patrocinadores && patrocinadores.length > 0) {
+                    partnersTrack.innerHTML = ""; 
+                    partnersDots.innerHTML = "";  
+
+                    patrocinadores.forEach((p, index) => {
+                        const slide = document.createElement("div");
+                        slide.className = `carousel-item ${index === 0 ? 'active' : ''}`;
+                        slide.style.backgroundImage = `url('${p.imagem}')`;
+                        
+                        slide.innerHTML = `
+                            <div class="carousel-item-overlay">
+                                <h3>${p.titulo}</h3>
+                                <p>${p.descricao}</p>
+                            </div>
+                        `;
+                        partnersTrack.appendChild(slide);
+
+                        const dot = document.createElement("span");
+                        dot.className = `dot ${index === 0 ? 'active' : ''}`;
+                        dot.onclick = () => currentPartnerSlide(index);
+                        partnersDots.appendChild(dot);
+                    });
+
+                    startPartnerTimer();
+                }
+            } catch (error) {
+                console.error("Erro ao sincronizar carrossel com o banco de dados:", error);
+            }
+        });
 
         function showPartnerSlide(index) {
+            const partnerSlides = document.querySelectorAll("#partnersCarousel .carousel-item");
+            const partnerDots = document.querySelectorAll("#partnersDots .dot");
+
+            if (partnerSlides.length === 0) return;
+
             if (index >= partnerSlides.length) partnerIndex = 0;
             if (index < 0) partnerIndex = partnerSlides.length - 1;
             
             partnerSlides.forEach(slide => slide.classList.remove("active"));
             partnerDots.forEach(dot => dot.classList.remove("active"));
             
-            partnerSlides[partnerIndex].classList.add("active");
-            partnerDots[partnerIndex].classList.add("active");
+            if (partnerSlides[partnerIndex]) {
+                partnerSlides[partnerIndex].classList.add("active");
+            }
+            if (partnerDots[partnerIndex]) {
+                partnerDots[partnerIndex].classList.add("active");
+            }
         }
 
         function movePartnerCarousel(step) {
@@ -468,9 +490,13 @@
             resetPartnerTimer();
         }
 
+        function startPartnerTimer() {
+            partnerAutoCycle = setInterval(() => movePartnerCarousel(1), 4000);
+        }
+
         function resetPartnerTimer() {
             clearInterval(partnerAutoCycle);
-            partnerAutoCycle = setInterval(() => movePartnerCarousel(1), 4000);
+            startPartnerTimer();
         }
 
         // --- GESTÃO DO MODO ESCURO ---
