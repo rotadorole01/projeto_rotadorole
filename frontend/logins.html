@@ -4,35 +4,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Cadastro de Usuário - Rota do Rolê</title>
-
-    <!-- FONT AWESOME -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-    <!-- CSS -->
     <link rel="stylesheet" href="css/style.css">
 
-    <!-- ESTILO COMPLEMENTAR LOCAL PARA ANIMAÇÃO DO CNPJ -->
     <style>
         .fade-in-field {
             display: block;
             animation: fadeIn 0.4s ease forwards;
         }
-
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(-5px); }
             to { opacity: 1; transform: translateY(0); }
+        }
+        .form-footer {
+            text-align: center;
+            margin-top: 25px;
+            font-size: 0.95rem;
+            color: var(--text-color);
+        }
+        .form-footer a {
+            color: var(--primary-color, #ff6b35);
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+        .form-footer a:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
 
 <body>
 
-    <!-- ELEMENTO DO GOOGLE TRANSLATE (Mantido oculto como na Home) -->
     <div id="google_translate_element" style="display:none;"></div>
 
-    <!-- HEADER -->
     <header>
         <div class="header-container">
             <a href="index.html" class="logo">
@@ -45,7 +51,8 @@
                     <li><a href="index.html">Início</a></li>
                     <li><a href="eventos.html">Eventos</a></li>
                     <li><a href="cadastro.html">Cadastrar Evento</a></li>
-                    <li><a href="login.html">Usuario</a></li>
+                    <li><a href="logins.html">Criar Conta</a></li>
+                    <li><a href="entrar.html">Entrar</a></li>
                 </ul>
 
                 <button id="themeToggle" title="Alternar Modo Escuro">
@@ -55,7 +62,6 @@
         </div>
     </header>
 
-    <!-- CADASTRO -->
     <section id="cadastroUsuario">
         <div class="container">
             <div class="title-area">
@@ -67,9 +73,8 @@
             <div class="form-box">
                 <h2>👤 Informações de Acesso</h2>
 
-                <form id="formCadastroUsuario">
+                <form id="eventForm">
                     
-                    <!-- NOVO CAMPO: SELEÇÃO DE TIPO DE CONTA -->
                     <div class="input-group">
                         <label for="tipoConta">Tipo de Conta *</label>
                         <select id="tipoConta" onchange="mudeTipoConta()" required style="width: 100%; padding: 0.8rem; border-radius: 8px; border: 1px solid #ccc; background: var(--card-bg); color: var(--text-color);">
@@ -79,40 +84,41 @@
                     </div>
 
                     <div class="input-group">
-                        <label>Nome Completo *</label>
-                        <input type="text" required>
+                        <label for="nomeCompleto">Nome Completo *</label>
+                        <input id="nomeCompleto" type="text" required>
                     </div>
 
-                    <!-- CONTAINER DO CNPJ (OCULTO POR PADRÃO) -->
                     <div class="input-group" id="wrapper-cnpj" style="display: none;">
                         <label for="cnpj">CNPJ *</label>
                         <input type="text" id="cnpj" placeholder="00.000.000/0000-00">
                     </div>
 
                     <div class="input-group">
-                        <label>E-mail *</label>
-                        <input type="email" required>
+                        <label for="email">E-mail *</label>
+                        <input type="email" id="email" required>
                     </div>
 
                     <div class="input-group">
-                        <label>Senha *</label>
-                        <input type="password" required>
+                        <label for="senha">Senha *</label>
+                        <input id="senha" type="password" required>
                     </div>
 
                     <button type="submit" class="submit-btn">
                         Criar Conta
                     </button>
                 </form>
+
+                <div class="form-footer">
+                    <p>Já tem uma conta? <a href="entrar.html">Entre aqui</a></p>
+                </div>
             </div>
         </div>
     </section>
 
-    <!-- BOTÃO TRADUÇÃO -->
     <button id="btn-traducao" title="Traduzir página">
         <i class="fas fa-language"></i>
     </button>
 
-    <!-- FOOTER -->
     <footer>
         <div class="container">
             <div class="footer-content">
@@ -148,7 +154,6 @@
         </div>
     </footer>
 
-    <!-- VLIBRAS -->
     <div vw class="enabled">
         <div vw-access-button class="active"></div>
         <div vw-plugin-wrapper>
@@ -157,11 +162,8 @@
     </div>
 
     <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
-    <script>
-        new window.VLibras.Widget('https://vlibras.gov.br/app');
-    </script>
+    <script>new window.VLibras.Widget('https://vlibras.gov.br/app');</script>
 
-    <!-- LÓGICA EXIBIR/OCULTAR CNPJ -->
     <script>
         function mudeTipoConta() {
             const tipoConta = document.getElementById("tipoConta").value;
@@ -181,56 +183,10 @@
         }
     </script>
 
-    <!-- SCRIPT DE CADASTRO COM MENSAGENS -->
-    <script>
-        const form = document.getElementById('formCadastroUsuario');
-
-        form.addEventListener('submit', async function (event) {
-            event.preventDefault();
-
-            const tipoConta = document.getElementById('tipoConta').value;
-            const nome = form.querySelector('input[type="text"]').value;
-            const email = form.querySelector('input[type="email"]').value;
-            const senha = form.querySelector('input[type="password"]').value;
-            const cnpjInput = document.getElementById('cnpj');
-            const cnpj = cnpjInput ? cnpjInput.value : '';
-
-            const dados = { tipoConta, nome, email, senha, cnpj };
-
-            try {
-                // Substitua 'URL_API' pelo endpoint real da sua API
-                const response = await fetch('URL_API', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(dados)
-                });
-
-                const resultado = await response.json();
-
-                if (resultado.success) {
-                    alert('Cadastro realizado com sucesso!');
-                    form.reset();
-                    mudeTipoConta();
-                } else if (resultado.exists) {
-                    alert('Usuário já cadastrado!');
-                } else {
-                    alert('Erro ao cadastrar. Tente novamente.');
-                }
-            } catch (error) {
-                console.error(error);
-                alert('Erro de conexão com o servidor.');
-            }
-        });
-    </script>
-
-    <!-- TEMA -->
     <script>
         const themeToggle = document.getElementById("themeToggle");
         const savedTheme = localStorage.getItem("theme");
-
-        if (savedTheme) {
-            document.documentElement.setAttribute("data-theme", savedTheme);
-        }
+        if (savedTheme) document.documentElement.setAttribute("data-theme", savedTheme);
 
         themeToggle.addEventListener("click", () => {
             const currentTheme = document.documentElement.getAttribute("data-theme");
@@ -244,39 +200,6 @@
         });
     </script>
 
-    <!-- GOOGLE TRANSLATE -->
-    <script>
-        function googleTranslateElementInit() {
-            new google.translate.TranslateElement(
-                {
-                    pageLanguage: 'pt',
-                    includedLanguages: 'pt,en,es',
-                    autoDisplay: false
-                },
-                'google_translate_element'
-            );
-        }
-    </script>
-    <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
-
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const btnTraducao = document.getElementById("btn-traducao");
-            btnTraducao.addEventListener("click", function () {
-                const combo = document.querySelector(".goog-te-combo");
-                if (combo) {
-                    if (combo.value === "en") {
-                        combo.value = "pt";
-                    } else {
-                        combo.value = "en";
-                    }
-                    combo.dispatchEvent(new Event("change"));
-                } else {
-                    alert("Tradutor ainda não carregou. Aguarde alguns segundos e tente novamente.");
-                }
-            });
-        });
-    </script>
-
+    <script src="js/api.logins.js"></script>
 </body>
 </html>

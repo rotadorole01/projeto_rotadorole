@@ -108,7 +108,6 @@
 <body>
     <div id="google_translate_element" style="display:none;"></div>
 
-    <!-- HEADER -->
     <header>
         <div class="header-container">
             <a href="index.html" class="logo">
@@ -120,8 +119,8 @@
                     <li><a href="index.html">Início</a></li>
                     <li><a href="eventos.html">Eventos</a></li>
                     <li><a href="cadastro.html">Cadastrar Evento</a></li>
-                    <li><a href="login.html" >Usuario</a></li>
-                    <li><a href="entrar.html">Usuario</a></li>
+                    <li><a href="logins.html">Criar Conta</a></li>
+                    <li><a href="entrar.html">Entrar</a></li>
                 </ul>
                 <button id="themeToggle" title="Alternar Modo Escuro">
                     <i class="fas fa-moon"></i>
@@ -130,7 +129,6 @@
         </div>
     </header>
 
-    <!-- FORMULÁRIO DE LOGIN -->
     <main class="container">
         <div class="login-container">
             <h2 class="login-title">
@@ -138,7 +136,7 @@
             </h2>
             <div class="title-underline"></div>
 
-            <form action="#" method="POST">
+            <form id="loginForm" method="POST">
                 <div class="form-group">
                     <label for="email">E-mail *</label>
                     <input type="email" id="email" name="email" placeholder="Digite seu e-mail cadastrado" required>
@@ -153,17 +151,15 @@
             </form>
 
             <div class="form-footer">
-                <p>Ainda não tem uma conta? <a href="login.html">Cadastre-se aqui</a></p>
+                <p>Ainda não tem uma conta? <a href="logins.html">Cadastre-se aqui</a></p>
             </div>
         </div>
     </main>
 
-    <!-- BOTÃO FLUTUANTE DE TRADUÇÃO -->
     <button id="btn-traducao" title="Traduzir página" style="position: fixed; bottom: 80px; right: 10px; z-index: 9999999; width: 43px; height: 43px; background: #1565c0; color: white; border: none; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.4rem;">
         <i class="fas fa-language"></i>
     </button>
 
-    <!-- FOOTER -->
     <footer>
         <div class="container">
             <div class="footer-content">
@@ -206,7 +202,6 @@
         </div>
     </div>
 
-    <!-- SCRIPTS -->
     <script>
         const themeToggle = document.getElementById("themeToggle");
         const savedTheme = localStorage.getItem("theme");
@@ -239,6 +234,7 @@
     <script>
         new window.VLibras.Widget('https://vlibras.gov.br/app');
     </script>
+    <script src="js/api.logins.js"></script>
     <script src="js/script.js"></script>
 </body>
 </html>

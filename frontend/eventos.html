@@ -16,34 +16,35 @@
                 Rota do Rolê
             </a>
             <nav style="display: flex; align-items: center; gap: 2rem;">
-    <ul style="list-style: none; display: flex; gap: 2rem; margin: 0; align-items: center;">
-        <li><a href="index.html">Início</a></li>
-        <li><a href="eventos.html">Eventos</a></li>
-        <li><a href="cadastro.html">Cadastrar Evento</a></li>
-    </ul>
+                <ul style="list-style: none; display: flex; gap: 2rem; margin: 0; align-items: center;">
+                    <li><a href="index.html">Início</a></li>
+                    <li><a href="eventos.html">Eventos</a></li>
+                    <li><a href="cadastro.html">Cadastrar Evento</a></li>
+                    <li><a href="logins.html">Usuario</a></li>
+                </ul>
 
-    <div class="user-profile-menu">
-        <button onclick="toggleProfileMenu()" class="profile-menu-btn" id="profileMenuBtn">
-            <i class="fas fa-user-circle" style="font-size: 1.5rem; color: var(--accent-color, #f7b801);"></i>
-            <span>Minha Conta</span>
-            <i class="fas fa-caret-down" style="font-size: 0.8rem;"></i>
-        </button>
+            <!--     <div class="user-profile-menu">
+                    <button onclick="toggleProfileMenu()" class="profile-menu-btn" id="profileMenuBtn">
+                        <i class="fas fa-user-circle" style="font-size: 1.5rem; color: var(--accent-color, #f7b801);"></i>
+                        <span>Minha Conta</span>
+                        <i class="fas fa-caret-down" style="font-size: 0.8rem;"></i>
+                    </button>
 
-        <div id="profileDropdown" class="profile-dropdown">
-            <a href="perfil.html"><i class="fas fa-id-card"></i> Meu Perfil</a>
-            <a href="meus-eventos.html"><i class="fas fa-calendar-check"></i> Meus Eventos</a>
-            <hr>
-            <a href="login.html"><i class="fas fa-user-plus"></i> Criar Conta</a>
-            <a href="entrar.html"><i class="fas fa-sign-in-alt"></i> Trocar Conta</a>
-            <hr>
-            <a href="index.html" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Sair</a>
-        </div>
-    </div>
+                   <div id="profileDropdown" class="profile-dropdown">
+                        <a href="perfil.html"><i class="fas fa-id-card"></i> Meu Perfil</a>
+                        <a href="meus-eventos.html"><i class="fas fa-calendar-check"></i> Meus Eventos</a>
+                        <hr>
+                        <a href="login.html"><i class="fas fa-user-plus"></i> Criar Conta</a>
+                        <a href="entrar.html"><i class="fas fa-sign-in-alt"></i> Trocar Conta</a>
+                        <hr>
+                        <a href="index.html" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Sair</a>
+                    </div> 
+                </div> -->
 
-    <button id="themeToggle" title="Alternar Modo Escuro">
-        <i class="fas fa-moon"></i>
-    </button>
-</nav>
+                <button id="themeToggle" title="Alternar Modo Escuro">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </nav>
         </div>
     </header>
 
@@ -65,14 +66,12 @@
             </div>
 
             <div id="fila-container" style="margin: 2rem 0; padding: 1rem; border: 2px solid var(--border-color); border-radius: 10px;">
-    <h3>Fila de Interesse</h3>
-
-    <ul id="fila-lista" class="fila-estilizada"></ul>
-
-    <button onclick="removerPrimeiroEvento()" class="btn">
-        Remover Primeiro da Fila
-    </button>
-</div>
+                <h3>Fila de Interesse</h3>
+                <ul id="fila-lista" class="fila-estilizada"></ul>
+                <button onclick="removerPrimeiroEvento()" class="btn">
+                    Remover Primeiro da Fila
+                </button>
+            </div>
 
             <div class="events-grid" id="eventsGrid">
                 <div class="event-card" data-category="shows">
@@ -90,13 +89,10 @@
                         </div>
                         <p class="event-card-description">Um evento cultural incrível com os melhores músicos da região. Entrada gratuita para todos!</p>
                         <div class="event-card-actions">
-    <a
-        href="#"
-        target="_blank"
-        class="btn btn-small inscrever-btn">
-        Inscrever-se
-    </a>
-</div>
+                            <a href="#" target="_blank" class="btn btn-small inscrever-btn">
+                                Inscrever-se
+                            </a>
+                        </div>
                     </div>
                 </div>
 
@@ -114,11 +110,9 @@
                             <span><i class="fas fa-map-marker-alt"></i> Espaço Cultural Downtown</span>
                         </div>
                         <p class="event-card-description">Samba ao vivo com as melhores escolas da região. Venha dançar e se divertir!</p>
-                        <a href="#"
-   target="_blank"
-   class="btn btn-small inscrever-btn">
-    Inscrever-se
-</a>
+                        <a href="#" target="_blank" class="btn btn-small inscrever-btn">
+                            Inscrever-se
+                        </a>
                     </div>
                 </div>
 
@@ -136,11 +130,9 @@
                             <span><i class="fas fa-map-marker-alt"></i> Arena Eventos</span>
                         </div>
                         <p class="event-card-description">Festival de música eletrônica com os melhores DJs nacionais e internacionais!</p>
-                        <a href="#"
-   target="_blank"
-   class="btn btn-small inscrever-btn">
-    Inscrever-se
-</a>
+                        <a href="#" target="_blank" class="btn btn-small inscrever-btn">
+                            Inscrever-se
+                        </a>
                     </div>
                 </div>
 
@@ -158,11 +150,9 @@
                             <span><i class="fas fa-map-marker-alt"></i> Rua das Flores, 123</span>
                         </div>
                         <p class="event-card-description">As melhores bandas de rock clássico a noite toda. Chopp gelado e muita diversão!</p>
-                        <a href="#"
-   target="_blank"
-   class="btn btn-small inscrever-btn">
-    Inscrever-se
-</a>
+                        <a href="#" target="_blank" class="btn btn-small inscrever-btn">
+                            Inscrever-se
+                        </a>
                     </div>
                 </div>
 
@@ -180,11 +170,9 @@
                             <span><i class="fas fa-map-marker-alt"></i> Restaurante Bella Italia</span>
                         </div>
                         <p class="event-card-description">Venha conhecer os melhores vinhos nacionais e importados com especialistas.</p>
-                        <a href="#"
-   target="_blank"
-   class="btn btn-small inscrever-btn">
-    Inscrever-se
-</a>
+                        <a href="#" target="_blank" class="btn btn-small inscrever-btn">
+                            Inscrever-se
+                        </a>
                     </div>
                 </div>
 
@@ -207,11 +195,9 @@
                             Foco na Prática: Chega de teoria abstrata! O aprendizado acontece por meio da resolução de exercícios passo a passo.<br>
                             Tecnologia e Suporte: Utilização de lousa digital para uma visualização clara e dinâmica, das 19:00 até 22:00.</p>
                         </div>
-                        <a href="https://fatectq.cps.sp.gov.br/curso-de-calculo-reforco-e-aprendizado/"
-   target="_blank"
-   class="btn btn-small inscrever-btn">
-    Inscrever-se
-</a>
+                        <a href="https://fatectq.cps.sp.gov.br/curso-de-calculo-reforco-e-aprendizado/" target="_blank" class="btn btn-small inscrever-btn">
+                            Inscrever-se
+                        </a>
                     </div>
                 </div>
 
@@ -229,16 +215,14 @@
                             <span><i class="fas fa-map-marker-alt"></i> Fatec Taquaritinga, Av. Dr. Flávio Henrique Lemos 585 (Portal Itamaracá), Taquaritinga-SP, 15906-522</span>
                         </div>
                         <p class="event-card-description">Inscrições para o processo seletivo da Fatec, venha fazer seu curso superior gratuito e ficar em outro nível, inscrições abertas do dia 07/04/2026 até as 15hrs de 01/06/2026.</p>
-                        <a href="https://vestibular.fatec.sp.gov.br/home/"
-   target="_blank"
-   class="btn btn-small inscrever-btn">
-    Inscrever-se
-</a>
+                        <a href="https://vestibular.fatec.sp.gov.br/home/" target="_blank" class="btn btn-small inscrever-btn">
+                            Inscrever-se
+                        </a>
                     </div>
                 </div>
 
                 <div class="event-card" data-category="cultural">
-                    <div class="event-card-image" style="background-image: url(img/foto_pizza.jpeg);">
+                    <div class="event-card-image" style="background-image: url('img/foto_pizza.jpeg');">
                         <span class="event-card-badge">Cultural</span>
                     </div>
                     <div class="event-card-content">
@@ -254,11 +238,9 @@
                             <p>Estamos iniciando uma deliciosa promoção para angariar fundos para a melhoria da climatização das salas de aulas da Fatec Taquaritinga!</p>
                             <p>Pedidos: até 01/05/2026 <br> Retirada: 06/05/2026 a 08/05/2026</p>
                         </div>
-                        <a href="#"
-   target="_blank"
-   class="btn btn-small inscrever-btn">
-    Inscrever-se
-</a>
+                        <a href="#" target="_blank" class="btn btn-small inscrever-btn">
+                            Inscrever-se
+                        </a>
                     </div>
                 </div>
 
@@ -276,11 +258,9 @@
                             <span><i class="fas fa-map-marker-alt"></i> Ginásio Poliesportivo de Taquaritinga (SP)</span>
                         </div>
                         <p class="event-card-description">Conta com um projeto social que dá oportunidade para crianças e adolescentes, de 5 a 18 anos, aprenderem karatê de forma gratuita.</p>
-                        <a href="#"
-   target="_blank"
-   class="btn btn-small inscrever-btn">
-    Inscrever-se
-</a>
+                        <a href="#" target="_blank" class="btn btn-small inscrever-btn">
+                            Inscrever-se
+                        </a>
                     </div>
                 </div>
             </div>
@@ -335,7 +315,6 @@
 
     <!-- SCRIPTS JAVASCRIPT CORRIGIDOS E UNIFICADOS -->
     <script>
-        // --- 1. GESTÃO DO MODO ESCURO ---
         const themeToggle = document.getElementById("themeToggle");
         const savedTheme = localStorage.getItem("theme");
 
@@ -354,54 +333,42 @@
             }
         });
 
-        // --- 2. GESTÃO DOS FILTROS CLICÁVEIS (CATEGORIAS) ---
         document.addEventListener("DOMContentLoaded", function () {
             const filterButtons = document.querySelectorAll('.filter-btn');
 
             filterButtons.forEach(button => {
                 button.addEventListener('click', function () {
-                    // Troca a classe active do botão visualmente
                     filterButtons.forEach(btn => btn.classList.remove('active'));
                     this.classList.add('active');
 
                     const selectedCategory = this.getAttribute('data-category').toLowerCase();
-
-                    // CAPTURA ATUALIZADA: Busca todos os cards na tela (estáticos + vindos do banco) no momento do clique!
                     const eventCards = document.querySelectorAll('.event-card');
 
                     eventCards.forEach(card => {
                         const cardCategory = card.getAttribute('data-category').toLowerCase();
-                        
                         if (selectedCategory === 'all' || cardCategory === selectedCategory) {
                             card.style.display = 'block';
                         } else {
                             card.style.display = 'none';
                         }
                     });
-
-                    // Limpa o input de busca textual para evitar conflitos
                     document.getElementById('searchInput').value = '';
                 });
             });
 
-            // Ouvinte para a tecla Enter no campo de pesquisa textual
             const searchInput = document.getElementById('searchInput');
             if (searchInput) {
                 searchInput.addEventListener('keypress', function(e) {
-                    if (e.key === 'Enter') {
-                        searchEvents();
-                    }
+                    if (e.key === 'Enter') { searchEvents(); }
                 });
             }
         });
 
-        // --- 3. SISTEMA DE FILTRO POR PESQUISA DE TEXTO ---
         function searchEvents() {
             const searchInput = document.getElementById('searchInput').value.toLowerCase();
             const eventCards = document.querySelectorAll('.event-card');
             const filterButtons = document.querySelectorAll('.filter-btn');
 
-            // Quando digita algo, reseta os botões de categoria para a posição "Todos"
             filterButtons.forEach(btn => btn.classList.remove('active'));
             const allBtn = document.querySelector('.filter-btn[data-category="all"]');
             if(allBtn) allBtn.classList.add('active');
@@ -418,246 +385,136 @@
             });
         }
     </script>
-
-    <!-- --- 4. APIS DE TRADUÇÃO E ACESSIBILIDADE --- -->
     <script type="text/javascript">
         function googleTranslateElementInit() {
-            new google.translate.TranslateElement(
-                { pageLanguage: 'pt', autoDisplay: false },
-                'google_translate_element'
-            );
+            new google.translate.TranslateElement({ pageLanguage: 'pt', autoDisplay: false }, 'google_translate_element');
         }
     </script>
     <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
-
     <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
-    <script>
-        new window.VLibras.Widget('https://vlibras.gov.br/app');
-    </script>
-
-    <!-- Chamada única para o script externo customizado -->
+    <script>new window.VLibras.Widget('https://vlibras.gov.br/app');</script>
     <script src="js/script.js"></script>
     <script>
-    function toggleProfileMenu() {
-    document.getElementById("profileDropdown")
-        .classList.toggle("show");
-    }
-
-document.addEventListener("click", function(e) {
-    const menu = document.querySelector(".user-profile-menu");
-
-    if (!menu.contains(e.target)) {
-        document.getElementById("profileDropdown")
-            .classList.remove("show");
-    }
-});
-
-// Sistema de Fila que permite adicionar eventos de interesse
-// Exibir os eventos na tela e remover o primeiro evento adicionado
-let filaEventos = [];
-
-function adicionarNaFila(nomeEvento) {
-
-    filaEventos.push(nomeEvento);
-
-    atualizarFila();
-}
-
-function removerPrimeiroEvento() {
-
-    if (filaEventos.length === 0) {
-        alert("A fila está vazia!");
-        return;
-    }
-
-    const removido = filaEventos.shift();
-
-    alert(`Evento removido da fila: ${removido}`);
-
-    atualizarFila();
-}
-
-function atualizarFila() {
-
-    const lista = document.getElementById("fila-lista");
-
-    lista.innerHTML = "";
-
-    filaEventos.forEach((evento, index) => {
-
-        lista.innerHTML += `
-            <li>
-                ${index + 1}º - ${evento}
-            </li>
-        `;
-    });
-}
-
-// Captura o clique no botão de inscrição e adiciona o evento à fila
-document.querySelectorAll('.inscrever-btn').forEach(botao => {
-
-    botao.addEventListener('click', function(event) {
-
-        const card = this.closest('.event-card');
-
-        const nomeEvento =
-            card.querySelector('h3').textContent;
-
-        adicionarNaFila(nomeEvento);
-
-        alert("Evento adicionado à fila!");
-    });
-
-});
-
-// --- 5. INTEGRAÇÃO REAL COM O BANCO DE DADOS (XAMPP / API) ---
-const API_URL = 'http://localhost:3600/eventos';
-const BACKEND_URL = 'http://localhost:3600'; // Para buscar as imagens da pasta uploads
-
-async function carregarEventosDoBanco() {
-    const grid = document.getElementById('eventsGrid');
-    
-    try {
-        const resposta = await fetch(API_URL);
-        if (!resposta.ok) throw new Error(`Erro: ${resposta.status}`);
-        
-        const resultadoGeral = await resposta.json();
-        
-        // --- LINHAS DE TESTE PARA INVESTIGAÇÃO NO CONSOLE ---
-        console.log("=========================================");
-        console.log("O BACKEND RETORNOU ISSO AQUI OPA:", resultadoGeral);
-        console.log("=========================================");
-        
-        // Garante que vamos achar o Array de eventos mesmo se estiver envelopado pelo controller
-        let eventos = [];
-        if (Array.isArray(resultadoGeral)) {
-            eventos = resultadoGeral;
-        } else if (resultadoGeral && Array.isArray(resultadoGeral.data)) {
-            eventos = resultadoGeral.data;
-        } else if (resultadoGeral && Array.isArray(resultadoGeral.rows)) {
-            eventos = resultadoGeral.rows;
-        } else if (resultadoGeral && Array.isArray(resultadoGeral.result)) {
-            eventos = resultadoGeral.result;
-        } else if (resultadoGeral && typeof resultadoGeral === 'object') {
-            // Se o array estiver solto em qualquer outra chave do objeto, tentamos capturar
-            const chaveArray = Object.keys(resultadoGeral).find(key => Array.isArray(resultadoGeral[key]));
-            if (chaveArray) eventos = resultadoGeral[chaveArray];
+        function toggleProfileMenu() {
+            const dropdown = document.getElementById("profileDropdown");
+            dropdown.classList.toggle("show");
+            dropdown.style.display = dropdown.classList.contains("show") ? "block" : "none";
         }
 
-        // Se mesmo assim não achar nada, avisa no console e para
-        if (!eventos || eventos.length === 0) {
-            console.log("Nenhum evento ativo ou lista vazia encontrada no retorno.");
-            return;
+        document.addEventListener("click", function(e) {
+            const menu = document.querySelector(".user-profile-menu");
+            const dropdown = document.getElementById("profileDropdown");
+            if (menu && dropdown && !menu.contains(e.target)) {
+                dropdown.classList.remove("show");
+                dropdown.style.display = "none";
+            }
+        });
+
+        let filaEventos = [];
+        function adicionarNaFila(nomeEvento) { filaEventos.push(nomeEvento); atualizarFila(); }
+        function removerPrimeiroEvento() {
+            if (filaEventos.length === 0) { alert("A fila está vazia!"); return; }
+            const removido = filaEventos.shift();
+            alert(`Evento removido da fila: ${removido}`);
+            atualizarFila();
         }
-        
-        eventos.forEach(evento => {
-            // Define a imagem vinda do upload do backend ou uma padrão caso não exista
-            const imagemUrl = evento.imagem 
-                ? `${BACKEND_URL}/uploads/${evento.imagem}` 
-                : 'img/FestivaldeJazz.webp'; 
 
-            // Tratamento simples para formatar a data que vem do banco
-            const dataObjeto = new Date(evento.data);
-            const dataFormatada = !isNaN(dataObjeto) 
-                ? dataObjeto.toLocaleDateString('pt-BR', { day: '2-digit', month: 'long' })
-                : 'Data a definir';
-
-            const horarioFormatado = evento.horario ? evento.horario.substring(0, 5) : '00:00';
-
-            // Monta o card usando EXATAMENTE a mesma estrutura HTML e classes do seu layout
-            const novoCardHTML = `
-                <div class="event-card" data-category="${evento.categoria ? evento.categoria.toLowerCase() : 'shows'}">
-                    <div class="event-card-image" style="background-image: url('${imagemUrl}');">
-                        <span class="event-card-badge">${evento.categoria || 'Shows'}</span>
-                    </div>
-                    <div class="event-card-content">
-                        <h3>${evento.titulo}</h3>
-                        <div class="event-card-meta">
-                            <span><i class="fas fa-calendar"></i> ${dataFormatada}</span>
-                            <span><i class="fas fa-clock"></i> ${horarioFormatado}</span>
-                        </div>
-                        <div class="event-card-meta">
-                            <span><i class="fas fa-map-marker-alt"></i> ${evento.localizacao || 'Local não informado'} - ${evento.bairro || ''}</span>
-                        </div>
-                        <p class="event-card-description">${evento.descricao}</p>
-                        
-                        <div class="event-card-actions" style="display: flex; gap: 0.5rem; margin-top: 1rem;">
-                            <button class="btn btn-small inscrever-btn-dinamico" style="flex: 1;">
-                                Inscrever-se
-                            </button>
-                            <button class="btn btn-small deletar-btn-dinamico" onclick="deletarEventoDoBanco(${evento.id}, this)" style="background-color: #d32f2f; color: white; border: none; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer;">
-                                <i class="fas fa-trash-alt"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            `;
-            
-            // Injeta o card cadastrado no banco dentro do grid existente
-            grid.insertAdjacentHTML('afterbegin', novoCardHTML);
-        });
-
-        // Re-vincula o evento de clique na Fila de Interesse para os novos cards dinâmicos
-        vincularBotoesDinamicos();
-
-    } catch (erro) {
-        console.error("Erro ao carregar os eventos da API MySQL:", erro);
-    }
-}
-
-// Função para fazer o botão "Inscrever-se" dos novos cards dinâmicos funcionar na sua Fila de Interesse
-function vincularBotoesDinamicos() {
-    document.querySelectorAll('.inscrever-btn-dinamico').forEach(botao => {
-        // Remove ouvintes antigos para não duplicar o clique
-        botao.replaceWith(botao.cloneNode(true));
-    });
-
-    document.querySelectorAll('.inscrever-btn-dinamico').forEach(botao => {
-        botao.addEventListener('click', function() {
-            const card = this.closest('.event-card');
-            const nomeEvento = card.querySelector('h3').textContent;
-            adicionarNaFila(nomeEvento);
-            alert("Evento adicionado à fila!");
-        });
-    });
-}
-
-// Função que faz a requisição DELETE para a API do Backend deletar do MySQL
-async function deletarEventoDoBanco(id, botao) {
-    if (!confirm("Tem certeza que deseja deletar este evento permanentemente?")) {
-        return;
-    }
-
-    try {
-        const resposta = await fetch(`${API_URL}/${id}`, {
-            method: 'DELETE'
-        });
-
-        if (resposta.ok) {
-            alert("Evento deletado com sucesso!");
-            const card = botao.closest('.event-card');
-            card.remove(); // Some com o card da tela na hora sem precisar de F5
-        } else {
-            const erroDados = await resposta.json();
-            alert(`Erro ao deletar: ${erroDados.message || resposta.statusText}`);
+        function atualizarFila() {
+            const lista = document.getElementById("fila-lista");
+            lista.innerHTML = "";
+            filaEventos.forEach((evento, index) => {
+                lista.innerHTML += `<li>${index + 1}º - ${evento}</li>`;
+            });
         }
-    } catch (erro) {
-        console.error("Erro na requisição de deleção:", erro);
-        alert("Não foi possível conectar ao servidor para deletar.");
-    }
-}
 
-// Dispara a busca do banco de dados assim que a página estiver pronta
-document.addEventListener('DOMContentLoaded', carregarEventosDoBanco);
+        document.querySelectorAll('.inscrever-btn').forEach(botao => {
+            botao.addEventListener('click', function(event) {
+                event.preventDefault();
+                const card = this.closest('.event-card');
+                const nomeEvento = card.querySelector('h3').textContent;
+                adicionarNaFila(nomeEvento);
+                alert("Evento adicionado à fila!");
+            });
+        });
 
-</script>
-</body>
-</html>
+        const API_URL = 'http://localhost:3600/eventos';
+        const BACKEND_URL = 'http://localhost:3600';
 
-</script>
-</body>
-</html>
+        async function carregarEventosDoBanco() {
+            const grid = document.getElementById('eventsGrid');
+            try {
+                const resposta = await fetch(API_URL);
+                if (!resposta.ok) throw new Error(`Erro: ${resposta.status}`);
+                const resultadoGeral = await resposta.json();
+                
+                let eventos = [];
+                if (Array.isArray(resultadoGeral)) { eventos = resultadoGeral; }
+                else if (resultadoGeral && Array.isArray(resultadoGeral.data)) { eventos = resultadoGeral.data; }
 
-</script>
+                if (!eventos || eventos.length === 0) return;
+                
+                eventos.forEach(evento => {
+                    const imagemUrl = evento.imagem ? `${BACKEND_URL}/uploads/${evento.imagem}` : 'img/FestivaldeJazz.webp'; 
+                    const dataObjeto = new Date(evento.data);
+                    const dataFormatada = !isNaN(dataObjeto) ? dataObjeto.toLocaleDateString('pt-BR', { day: '2-digit', month: 'long' }) : 'Data a definir';
+                    const horarioFormatado = evento.horario ? evento.horario.substring(0, 5) : '00:00';
+
+                    const novoCardHTML = `
+                        <div class="event-card" data-category="${evento.categoria ? evento.categoria.toLowerCase() : 'shows'}">
+                            <div class="event-card-image" style="background-image: url('${imagemUrl}');">
+                                <span class="event-card-badge">${evento.categoria || 'Shows'}</span>
+                            </div>
+                            <div class="event-card-content">
+                                <h3>${evento.titulo}</h3>
+                                <div class="event-card-meta">
+                                    <span><i class="fas fa-calendar"></i> ${dataFormatada}</span>
+                                    <span><i class="fas fa-clock"></i> ${horarioFormatado}</span>
+                                </div>
+                                <div class="event-card-meta">
+                                    <span><i class="fas fa-map-marker-alt"></i> ${evento.localizacao || 'Local não informado'}</span>
+                                </div>
+                                <p class="event-card-description">${evento.descricao}</p>
+                                <div class="event-card-actions" style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+                                    <button class="btn btn-small inscrever-btn-dinamico" style="flex: 1;">Inscrever-se</button>
+                                    <button class="btn btn-small deletar-btn-dinamico" onclick="deletarEventoDoBanco(${evento.id}, this)" style="background-color: #d32f2f; color: white; border: none; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer;">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    grid.insertAdjacentHTML('afterbegin', novoCardHTML);
+                });
+                vincularBotoesDinamicos();
+            } catch (erro) { console.error("Erro ao carregar os eventos da API MySQL:", erro); }
+        }
+
+        function vincularBotoesDinamicos() {
+            document.querySelectorAll('.inscrever-btn-dinamico').forEach(botao => {
+                botao.replaceWith(botao.cloneNode(true));
+            });
+            document.querySelectorAll('.inscrever-btn-dinamico').forEach(botao => {
+                botao.addEventListener('click', function() {
+                    const card = this.closest('.event-card');
+                    const nomeEvento = card.querySelector('h3').textContent;
+                    adicionarNaFila(nomeEvento);
+                    alert("Evento adicionado à fila!");
+                });
+            });
+        }
+
+        async function deletarEventoDoBanco(id, botao) {
+            if (!confirm("Tem certeza que deseja deletar este evento permanentemente?")) return;
+            try {
+                const resposta = await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
+                if (resposta.ok) {
+                    alert("Evento deletado com sucesso!");
+                    botao.closest('.event-card').remove();
+                }
+            } catch (erro) { console.error("Erro na deleção:", erro); }
+        }
+
+        document.addEventListener('DOMContentLoaded', carregarEventosDoBanco);
+    </script>
 </body>
 </html>

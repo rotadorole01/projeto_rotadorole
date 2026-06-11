@@ -101,10 +101,12 @@
         #partnersCarousel .carousel-item {
             min-width: 100%;
             height: 100%;
-            background-size: cover;
+            background-size: contain;
             background-position: center;
+            background-repeat: no-repeat;
+            background-color: #1a1a1a;
             position: relative;
-            display: none; /* Controlado via JS */
+            display: none;
         }
 
         #partnersCarousel .carousel-item.active {
@@ -156,6 +158,48 @@
             background: var(--primary-color, #ff6b35);
             transform: scale(1.2);
         }
+
+        /* ESTILOS DO CARROSSEL DE DESTAQUES PRINCIPAIS (CORRIGIDO PARA NÃO CORTAR AS FOTOS) */
+        #frontImgCarousel .front-carousel {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        #frontImgCarousel .front-carousel-item {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            background-size: contain;       
+            background-position: center;    
+            background-repeat: no-repeat;   
+            background-color: #1a1a1a;      
+            transition: opacity 0.5s ease-in-out;
+            display: none;
+        }
+
+        #frontImgCarousel .front-carousel-item.active {
+            display: block;
+            opacity: 1;
+        }
+
+        #frontImgCarousel .front-carousel-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        #frontImgCarousel .front-carousel-dot.active {
+            background-color: var(--accent-color);
+            transform: scale(1.3);
+        }
+
+        #legacyCarouselHooks {
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -172,9 +216,10 @@
                     <li><a href="index.html">Início</a></li>
                     <li><a href="eventos.html">Eventos</a></li>
                     <li><a href="cadastro.html">Cadastrar Evento</a></li>
+                    <li><a href="logins.html">Usuario</a></li>
                 </ul>
                 
-                <div class="user-profile-menu">
+      <!-- <div class="user-profile-menu">
                     <button onclick="toggleProfileMenu()" class="profile-menu-btn" id="profileMenuBtn">
                         <i class="fas fa-user-circle" style="font-size: 1.5rem; color: var(--accent-color, #f7b801);"></i>
                         <span>Minha Conta</span>
@@ -190,7 +235,7 @@
                         <hr>
                         <a href="index.html" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Sair</a>
                     </div>
-                </div>
+                </div> -->
 
                 <button id="themeToggle" title="Alternar Modo Escuro">
                     <i class="fas fa-moon"></i>
@@ -200,67 +245,12 @@
     </header>
 
     <div class="container">
-        <style>
-            #frontImgCarousel .front-carousel {
-                position: relative;
-                width: 100%;
-                height: 100%;
-            }
-
-            #frontImgCarousel .front-carousel-item {
-                position: absolute;
-                inset: 0;
-                opacity: 0;
-                background-size: cover;
-                background-position: center;
-                transition: opacity 0.5s ease-in-out;
-            }
-
-            #frontImgCarousel .front-carousel-item.active {
-                opacity: 1;
-            }
-
-            #frontImgCarousel .front-carousel-dot {
-                width: 12px;
-                height: 12px;
-                border-radius: 50%;
-                background-color: rgba(255, 255, 255, 0.5);
-                cursor: pointer;
-                transition: var(--transition);
-            }
-
-            #frontImgCarousel .front-carousel-dot.active {
-                background-color: var(--accent-color);
-                transform: scale(1.3);
-            }
-
-            #legacyCarouselHooks {
-                display: none;
-            }
-        </style>
-
         <div class="carousel-container" id="frontImgCarousel">
-            <div class="front-carousel" id="frontCarousel">
-                <div class="front-carousel-item active" style="background-image: url('img/fateccarrossel.png');">
-                    <div class="carousel-item-overlay">
-                        <h3>Fatec Taquaritinga</h3>
-                        <p>Eventos e oportunidades para a comunidade.</p>
-                    </div>
-                </div>
-
-                <div class="front-carousel-item" style="background-image: url('img/Fatec inscrições.png');">
-                    <div class="carousel-item-overlay">
-                        <h3>Inscrições Fatec</h3>
-                        <p>Fique por dentro das novidades acadêmicas.</p>
-                    </div>
-                </div>
+            <div class="front-carousel" id="frontCarousel"></div> 
 
             <button class="carousel-btn prev" id="frontPrevBtn">&#10094;</button>
             <button class="carousel-btn next" id="frontNextBtn">&#10095;</button>
-            <div class="carousel-controls" id="frontCarouselDots">
-                <span class="front-carousel-dot active"></span>
-                <span class="front-carousel-dot"></span>
-            </div>
+            <div class="carousel-controls" id="frontCarouselDots"></div>
         </div>
 
         <div id="legacyCarouselHooks" aria-hidden="true">
@@ -269,36 +259,7 @@
             <button id="nextBtn" type="button"></button>
             <div id="carouselDots"></div>
         </div>
-
-        <script>
-            (() => {
-                const slides = document.querySelectorAll("#frontImgCarousel .front-carousel-item");
-                const dots = document.querySelectorAll("#frontImgCarousel .front-carousel-dot");
-                const prevBtn = document.getElementById("frontPrevBtn");
-                const nextBtn = document.getElementById("frontNextBtn");
-                let currentSlide = 0;
-
-                function showSlide(index) {
-                    currentSlide = (index + slides.length) % slides.length;
-
-                    slides.forEach(slide => slide.classList.remove("active"));
-                    dots.forEach(dot => dot.classList.remove("active"));
-
-                    slides[currentSlide].classList.add("active");
-                    dots[currentSlide].classList.add("active");
-                }
-
-                prevBtn.addEventListener("click", () => showSlide(currentSlide - 1));
-                nextBtn.addEventListener("click", () => showSlide(currentSlide + 1));
-
-                dots.forEach((dot, index) => {
-                    dot.addEventListener("click", () => showSlide(index));
-                });
-
-                setInterval(() => showSlide(currentSlide + 1), 5000);
-            })();
-        </script>
-    </div>
+    </div> 
 
     <section id="categorias">
         <div class="container">
@@ -328,41 +289,12 @@
         <div class="container">
             <h2>Nossos Parceiros</h2>
             <div class="carousel-container" id="partnersCarousel" style="height: 300px;">
-                <div class="carousel-track" id="partnersTrack">
-                    
-                    <div class="carousel-item" style="background-image: url('img/Patrocinadores.webp'); filter: hue-rotate(45deg);">
-                        <div class="carousel-item-overlay">
-                            <h3>Fatec Taquaritinga</h3>
-                            <p>Nosso Patrocinador Educativo e Institucional!</p>
-                        </div>
-                    </div>
-                    
-                    <div class="carousel-item active" style="background-image: url('https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=1200&q=80');">
-                        <div class="carousel-item-overlay">
-                            <h3>Apoio Local - Estabelecimentos</h3>
-                            <p>Conheça nossos parceiros que tornam a Rota do Rolê possível!</p>
-                        </div>
-                    </div>
-
-                    
-
-                    <!-- <div class="carousel-item" style="background-image: url('img/Patrocinadores.webp'); filter: hue-rotate(180deg);">
-                        <div class="carousel-item-overlay">
-                            <h3>Novo Patrocinador da Cidade</h3>
-                            <p>Fortalecendo o comércio, os shows e o turismo regional.</p>
-                        </div>
-                    </div> -->
-
-                </div>
+                <div class="carousel-track" id="partnersTrack"></div>
 
                 <button class="carousel-btn prev" onclick="movePartnerCarousel(-1)">&#10094;</button>
                 <button class="carousel-btn next" onclick="movePartnerCarousel(1)">&#10095;</button>
 
-                <div id="partnersDots">
-                    <span class="dot active" onclick="currentPartnerSlide(0)"></span>
-                    <span class="dot" onclick="currentPartnerSlide(1)"></span>
-                    <!-- <span class="dot" onclick="currentPartnerSlide(2)"></span> -->
-                </div>
+                <div id="partnersDots"></div>
             </div>
             
             <div style="text-align: center; margin-top: 2rem;">
@@ -439,21 +371,142 @@
             }
         });
 
-        // --- DINÂMICA DO CARROSSEL DE PATROCINADORES ---
+        // --- DINÂMICA DO CARROSSEL DE PATROCINADORES DINÂMICO ---
         let partnerIndex = 0;
-        const partnerSlides = document.querySelectorAll("#partnersCarousel .carousel-item");
-        const partnerDots = document.querySelectorAll("#partnersDots .dot");
-        let partnerAutoCycle = setInterval(() => movePartnerCarousel(1), 4000); // Roda automático a cada 4 segundos
+        let partnerAutoCycle;
 
+        // --- SISTEMA DE COMPONENTES DE CARROSSEL PRINCIPAL DINÂMICO (DESTAQUES) ---
+        let frontCurrentSlide = 0;
+        let frontCarouselTimer;
+
+        document.addEventListener("DOMContentLoaded", async () => {
+            const partnersTrack = document.getElementById("partnersTrack");
+            const partnersDots = document.getElementById("partnersDots");
+            const frontCarousel = document.getElementById("frontCarousel");
+            const frontCarouselDots = document.getElementById("frontCarouselDots");
+
+            // 1. CARREGA O CARROSSEL DO TOPO (DESTAQUES) VIA API
+            try {
+                const responseDestaques = await fetch("http://localhost:3600/api/destaques");
+                const destaques = await responseDestaques.json();
+
+                if (destaques && destaques.length > 0) {
+                    frontCarousel.innerHTML = "";
+                    frontCarouselDots.innerHTML = "";
+
+                    destaques.forEach((d, index) => {
+                        const slide = document.createElement("div");
+                        slide.className = `front-carousel-item ${index === 0 ? 'active' : ''}`;
+                        slide.style.backgroundImage = `url('${d.imagem}')`;
+                        
+                        slide.innerHTML = `
+                            <div class="carousel-item-overlay">
+                                <h3>${d.titulo}</h3>
+                                <p>${d.descricao}</p>
+                            </div>
+                        `;
+                        frontCarousel.appendChild(slide);
+
+                        const dot = document.createElement("span");
+                        dot.className = `front-carousel-dot ${index === 0 ? 'active' : ''}`;
+                        dot.addEventListener("click", () => showFrontSlide(index));
+                        frontCarouselDots.appendChild(dot);
+                    });
+
+                    document.getElementById("frontPrevBtn").onclick = () => moveFrontSlide(-1);
+                    document.getElementById("frontNextBtn").onclick = () => moveFrontSlide(1);
+
+                    startFrontTimer();
+                }
+            } catch (error) {
+                console.error("Erro ao sincronizar carrossel de destaques:", error);
+            }
+
+            // 2. CARREGA O CARROSSEL DE PARCEIROS VIA API
+            try {
+                const responsePartners = await fetch("http://localhost:3600/api/patrocinadores");
+                const patrocinadores = await responsePartners.json();
+
+                if (patrocinadores && patrocinadores.length > 0) {
+                    partnersTrack.innerHTML = ""; 
+                    partnersDots.innerHTML = "";  
+
+                    patrocinadores.forEach((p, index) => {
+                        const slide = document.createElement("div");
+                        slide.className = `carousel-item ${index === 0 ? 'active' : ''}`;
+                        slide.style.backgroundImage = `url('${p.imagem}')`;
+                        
+                        slide.innerHTML = `
+                            <div class="carousel-item-overlay">
+                                <h3>${p.titulo}</h3>
+                                <p>${p.descricao}</p>
+                            </div>
+                        `;
+                        partnersTrack.appendChild(slide);
+
+                        const dot = document.createElement("span");
+                        dot.className = `dot ${index === 0 ? 'active' : ''}`;
+                        dot.onclick = () => currentPartnerSlide(index);
+                        partnersDots.appendChild(dot);
+                    });
+
+                    startPartnerTimer();
+                }
+            } catch (error) {
+                console.error("Erro ao sincronizar carrossel de parceiros:", error);
+            }
+        });
+
+        // --- FUNÇÕES DE NAVEGAÇÃO DO CARROSSEL PRINCIPAL (TOPO) ---
+        function showFrontSlide(index) {
+            const slides = document.querySelectorAll("#frontImgCarousel .front-carousel-item");
+            const dots = document.querySelectorAll("#frontImgCarousel .front-carousel-dot");
+
+            if (slides.length === 0) return;
+
+            frontCurrentSlide = (index + slides.length) % slides.length;
+
+            slides.forEach(slide => slide.classList.remove("active"));
+            dots.forEach(dot => dot.classList.remove("active"));
+
+            slides[frontCurrentSlide].classList.add("active");
+            dots[frontCurrentSlide].classList.add("active");
+            
+            resetFrontTimer();
+        }
+
+        function moveFrontSlide(step) {
+            showFrontSlide(frontCurrentSlide + step);
+        }
+
+        function startFrontTimer() {
+            frontCarouselTimer = setInterval(() => moveFrontSlide(1), 5000);
+        }
+
+        function resetFrontTimer() {
+            clearInterval(frontCarouselTimer);
+            frontCarouselTimer = setInterval(() => moveFrontSlide(1), 5000);
+        }
+
+        // --- FUNÇÕES DE NAVEGAÇÃO DO CARROSSEL DE PARCEIROS ---
         function showPartnerSlide(index) {
+            const partnerSlides = document.querySelectorAll("#partnersCarousel .carousel-item");
+            const partnerDots = document.querySelectorAll("#partnersDots .dot");
+
+            if (partnerSlides.length === 0) return;
+
             if (index >= partnerSlides.length) partnerIndex = 0;
             if (index < 0) partnerIndex = partnerSlides.length - 1;
             
             partnerSlides.forEach(slide => slide.classList.remove("active"));
             partnerDots.forEach(dot => dot.classList.remove("active"));
             
-            partnerSlides[partnerIndex].classList.add("active");
-            partnerDots[partnerIndex].classList.add("active");
+            if (partnerSlides[partnerIndex]) {
+                partnerSlides[partnerIndex].classList.add("active");
+            }
+            if (partnerDots[partnerIndex]) {
+                partnerDots[partnerIndex].classList.add("active");
+            }
         }
 
         function movePartnerCarousel(step) {
@@ -468,9 +521,13 @@
             resetPartnerTimer();
         }
 
+        function startPartnerTimer() {
+            partnerAutoCycle = setInterval(() => movePartnerCarousel(1), 4000);
+        }
+
         function resetPartnerTimer() {
             clearInterval(partnerAutoCycle);
-            partnerAutoCycle = setInterval(() => movePartnerCarousel(1), 4000);
+            startPartnerTimer();
         }
 
         // --- GESTÃO DO MODO ESCURO ---

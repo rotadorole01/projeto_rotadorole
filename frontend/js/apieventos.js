@@ -90,25 +90,52 @@ eventForm.addEventListener('submit', async function(e) {
         if (resultado.success) {
             alert('Evento cadastrado com sucesso!');
             eventForm.reset();
+            
+            // Limpa o aviso de imagem padrão se o formulário for resetado
+            const antigoPreview = document.getElementById('preview-texto-imagem');
+            if (antigoPreview) antigoPreview.remove();
         } else if (resultado.exists) {
             alert('Evento já existente!');
         } else {
-            alert('Erro ao cadastrar evento. Tente novamente.');
+            //alert('Erro ao cadastrar evento. Tente novamente.');
         }
 
     } catch (error) {
         console.error("Erro na conexão com o servidor:", error);
-        alert('Erro de conexão com o servidor.');
+        //alert('Erro de conexão com o servidor.');
     }
 });
 
-// Função para preencher os inputs automaticamente (exceto arquivo)
+// Função para preencher os inputs automaticamente (com trava de segurança para arquivos)
 function carregarDados() {
     const setInput = (id, valor) => {
         const el = document.getElementById(id);
-        if(el) el.value = valor;
+        if (el) {
+            // TRAVA DE SEGURANÇA: Se for o campo de imagem (input tipo file)
+            if (el.type === 'file') {
+                // Remove qualquer aviso visual duplicado se a página recarregar
+                const antigoPreview = document.getElementById('preview-texto-imagem');
+                if (antigoPreview) antigoPreview.remove();
+
+                // Cria um elemento de texto explicativo abaixo do input de arquivo
+                const aviso = document.createElement('small');
+                aviso.id = 'preview-texto-imagem';
+                aviso.style.display = 'block';
+                aviso.style.marginTop = '5px';
+                aviso.style.color = 'var(--accent-color, #f7b801)';
+                aviso.style.fontWeight = 'bold';
+                aviso.innerHTML = `<i class="fas fa-image"></i> Imagem padrão sugerida: ${valor}`;
+                
+                // Insere o aviso logo após o input no HTML
+                el.after(aviso);
+            } else {
+                // Para todos os outros inputs normais, preenche o valor normalmente
+                el.value = valor;
+            }
+        }
     };
 
+    // Preenchimento automatizado dos campos de teste
     setInput('titulo', 'Festival de Jazz na Praça');
     setInput('email', 'teste@fatectq.edu.br');
     setInput('data', '2026-05-15'); 
@@ -121,10 +148,12 @@ function carregarDados() {
     setInput('bairro', 'Portal da serra');
     setInput('ingresso', 'gratuito');
     setInput('preco', '');
-    setInput('imagem', 'FestivaldeJazz.webp'); // campo manual
     setInput('link', '');
     setInput('nome', 'lulu');
     setInput('telefone', '(16) 3252-5555');
+    
+    // O nome do arquivo passa pelo filtro de segurança e não quebra a execução
+    setInput('imagem', 'FestivaldeJazz.webp'); 
 }
 
 document.addEventListener('DOMContentLoaded', carregarDados);
