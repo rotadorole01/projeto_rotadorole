@@ -1,4 +1,3 @@
-
 class DatabaseSchemaMysql {
     static async initialize(dbStrategy) {
         console.log("Verificando estrutura do banco de dados...");
@@ -62,8 +61,21 @@ class DatabaseSchemaMysql {
                 email TEXT NOT NULL,
                 password TEXT NOT NULL,
                 validated BIT NOT NULL DEFAULT(0)
-            )`
+            )`,
 
+            `CREATE TABLE IF NOT EXISTS patrocinadores_carrossel (
+                id INTEGER PRIMARY KEY AUTO_INCREMENT,
+                titulo TEXT NOT NULL,
+                descricao TEXT NOT NULL,
+                imagem TEXT NOT NULL
+            )`,
+
+            `CREATE TABLE IF NOT EXISTS destaques_carrossel (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                titulo VARCHAR(255) NOT NULL,
+                descricao TEXT NOT NULL,
+                imagem VARCHAR(255) NOT NULL
+            )`
         ];
 
         for (const query of queries) {
@@ -72,4 +84,4 @@ class DatabaseSchemaMysql {
     }
 }
 
-module.exports = { DatabaseSchemaMysql }
+module.exports = { DatabaseSchemaMysql };

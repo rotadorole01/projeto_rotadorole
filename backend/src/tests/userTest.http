@@ -2,35 +2,44 @@
 @URL = http://localhost
 # Porta do servidor
 @PORT = 3600
-# endpoint ou rota do teste
-@ENDPOINT = users
+# endpoint ou rota do teste (apontando para a rota real)
+@ENDPOINT = login
 # uri - rota final do teste
 @URI = {{URL}}:{{PORT}}/{{ENDPOINT}}
 
+### 1. Listar todos os usuários cadastrados
 GET {{URI}}
+
 ###
+
+### 2. Buscar um usuário específico pelo ID
 GET {{URI}}/5
 
 ###
+
+### 3. Criar um novo usuário (Cadastro)
 POST {{URI}}
 Content-Type: application/json; charset=utf-8
 
-  {
-      "login": "carlose@gmail.cm",
-      "password": "567",
-      "name": "carlos"
-    }
+{
+    "nomeCompleto": "Lopes Henrique",
+    "email": "lopesteste@gmail.com",
+    "senha": "12345"
+}
 
 ###
+
+### 4. Atualizar os dados de um usuário pelo ID
 PUT {{URI}}/5
 Content-Type: application/json; charset=utf-8
 
-  {
-      "login": "MANOEL.teste@gmail.cm",
-      "password": "890",
-      "name": "manoel"
-    }
-
+{
+    "nomeCompleto": "Yasmin Luiza",
+    "email": "yasminteste@gmail.com",
+    "senha": "12345"
+}
 
 ###
+
+### 5. Deletar um usuário pelo ID permanentemente
 DELETE {{URI}}/3
