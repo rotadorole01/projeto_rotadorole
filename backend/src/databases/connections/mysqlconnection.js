@@ -8,7 +8,10 @@ const config_host = process.env.DB_HOST || "localhost";
 const config_user = process.env.DB_USER || "root" ;
 const config_password = process.env.DB_PASSWORD || "";
 const config_port = process.env.DB_PORT || 3306;
-const config_database = process.env.DB_DATABASE || "mysql";
+const config_database = process.env.DB_DATABASE || "rotadorole";
+console.log("Banco selecionado:", config_database);
+console.log("Host MySQL:", config_host);
+console.log("Porta MySQL:", config_port);
 // conexao ou string connection
 const pool = mysql.createPool(
     {
@@ -19,6 +22,19 @@ const pool = mysql.createPool(
         database: config_database
     }
 );
+
+pool.query(`
+    SELECT
+        DATABASE() AS banco,
+        @@port AS porta,
+        @@hostname AS servidor
+`)
+.then(([rows]) => {
+    console.log("MYSQL DO BACKEND:", rows[0]);
+})
+.catch(error => {
+    console.error("Erro:", error.message);
+});
 
 async function testConnection() {
     try {
@@ -37,4 +53,11 @@ async function testSQL(pool){
    pool.end();
 }
 
+pool.query("SELECT DATABASE() AS banco, @@port AS porta, @@hostname AS servidor")
+    .then(([rows]) => {
+        console.log("Conexão MySQL atual:", rows[0]);
+    })
+    .catch((error) => {
+        console.error("Erro ao verificar MySQL:", error.message);
+    });
 module.exports = { pool, testConnection }

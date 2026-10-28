@@ -24,7 +24,6 @@ class DatabaseSchemaMysql {
                 ingresso TEXT ,
                 cidade TEXT NOT NULL,
                 bairro TEXT NOT NULL,
-                descricao TEXT NOT NULL,
                 link TEXT,
                 nome TEXT NOT NULL,
                 email TEXT NOT NULL,
