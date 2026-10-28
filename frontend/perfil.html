@@ -1,0 +1,1094 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Meu Perfil | Rota do Rolê</title>
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* ===== CORES DO ROTA DO ROLÊ ===== */
+
+        :root {
+            --azul: #004e89;
+            --azul-escuro: #074873;
+            --laranja: #ff6b35;
+            --amarelo: #f7b801;
+            --fundo: #f7f8fa;
+            --texto: #25364a;
+            --cinza: #697a8b;
+            --borda: #dfe5eb;
+            --cartao: #ffffff;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--fundo);
+            color: var(--texto);
+            line-height: 1.5;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        button,
+        input,
+        select {
+            font: inherit;
+        }
+
+        /* ===== CABEÇALHO ===== */
+
+        .topo {
+            min-height: 66px;
+            background: linear-gradient(
+                110deg,
+                #104b79 0%,
+                #686074 52%,
+                #f26838 100%
+            );
+            color: white;
+            position: relative;
+            z-index: 10;
+        }
+
+        .topo-interno {
+            min-height: 66px;
+            max-width: 1190px;
+            padding: 0 24px;
+            margin: auto;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 24px;
+        }
+
+        .marca {
+            font-size: 22px;
+            font-weight: 800;
+            white-space: nowrap;
+
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .marca i {
+            font-size: 24px;
+        }
+
+        .navegacao {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .navegacao > a:hover {
+            color: #ffe8d7;
+        }
+
+        /* ===== MENU MINHA CONTA ===== */
+
+        .perfil-menu {
+            position: relative;
+        }
+
+        .perfil-acionador {
+            border: 0;
+            border-radius: 7px;
+            padding: 10px 13px;
+            background: rgba(255,255,255,0.12);
+            color: white;
+            cursor: pointer;
+
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 700;
+        }
+
+        .perfil-acionador .fa-circle-user {
+            color: var(--amarelo);
+            font-size: 18px;
+        }
+
+        .menu-lista {
+            position: absolute;
+            right: 0;
+            top: calc(100% + 9px);
+
+            background: white;
+            color: var(--texto);
+            width: 185px;
+            border-radius: 9px;
+            padding: 6px;
+            box-shadow: 0 12px 32px rgba(28,51,79,0.16);
+
+            display: none;
+        }
+
+        .menu-lista.aberto {
+            display: block;
+        }
+
+        .menu-lista a {
+            display: block;
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 13px;
+        }
+
+        .menu-lista a:hover {
+            background: #fff1ec;
+            color: var(--laranja);
+        }
+
+        /* ===== FAIXA PRINCIPAL ===== */
+
+        .hero {
+            background: linear-gradient(
+                110deg,
+                #104b79 0%,
+                #706074 53%,
+                #f26838 100%
+            );
+
+            color: white;
+            padding: 49px 20px 98px;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: clamp(25px, 4vw, 34px);
+            font-weight: 800;
+            margin: 0 0 10px;
+        }
+
+        .hero p {
+            font-size: 15px;
+            margin: 0;
+            color: #fffdfc;
+        }
+
+        /* ===== CONTAINER DO PERFIL ===== */
+
+        .pagina {
+            width: min(100% - 36px, 810px);
+            margin: -54px auto 90px;
+            position: relative;
+        }
+
+        .cartao {
+            background: var(--cartao);
+            border-radius: 13px;
+            box-shadow: 0 10px 32px rgba(14,52,80,0.09);
+            overflow: hidden;
+        }
+
+        .perfil-cabecalho {
+            padding: 27px 32px 23px;
+
+            display: flex;
+            align-items: center;
+            gap: 18px;
+
+            border-bottom: 1px solid #ebeff3;
+        }
+
+        .avatar {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+
+            background: #e7f1fa;
+            color: var(--azul);
+
+            display: grid;
+            place-items: center;
+
+            font-size: 31px;
+            flex-shrink: 0;
+        }
+
+        .perfil-cabecalho h2 {
+            font-size: 22px;
+            color: var(--azul);
+            margin: 0 0 2px;
+        }
+
+        .perfil-cabecalho p {
+            margin: 0;
+            color: var(--cinza);
+            font-size: 13px;
+        }
+
+        .tipo-badge {
+            display: inline-flex;
+            gap: 6px;
+            align-items: center;
+
+            background: #eaf3fb;
+            color: var(--azul);
+
+            padding: 5px 9px;
+            border-radius: 20px;
+
+            font-size: 11px;
+            font-weight: 700;
+            margin-top: 8px;
+        }
+
+        .corpo {
+            padding: 28px 34px 35px;
+        }
+
+        /* ===== TÍTULOS DO FORMULÁRIO ===== */
+
+        .titulo-secao {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+
+            font-size: 17px;
+            font-weight: 800;
+            color: var(--azul);
+            margin: 0 0 8px;
+        }
+
+        .titulo-secao i {
+            color: var(--laranja);
+        }
+
+        .subtitulo {
+            font-size: 13px;
+            color: var(--cinza);
+            margin: 0 0 23px;
+        }
+
+        .linha {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0,1fr));
+            gap: 20px;
+        }
+
+        .campo {
+            margin-bottom: 19px;
+        }
+
+        .campo label {
+            display: block;
+            color: var(--azul);
+            font-weight: 700;
+            font-size: 13px;
+            margin-bottom: 8px;
+        }
+
+        .campo input,
+        .campo select {
+            height: 44px;
+            width: 100%;
+
+            border: 1px solid var(--borda);
+            background: white;
+            border-radius: 6px;
+
+            padding: 0 13px;
+            outline: 0;
+
+            color: var(--texto);
+            font-size: 14px;
+        }
+
+        .campo input:focus,
+        .campo select:focus {
+            border-color: var(--azul);
+            box-shadow: 0 0 0 3px rgba(0,78,137,0.08);
+        }
+
+        .campo input::placeholder {
+            color: #9ca5b0;
+        }
+
+        .divisor {
+            height: 1px;
+            background: #e8edf1;
+            margin: 12px 0 27px;
+        }
+
+        /* ===== TIPO DE CONTA ===== */
+
+        .seletor-tipo {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 13px;
+            margin-bottom: 22px;
+        }
+
+        .opcao {
+            border: 1.5px solid var(--borda);
+            border-radius: 8px;
+            padding: 14px;
+
+            display: flex;
+            gap: 12px;
+            align-items: center;
+
+            cursor: pointer;
+            transition: 0.2s;
+            background: white;
+        }
+
+        .opcao:has(input:checked) {
+            border-color: var(--laranja);
+            background: #fff5f0;
+        }
+
+        .opcao input {
+            accent-color: var(--laranja);
+            width: 17px;
+            height: 17px;
+        }
+
+        .opcao strong {
+            font-size: 14px;
+            color: var(--azul);
+            display: block;
+        }
+
+        .opcao small {
+            font-size: 12px;
+            color: var(--cinza);
+        }
+
+        .oculto {
+            display: none;
+        }
+
+        /* ===== ALTERAR SENHA ===== */
+
+        .senha-input {
+            position: relative;
+        }
+
+        .senha-input input {
+            padding-right: 46px;
+        }
+
+        .senha-input button {
+            position: absolute;
+            right: 6px;
+            top: 50%;
+            transform: translateY(-50%);
+
+            border: 0;
+            background: transparent;
+            color: #69798a;
+
+            width: 36px;
+            height: 34px;
+            cursor: pointer;
+        }
+
+        /* ===== BOTÕES ===== */
+
+        .acoes {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 12px;
+            margin-top: 12px;
+            flex-wrap: wrap;
+        }
+
+        .botao {
+            padding: 12px 22px;
+            border-radius: 7px;
+            border: 1px solid var(--borda);
+
+            background: white;
+            color: var(--azul);
+
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .botao-primario {
+            background: var(--laranja);
+            color: white;
+            border-color: var(--laranja);
+        }
+
+        .botao-primario:hover {
+            background: #eb5a29;
+        }
+
+        /* ===== MENSAGENS ===== */
+
+        .feedback {
+            padding: 12px 14px;
+            border-radius: 7px;
+            margin: 0 0 18px;
+            font-size: 13px;
+            display: none;
+        }
+
+        .feedback.visivel {
+            display: block;
+        }
+
+        .feedback.erro {
+            background: #fff0ee;
+            border: 1px solid #ffc9c1;
+            color: #9c251b;
+        }
+
+        .feedback.info {
+            background: #edf5fc;
+            border: 1px solid #c8e0f6;
+            color: #19517d;
+        }
+
+        /* ===== RESPONSIVIDADE ===== */
+
+        @media (max-width: 650px) {
+            .topo-interno {
+                padding: 12px 18px;
+                flex-wrap: wrap;
+            }
+
+            .navegacao {
+                gap: 11px;
+                flex-wrap: wrap;
+                font-size: 12px;
+            }
+
+            .marca {
+                font-size: 20px;
+            }
+
+            .hero {
+                padding: 37px 18px 86px;
+            }
+
+            .corpo {
+                padding: 23px 19px;
+            }
+
+            .perfil-cabecalho {
+                padding: 22px 19px;
+            }
+
+            .linha,
+            .seletor-tipo {
+                grid-template-columns: 1fr;
+            }
+
+            .acoes button {
+                flex: 1;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ===== CABEÇALHO ===== -->
+
+    <header class="topo">
+        <div class="topo-interno">
+
+            <a class="marca" href="index.html">
+                <i class="fas fa-map-marker-alt"></i>
+                Rota do Rolê
+            </a>
+
+            <nav class="navegacao" aria-label="Navegação principal">
+
+                <a href="index.html">Início</a>
+                <a href="eventos.html">Eventos</a>
+                <a href="cadastro.html">Cadastrar Evento</a>
+
+                <div class="perfil-menu">
+
+                    <button class="perfil-acionador"
+                            id="abrirMenu"
+                            type="button"
+                            aria-expanded="false">
+
+                        <i class="fas fa-circle-user"></i>
+                        Minha Conta
+                        <i class="fas fa-caret-down"></i>
+                    </button>
+
+                    <div id="menuLista" class="menu-lista">
+
+                        <a href="perfil.html">
+                            <i class="far fa-id-card"></i>
+                            Meu Perfil
+                        </a>
+
+
+                        <a href="entrar.html">
+                            <i class="fas fa-right-to-bracket"></i>
+                            Trocar Conta
+                        </a>
+
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- ===== TÍTULO ===== -->
+
+    <section class="hero">
+        <h1>Meu Perfil</h1>
+        <p>
+            Gerencie suas informações pessoais e mantenha sua conta atualizada.
+        </p>
+    </section>
+
+    <!-- ===== CONTEÚDO ===== -->
+
+    <main class="pagina">
+
+        <div class="cartao">
+
+            <div class="perfil-cabecalho">
+
+                <div class="avatar">
+                    <i class="far fa-user"></i>
+                </div>
+
+                <div>
+                    <h2>Configurações da Conta</h2>
+
+                    <p>
+                        Altere seus dados de forma simples e segura.
+                    </p>
+
+                    <span class="tipo-badge" id="indicadorTipo">
+                        <i class="fas fa-user"></i>
+                        Pessoa física
+                    </span>
+                </div>
+            </div>
+
+            <div class="corpo">
+
+                <div id="feedback"
+                     class="feedback"
+                     role="status"
+                     aria-live="polite">
+                </div>
+
+                <!-- ===== FORMULÁRIO ===== -->
+
+                <form id="formPerfil" autocomplete="on">
+
+                    <h3 class="titulo-secao">
+                        <i class="fas fa-user-pen"></i>
+                        Informações pessoais
+                    </h3>
+
+                    <p class="subtitulo">
+                        Confira e atualize seus dados de identificação e contato.
+                    </p>
+
+                    <div class="linha">
+
+                        <div class="campo">
+                            <label for="nome">Nome completo *</label>
+
+                            <input
+                                id="nome"
+                                name="nome"
+                                type="text"
+                                placeholder="Seu nome completo"
+                                autocomplete="name"
+                                required
+                                maxlength="120"
+                            >
+                        </div>
+
+                        <div class="campo">
+                            <label for="email">E-mail *</label>
+
+                            <input
+                                id="email"
+                                name="email"
+                                type="email"
+                                placeholder="seuemail@exemplo.com"
+                                autocomplete="email"
+                                required
+                                maxlength="200"
+                            >
+                        </div>
+
+                    </div>
+
+                    <div class="divisor"></div>
+
+                    <!-- ===== TIPO DE CONTA ===== -->
+
+                    <h3 class="titulo-secao">
+                        <i class="fas fa-address-card"></i>
+                        Tipo de conta
+                    </h3>
+
+                    <p class="subtitulo">
+                        Selecione a modalidade de cadastro da sua conta.
+                    </p>
+
+                    <div class="seletor-tipo">
+
+                        <label class="opcao">
+
+                            <input
+                                type="radio"
+                                name="tipoConta"
+                                value="fisica"
+                                checked
+                            >
+
+                            <span>
+                                <strong>
+                                    <i class="fas fa-user"></i>
+                                    Pessoa física
+                                </strong>
+
+                                <small>Uso pessoal da plataforma</small>
+                            </span>
+
+                        </label>
+
+                        <label class="opcao">
+
+                            <input
+                                type="radio"
+                                name="tipoConta"
+                                value="empresa"
+                            >
+
+                            <span>
+                                <strong>
+                                    <i class="fas fa-building"></i>
+                                    Empresa / CNPJ
+                                </strong>
+
+                                <small>Perfil empresarial ou comercial</small>
+                            </span>
+
+                        </label>
+
+                    </div>
+
+                    <!-- CAMPOS DA EMPRESA -->
+
+                    <div id="dadosEmpresa" class="linha oculto">
+
+                        <div class="campo">
+                            <label for="razaoSocial">
+                                Nome da empresa *
+                            </label>
+
+                            <input
+                                type="text"
+                                name="razaoSocial"
+                                id="razaoSocial"
+                                placeholder="Nome ou razão social"
+                                maxlength="150"
+                            >
+                        </div>
+
+                        <div class="campo">
+                            <label for="cnpj">CNPJ *</label>
+
+                            <input
+                                type="text"
+                                name="cnpj"
+                                id="cnpj"
+                                placeholder="00.000.000/0000-00"
+                                inputmode="numeric"
+                                maxlength="18"
+                            >
+                        </div>
+
+                    </div>
+
+                    <div class="divisor"></div>
+
+                    <!-- ===== ALTERAÇÃO DE SENHA ===== -->
+
+                    <h3 class="titulo-secao">
+                        <i class="fas fa-lock"></i>
+                        Alterar senha
+                    </h3>
+
+                    <p class="subtitulo">
+                        Deixe os campos em branco caso não queira alterar a senha.
+                    </p>
+
+                    <div class="campo">
+
+                        <label for="senhaAtual">Senha atual</label>
+
+                        <div class="senha-input">
+
+                            <input
+                                id="senhaAtual"
+                                type="password"
+                                autocomplete="current-password"
+                                placeholder="Digite sua senha atual"
+                            >
+
+                            <button
+                                type="button"
+                                class="ver-senha"
+                                aria-label="Mostrar senha">
+
+                                <i class="far fa-eye"></i>
+
+                            </button>
+
+                        </div>
+                    </div>
+
+                    <div class="linha">
+
+                        <div class="campo">
+
+                            <label for="novaSenha">
+                                Nova senha
+                            </label>
+
+                            <div class="senha-input">
+
+                                <input
+                                    id="novaSenha"
+                                    type="password"
+                                    autocomplete="new-password"
+                                    placeholder="Mínimo de 8 caracteres"
+                                    minlength="8"
+                                >
+
+                                <button
+                                    type="button"
+                                    class="ver-senha"
+                                    aria-label="Mostrar senha">
+
+                                    <i class="far fa-eye"></i>
+
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="campo">
+
+                            <label for="confirmarSenha">
+                                Confirmar nova senha
+                            </label>
+
+                            <div class="senha-input">
+
+                                <input
+                                    id="confirmarSenha"
+                                    type="password"
+                                    autocomplete="new-password"
+                                    placeholder="Repita a nova senha"
+                                >
+
+                                <button
+                                    type="button"
+                                    class="ver-senha"
+                                    aria-label="Mostrar senha">
+
+                                    <i class="far fa-eye"></i>
+
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- ===== BOTÕES ===== -->
+
+                    <div class="acoes">
+
+                        <button class="botao" type="reset">
+                            Cancelar alterações
+                        </button>
+
+                        <button
+                            class="botao botao-primario"
+                            type="submit">
+
+                            <i class="fas fa-floppy-disk"></i>
+                            Salvar alterações
+
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <!-- ===== JAVASCRIPT DA PÁGINA ===== -->
+
+    <script>
+        // Interface visual do perfil.
+        // A integração com a API e o MySQL será feita no backend.
+        // Dados pessoais e senhas não são armazenados no localStorage.
+
+        const form = document.getElementById('formPerfil');
+
+        const feedback = document.getElementById('feedback');
+
+        const indicadorTipo = document.getElementById('indicadorTipo');
+
+        const dadosEmpresa = document.getElementById('dadosEmpresa');
+
+        const cnpj = document.getElementById('cnpj');
+
+        const razaoSocial = document.getElementById('razaoSocial');
+
+        const menuBtn = document.getElementById('abrirMenu');
+
+        const menuLista = document.getElementById('menuLista');
+
+
+        // ===== EXIBIR MENSAGENS =====
+
+        function mostrarFeedback(texto, classe = 'erro') {
+
+            feedback.textContent = texto;
+
+            feedback.className =
+                `feedback visivel ${classe}`;
+
+            feedback.scrollIntoView({
+                behavior: 'smooth',
+                block: 'nearest'
+            });
+        }
+
+
+        // ===== ALTERAR TIPO DE CONTA =====
+
+        function mudarTipo() {
+
+            const empresa =
+                form.elements.tipoConta.value === 'empresa';
+
+            dadosEmpresa.classList.toggle('oculto', !empresa);
+
+            cnpj.required = empresa;
+
+            razaoSocial.required = empresa;
+
+            if (empresa) {
+                indicadorTipo.innerHTML =
+                    '<i class="fas fa-building"></i> Empresa / CNPJ';
+            } else {
+                indicadorTipo.innerHTML =
+                    '<i class="fas fa-user"></i> Pessoa física';
+            }
+        }
+
+        form.querySelectorAll('input[name="tipoConta"]')
+            .forEach(radio => {
+
+                radio.addEventListener('change', mudarTipo);
+
+            });
+
+
+        // ===== MÁSCARA DO CNPJ =====
+
+        cnpj.addEventListener('input', () => {
+
+            const v = cnpj.value
+                .replace(/\D/g, '')
+                .slice(0, 14);
+
+            cnpj.value = v
+                .replace(/^(\d{2})(\d)/, '$1.$2')
+                .replace(/^(\d{2})\.(\d{3})(\d)/, '$1.$2.$3')
+                .replace(/\.(\d{3})(\d)/, '.$1/$2')
+                .replace(/(\d{4})(\d)/, '$1-$2');
+
+        });
+
+
+        // ===== MOSTRAR OU OCULTAR SENHA =====
+
+        document.querySelectorAll('.ver-senha')
+            .forEach(botao => {
+
+                botao.addEventListener('click', () => {
+
+                    const input =
+                        botao.parentElement.querySelector('input');
+
+                    input.type =
+                        input.type === 'password'
+                            ? 'text'
+                            : 'password';
+
+                    botao.setAttribute(
+                        'aria-label',
+                        input.type === 'password'
+                            ? 'Mostrar senha'
+                            : 'Ocultar senha'
+                    );
+
+                    botao.querySelector('i').className =
+                        input.type === 'password'
+                            ? 'far fa-eye'
+                            : 'far fa-eye-slash';
+
+                });
+
+            });
+
+
+        // ===== VALIDAÇÃO DO FORMULÁRIO =====
+
+        form.addEventListener('submit', (event) => {
+
+            event.preventDefault();
+
+            const atual =
+                document.getElementById('senhaAtual').value;
+
+            const nova =
+                document.getElementById('novaSenha').value;
+
+            const confirmar =
+                document.getElementById('confirmarSenha').value;
+
+            // Validar alteração de senha
+
+            if (atual || nova || confirmar) {
+
+                if (!atual || !nova || !confirmar) {
+
+                    mostrarFeedback(
+                        'Para alterar a senha, preencha os três campos de senha.'
+                    );
+
+                    return;
+                }
+
+                if (nova.length < 8) {
+
+                    mostrarFeedback(
+                        'A nova senha precisa ter pelo menos 8 caracteres.'
+                    );
+
+                    return;
+                }
+
+                if (nova !== confirmar) {
+
+                    mostrarFeedback(
+                        'A confirmação da nova senha não coincide.'
+                    );
+
+                    return;
+                }
+            }
+
+            // Validar quantidade de dígitos do CNPJ
+
+            if (
+                form.elements.tipoConta.value === 'empresa' &&
+                cnpj.value.replace(/\D/g, '').length !== 14
+            ) {
+
+                mostrarFeedback(
+                    'Informe um CNPJ com 14 dígitos.'
+                );
+
+                return;
+            }
+
+            // Integração futura com o backend
+
+            mostrarFeedback(
+                'Formulário validado. Para salvar as informações no banco de dados, ainda é necessário integrar esta página à API do Rota do Rolê.',
+                'info'
+            );
+
+        });
+
+
+        // ===== LIMPAR FORMULÁRIO =====
+
+        form.addEventListener('reset', () => {
+
+            feedback.className = 'feedback';
+
+            setTimeout(mudarTipo, 0);
+
+        });
+
+
+        // ===== MENU MINHA CONTA =====
+
+        menuBtn.addEventListener('click', () => {
+
+            const aberto =
+                menuLista.classList.toggle('aberto');
+
+            menuBtn.setAttribute(
+                'aria-expanded',
+                String(aberto)
+            );
+
+        });
+
+        document.addEventListener('click', (event) => {
+
+            if (!event.target.closest('.perfil-menu')) {
+
+                menuLista.classList.remove('aberto');
+
+                menuBtn.setAttribute(
+                    'aria-expanded',
+                    'false'
+                );
+
+            }
+
+        });
+
+
+        // ===== INICIALIZAÇÃO =====
+
+        mudarTipo();
+
+    </script>
+
+</body>
+</html>

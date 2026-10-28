@@ -1,15 +1,21 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Entrar - Rota do Rolê</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <link rel="stylesheet" href="css/style.css">
+
     <style>
-        /* ===================================================
-           ESTILOS ESPECÍFICOS DO FORMULÁRIO DE LOGIN
-        =================================================== */
+        /* ===== FORMULÁRIO DE LOGIN ===== */
+
         .login-container {
             max-width: 600px;
             margin: 60px auto;
@@ -48,15 +54,15 @@
             display: block;
             margin-bottom: 8px;
             font-weight: 500;
-            color: var(--dark-text, #2c3e50);
+            color: var(--text-color, #2c3e50);
         }
 
         .form-group input {
             width: 100%;
             padding: 0.8rem;
             border: 2px solid var(--border-color, #ddd);
-            background-color: var(--light-bg, #f8f9fa);
-            color: var(--dark-text, #2c3e50);
+            background-color: var(--input-bg, #ffffff);
+            color: var(--text-color, #2c3e50);
             border-radius: 6px;
             font-size: 1rem;
             transition: border-color 0.3s ease;
@@ -77,7 +83,8 @@
             font-weight: bold;
             border-radius: 8px;
             cursor: pointer;
-            transition: transform 0.2s ease, background-color 0.3s ease;
+            transition: transform 0.2s ease,
+                        background-color 0.3s ease;
             margin-top: 10px;
         }
 
@@ -90,155 +97,530 @@
             text-align: center;
             margin-top: 25px;
             font-size: 0.95rem;
-            color: var(--dark-text, #2c3e50);
+            color: var(--text-color, #2c3e50);
         }
 
         .form-footer a {
             color: var(--primary-color, #ff6b35);
             text-decoration: none;
             font-weight: bold;
-            transition: color 0.3s ease;
         }
 
         .form-footer a:hover {
             text-decoration: underline;
         }
+
+        /* ===== MENU MINHA CONTA ===== */
+
+        .user-profile-menu {
+            position: relative;
+            display: inline-block;
+        }
+
+        .profile-menu-btn {
+            background: rgba(255, 255, 255, 0.12);
+            border: none;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            padding: 8px 12px;
+            border-radius: 6px;
+        }
+
+        .profile-menu-btn:hover {
+            background: rgba(255, 255, 255, 0.22);
+        }
+
+        .profile-menu-btn .fa-user-circle,
+        .profile-menu-btn .fa-caret-down {
+            color: var(--accent-color, #f7b801);
+        }
+
+        .profile-dropdown {
+            display: none;
+            position: absolute;
+            top: calc(100% + 8px);
+            right: 0;
+            min-width: 220px;
+            background: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            z-index: 99999;
+            overflow: hidden;
+        }
+
+        .profile-dropdown.show {
+            display: block;
+        }
+
+        .profile-dropdown a {
+            display: block;
+            padding: 12px 16px;
+            color: #2c3e50 !important;
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+
+        .profile-dropdown a:hover {
+            background: #f5f5f5;
+            color: #ff6b35 !important;
+        }
+
+        .profile-dropdown hr {
+            margin: 0;
+            border: none;
+            border-top: 1px solid #ddd;
+        }
+
+        .profile-dropdown .logout-btn {
+            color: #d32f2f !important;
+        }
+
+        /* ===== RESPONSIVIDADE ===== */
+
+        @media (max-width: 768px) {
+            .login-nav {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 1rem !important;
+            }
+
+            .login-nav ul {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 1rem !important;
+            }
+
+            .login-container {
+                margin: 30px auto;
+                padding: 25px;
+            }
+        }
     </style>
 </head>
-<body>
-    <div id="google_translate_element" style="display:none;"></div>
 
-    <!-- HEADER -->
+<body>
+
+    <!-- GOOGLE TRANSLATE -->
+    <div id="google_translate_element"
+         style="display:none;">
+    </div>
+
+    <!-- ===== CABEÇALHO ===== -->
+
     <header>
         <div class="header-container">
+
             <a href="index.html" class="logo">
                 <i class="fas fa-map-marker-alt"></i>
                 Rota do Rolê
             </a>
-            <nav>
-                <ul>
-                    <li><a href="index.html">Início</a></li>
-                    <li><a href="eventos.html">Eventos</a></li>
-                    <li><a href="cadastro.html">Cadastrar Evento</a></li>
-                    <li><a href="login.html" >Usuario</a></li>
-                    <li><a href="entrar.html">Usuario</a></li>
+
+            <nav class="login-nav"
+                 style="display:flex; align-items:center; gap:2rem;">
+
+                <ul style="list-style:none; display:flex; gap:2rem; margin:0; align-items:center;">
+
+                    <li>
+                        <a href="index.html">Início</a>
+                    </li>
+
+                    <li>
+                        <a href="eventos.html">Eventos</a>
+                    </li>
+
+                    <li>
+                        <a href="cadastro.html">Cadastrar Evento</a>
+                    </li>
+
                 </ul>
-                <button id="themeToggle" title="Alternar Modo Escuro">
+
+                <!-- MENU MINHA CONTA -->
+
+                <div class="user-profile-menu">
+
+                    <button
+                        onclick="toggleProfileMenu()"
+                        class="profile-menu-btn"
+                        id="profileMenuBtn"
+                        type="button"
+                        aria-expanded="false">
+
+                        <i class="fas fa-user-circle"></i>
+                        <span>Minha Conta</span>
+                        <i class="fas fa-caret-down"></i>
+
+                    </button>
+
+                    <div id="profileDropdown"
+                         class="profile-dropdown">
+
+                        <a href="perfil.html">
+                            <i class="fas fa-id-card"></i>
+                            Meu Perfil
+                        </a>
+
+                        <hr>
+
+                        <a href="login.html">
+                            <i class="fas fa-user-plus"></i>
+                            Criar Conta
+                        </a>
+
+                        <a href="entrar.html">
+                            <i class="fas fa-sign-in-alt"></i>
+                            Trocar Conta
+                        </a>
+
+                        <hr>
+
+                        <a href="index.html" class="logout-btn">
+                            <i class="fas fa-sign-out-alt"></i>
+                            Sair
+                        </a>
+
+                    </div>
+                </div>
+
+                <!-- MODO ESCURO -->
+
+                <button id="themeToggle"
+                        type="button"
+                        title="Alternar Modo Escuro">
+
                     <i class="fas fa-moon"></i>
+
                 </button>
+
             </nav>
+
         </div>
     </header>
 
-    <!-- FORMULÁRIO DE LOGIN -->
+    <!-- ===== FORMULÁRIO DE LOGIN ===== -->
+
     <main class="container">
+
         <div class="login-container">
+
             <h2 class="login-title">
-                <i class="fas fa-sign-in-alt"></i> Entrar na Conta
+                <i class="fas fa-sign-in-alt"></i>
+                Entrar na Conta
             </h2>
+
             <div class="title-underline"></div>
 
             <form action="#" method="POST">
+
                 <div class="form-group">
-                    <label for="email">E-mail *</label>
-                    <input type="email" id="email" name="email" placeholder="Digite seu e-mail cadastrado" required>
+
+                    <label for="email">
+                        E-mail *
+                    </label>
+
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        placeholder="Digite seu e-mail cadastrado"
+                        autocomplete="email"
+                        required>
+
                 </div>
 
                 <div class="form-group">
-                    <label for="senha">Senha *</label>
-                    <input type="password" id="senha" name="senha" placeholder="Digite sua senha" required>
+
+                    <label for="senha">
+                        Senha *
+                    </label>
+
+                    <input
+                        type="password"
+                        id="senha"
+                        name="senha"
+                        placeholder="Digite sua senha"
+                        autocomplete="current-password"
+                        required>
+
                 </div>
 
-                <button type="submit" class="btn-login">Entrar</button>
+                <button type="submit"
+                        class="btn-login">
+
+                    Entrar
+
+                </button>
+
             </form>
 
             <div class="form-footer">
-                <p>Ainda não tem uma conta? <a href="login.html">Cadastre-se aqui</a></p>
+
+                <p>
+                    Ainda não tem uma conta?
+                    <a href="login.html">
+                        Cadastre-se aqui
+                    </a>
+                </p>
+
             </div>
+
         </div>
+
     </main>
 
-    <!-- BOTÃO FLUTUANTE DE TRADUÇÃO -->
-    <button id="btn-traducao" title="Traduzir página" style="position: fixed; bottom: 80px; right: 10px; z-index: 9999999; width: 43px; height: 43px; background: #1565c0; color: white; border: none; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.4rem;">
+    <!-- BOTÃO DE TRADUÇÃO -->
+
+    <button
+        id="btn-traducao"
+        type="button"
+        title="Traduzir página"
+        style="position:fixed; bottom:80px; right:10px; z-index:9999999; width:43px; height:43px; background:#1565c0; color:white; border:none; border-radius:8px; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:1.4rem;">
+
         <i class="fas fa-language"></i>
+
     </button>
 
-    <!-- FOOTER -->
+    <!-- ===== RODAPÉ ===== -->
+
     <footer>
+
         <div class="container">
+
             <div class="footer-content">
+
                 <div class="footer-section">
+
                     <h4>Apoio Institucional</h4>
+
                     <div class="fatec-banner">
-                        <a href="https://fatectq.cps.sp.gov.br/" target="_blank" rel="noopener noreferrer">
-                            <img src="img/Fatec_Taquaritinga_Logo.png" alt="Logo Fatec Taquaritinga" style="max-height: 40px;">
+
+                        <a href="https://fatectq.cps.sp.gov.br/"
+                           target="_blank"
+                           rel="noopener noreferrer">
+
+                            <img
+                                src="img/Fatec_Taquaritinga_Logo.png"
+                                alt="Logo Fatec Taquaritinga"
+                                style="max-height:40px;">
+
                         </a>
+
                     </div>
-                    <p style="margin-top: 1rem; font-size: 0.9rem;">Projeto acadêmico desenvolvido por alunos da Fatec Taquaritinga.</p>
+
+                    <p style="margin-top:1rem; font-size:0.9rem;">
+                        Projeto acadêmico desenvolvido por alunos
+                        da Fatec Taquaritinga.
+                    </p>
+
                 </div>
+
                 <div class="footer-section">
+
                     <h4>Links Úteis</h4>
+
                     <ul>
-                        <li><a href="eventos.html">Eventos</a></li>
-                        <li><a href="cadastro.html">Cadastrar Evento</a></li>
-                        <li><a href="parceria.html">Seja um Patrocinador</a></li>
-                        <li><a href="nos.html">Sobre Nós</a></li>
+
+                        <li>
+                            <a href="eventos.html">Eventos</a>
+                        </li>
+
+                        <li>
+                            <a href="cadastro.html">
+                                Cadastrar Evento
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="parceria.html">
+                                Seja um Patrocinador
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="nos.html">
+                                Sobre Nós
+                            </a>
+                        </li>
+
                     </ul>
+
                 </div>
+
                 <div class="footer-section">
+
                     <h4>Contato</h4>
+
                     <ul>
-                        <li><a href="mailto:contato@rotadorole.com">contato@rotadorole.com</a></li>
-                        <li><a href="tel:+5511999999999">(11) 99999-9999</a></li>
+
+                        <li>
+                            <a href="mailto:contato@rotadorole.com">
+                                contato@rotadorole.com
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="tel:+5511999999999">
+                                (11) 99999-9999
+                            </a>
+                        </li>
+
                     </ul>
+
                 </div>
+
             </div>
+
             <div class="footer-bottom">
-                <p>&copy; 2026 Rota do Rolê. Todos os direitos reservados.</p>
+                <p>
+                    &copy; 2026 Rota do Rolê.
+                    Todos os direitos reservados.
+                </p>
             </div>
+
         </div>
+
     </footer>
 
+    <!-- ===== ACESSIBILIDADE VLIBRAS ===== -->
+
     <div vw class="enabled">
+
         <div vw-access-button class="active"></div>
+
         <div vw-plugin-wrapper>
             <div class="vw-plugin-top-wrapper"></div>
         </div>
+
     </div>
 
-    <!-- SCRIPTS -->
-    <script>
-        const themeToggle = document.getElementById("themeToggle");
-        const savedTheme = localStorage.getItem("theme");
+    <!-- ===== JAVASCRIPT ===== -->
 
-        if(savedTheme){
-            document.documentElement.setAttribute("data-theme", savedTheme);
+    <!-- MODO ESCURO -->
+
+    <script>
+
+        const themeToggle =
+            document.getElementById("themeToggle");
+
+        const savedTheme =
+            localStorage.getItem("theme");
+
+        if (savedTheme) {
+            document.documentElement.setAttribute(
+                "data-theme",
+                savedTheme
+            );
         }
 
         themeToggle.addEventListener("click", () => {
-            const currentTheme = document.documentElement.getAttribute("data-theme");
-            if(currentTheme === "dark"){
-                document.documentElement.setAttribute("data-theme","light");
-                localStorage.setItem("theme","light");
+
+            const currentTheme =
+                document.documentElement.getAttribute("data-theme");
+
+            if (currentTheme === "dark") {
+
+                document.documentElement.setAttribute(
+                    "data-theme",
+                    "light"
+                );
+
+                localStorage.setItem("theme", "light");
+
             } else {
-                document.documentElement.setAttribute("data-theme","dark");
-                localStorage.setItem("theme","dark");
+
+                document.documentElement.setAttribute(
+                    "data-theme",
+                    "dark"
+                );
+
+                localStorage.setItem("theme", "dark");
             }
+
         });
+
     </script>
-    <script type="text/javascript">
+
+    <!-- MENU MINHA CONTA -->
+
+    <script>
+
+        function toggleProfileMenu() {
+
+            const dropdown =
+                document.getElementById("profileDropdown");
+
+            const button =
+                document.getElementById("profileMenuBtn");
+
+            const aberto =
+                dropdown.classList.toggle("show");
+
+            button.setAttribute(
+                "aria-expanded",
+                String(aberto)
+            );
+        }
+
+        document.addEventListener("click", function(event) {
+
+            const menu =
+                document.querySelector(".user-profile-menu");
+
+            if (menu && !menu.contains(event.target)) {
+
+                document.getElementById("profileDropdown")
+                    .classList.remove("show");
+
+                document.getElementById("profileMenuBtn")
+                    .setAttribute("aria-expanded", "false");
+            }
+
+        });
+
+    </script>
+
+    <!-- GOOGLE TRANSLATE -->
+
+    <script>
+
         function googleTranslateElementInit() {
-            new google.translate.TranslateElement(
-                { pageLanguage: 'pt', autoDisplay: false },
-                'google_translate_element'
+
+            if (window.google && google.translate) {
+
+                new google.translate.TranslateElement(
+                    {
+                        pageLanguage: 'pt',
+                        autoDisplay: false
+                    },
+                    'google_translate_element'
+                );
+            }
+        }
+
+    </script>
+
+    <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+    <!-- VLIBRAS -->
+
+    <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+
+    <script>
+        if (window.VLibras) {
+            new window.VLibras.Widget(
+                'https://vlibras.gov.br/app'
             );
         }
     </script>
-    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
-    <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
-    <script>
-        new window.VLibras.Widget('https://vlibras.gov.br/app');
-    </script>
+
+    <!-- JAVASCRIPT PRINCIPAL -->
+
     <script src="js/script.js"></script>
+
 </body>
 </html>
