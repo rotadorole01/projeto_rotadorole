@@ -318,6 +318,11 @@
 
                     </div>
 
+                    <div class="input-group" id="wrapper-empresa" style="display:none;">
+                        <label for="nomeEmpresa">Nome da empresa *</label>
+                        <input type="text" id="nomeEmpresa" maxlength="150" placeholder="Nome ou razão social">
+                    </div>
+
                     <!-- EMAIL -->
 
                     <div class="input-group">
@@ -569,6 +574,10 @@
             const inputCnpj =
                 document.getElementById("cnpj");
 
+            const wrapperEmpresa = document.getElementById("wrapper-empresa");
+            const nomeEmpresa = document.getElementById("nomeEmpresa");
+            wrapperEmpresa.style.display = tipoConta === "cnpj" ? "block" : "none";
+            nomeEmpresa.required = tipoConta === "cnpj";
             if (tipoConta === "cnpj") {
 
                 wrapperCnpj.style.display = "block";
@@ -589,96 +598,39 @@
                 inputCnpj.removeAttribute("required");
 
                 inputCnpj.value = "";
+                nomeEmpresa.value = "";
             }
         }
 
     </script>
 
-    <!-- CADASTRO DE USUÁRIO -->
-
+    <!-- CADASTRO DE USUÁRIO: API -->
     <script>
-
-        const form =
-            document.getElementById('formCadastroUsuario');
-
-        form.addEventListener('submit', async function(event) {
-
-            event.preventDefault();
-
-            const tipoConta =
-                document.getElementById('tipoConta').value;
-
-            const nome =
-                document.getElementById('nome').value;
-
-            const email =
-                document.getElementById('email').value;
-
-            const senha =
-                document.getElementById('senha').value;
-
-            const cnpjInput =
-                document.getElementById('cnpj');
-
-            const cnpj =
-                tipoConta === 'cnpj' ? cnpjInput.value : '';
-
-            const dados = {
-                tipoConta,
-                nome,
-                email,
-                senha,
-                cnpj
-            };
-
-            try {
-
-                // ATENÇÃO:
-                // Substituir pelo endpoint real do backend.
-                // O projeto atualmente usa a porta 3600.
-
-                const response = await fetch('URL_API', {
-
-                    method: 'POST',
-
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-
-                    body: JSON.stringify(dados)
-
-                });
-
-                const resultado = await response.json();
-
-                if (resultado.success) {
-
-                    alert('Cadastro realizado com sucesso!');
-
-                    form.reset();
-
-                    mudeTipoConta();
-
-                } else if (resultado.exists) {
-
-                    alert('Usuário já cadastrado!');
-
-                } else {
-
-                    alert('Erro ao cadastrar. Tente novamente.');
-
-                }
-
-            } catch (error) {
-
-                console.error(error);
-
-                alert('Erro de conexão com o servidor.');
-
-            }
-
-        });
-
+      document.getElementById('formCadastroUsuario').addEventListener('submit', async function(event) {
+        event.preventDefault();
+        const botao = this.querySelector('[type="submit"]');
+        const tipoConta = document.getElementById('tipoConta').value;
+        const dados = {
+          name: document.getElementById('nome').value.trim(),
+          email: document.getElementById('email').value.trim(),
+          password: document.getElementById('senha').value,
+          tipoConta,
+          cnpj: tipoConta === 'cnpj' ? document.getElementById('cnpj').value : null,
+          nomeEmpresa: tipoConta === 'cnpj' ? document.getElementById('nomeEmpresa').value.trim() : null
+        };
+        if (dados.password.length < 8) return alert('A senha deve ter pelo menos 8 caracteres.');
+        botao.disabled = true;
+        try {
+          const response = await fetch('http://localhost:3600/logins/cadastro', {
+            method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(dados)
+          });
+          const resultado = await response.json();
+          if (!response.ok) throw new Error(resultado.message || 'Erro ao cadastrar.');
+          alert('Conta criada! Agora entre com seu e-mail e senha.');
+          window.location.href = 'entrar.html';
+        } catch (erro) { alert(erro.message || 'Falha de conexão com a API.'); }
+        finally { botao.disabled = false; }
+      });
     </script>
 
     <!-- MODO ESCURO -->

@@ -1,21 +1,17 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rota do Rolê - Eventos da Cidade</title>
-
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
-
     <style>
         /* MENU DROPDOWN DE PERFIL */
         .user-profile-menu {
             position: relative;
             display: inline-block;
         }
-
         .profile-menu-btn {
             background: none;
             border: none;
@@ -30,11 +26,9 @@
             border-radius: 4px;
             transition: background 0.3s ease;
         }
-
         .profile-menu-btn:hover {
             background: rgba(255,255,255,0.1);
         }
-
         .profile-dropdown {
             display: none;
             position: absolute;
@@ -49,7 +43,6 @@
             margin-top: 10px;
             border: 1px solid var(--border-color, #ddd);
         }
-
         .profile-dropdown a {
             color: var(--dark-text, #2c3e50) !important;
             padding: 10px 16px;
@@ -59,33 +52,31 @@
             border-bottom: none !important;
             transition: background 0.2s ease;
         }
-
+        .link-cadastrar-evento[hidden] { display: none !important; }
+        .profile-dropdown a[hidden] {
+            display: none !important;
+        }
         .profile-dropdown a:hover {
             background-color: var(--light-bg, #f8f9fa);
             color: var(--primary-color, #ff6b35) !important;
         }
-
         .profile-dropdown i {
             margin-right: 8px;
             width: 16px;
             text-align: center;
         }
-
         .profile-dropdown hr {
             border: 0;
             border-top: 1px solid var(--border-color, #ddd);
             margin: 6px 0;
         }
-
         .profile-dropdown .logout-btn {
             color: #d32f2f !important;
             font-weight: bold;
         }
-
         .profile-dropdown .logout-btn:hover {
             background-color: #ffebee;
         }
-
         /* CARROSSEL DE PATROCINADORES */
         #partnersCarousel {
             position: relative;
@@ -93,14 +84,12 @@
             border-radius: 12px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
-
         #partnersCarousel .carousel-track {
             display: flex;
             width: 100%;
             height: 100%;
             transition: transform 0.5s ease-in-out;
         }
-
         #partnersCarousel .carousel-item {
             min-width: 100%;
             height: 100%;
@@ -109,11 +98,9 @@
             position: relative;
             display: none;
         }
-
         #partnersCarousel .carousel-item.active {
             display: block;
         }
-
         #partnersCarousel .carousel-btn {
             position: absolute;
             top: 50%;
@@ -128,19 +115,15 @@
             transition: background 0.3s;
             z-index: 10;
         }
-
         #partnersCarousel .carousel-btn:hover {
             background: var(--primary-color, #ff6b35);
         }
-
         #partnersCarousel .carousel-btn.prev {
             left: 15px;
         }
-
         #partnersCarousel .carousel-btn.next {
             right: 15px;
         }
-
         #partnersDots {
             position: absolute;
             bottom: 15px;
@@ -150,7 +133,6 @@
             gap: 8px;
             z-index: 10;
         }
-
         #partnersDots .dot {
             width: 12px;
             height: 12px;
@@ -159,19 +141,16 @@
             cursor: pointer;
             transition: background 0.3s, transform 0.3s;
         }
-
         #partnersDots .dot.active {
             background: var(--primary-color, #ff6b35);
             transform: scale(1.2);
         }
-
         /* CARROSSEL PRINCIPAL */
         #frontImgCarousel .front-carousel {
             position: relative;
             width: 100%;
             height: 100%;
         }
-
         #frontImgCarousel .front-carousel-item {
             position: absolute;
             inset: 0;
@@ -180,11 +159,9 @@
             background-position: center;
             transition: opacity 0.5s ease-in-out;
         }
-
         #frontImgCarousel .front-carousel-item.active {
             opacity: 1;
         }
-
         #frontImgCarousel .front-carousel-dot {
             width: 12px;
             height: 12px;
@@ -193,197 +170,174 @@
             cursor: pointer;
             transition: var(--transition);
         }
-
         #frontImgCarousel .front-carousel-dot.active {
             background-color: var(--accent-color);
             transform: scale(1.3);
         }
-
         #legacyCarouselHooks {
             display: none;
         }
     </style>
 </head>
-
 <body>
-
     <div id="google_translate_element" style="display:none;"></div>
-
     <!-- CABEÇALHO -->
     <header>
         <div class="header-container">
-
             <a href="index.html" class="logo">
                 <i class="fas fa-map-marker-alt"></i>
                 Rota do Rolê
             </a>
-
             <nav style="display:flex; align-items:center; gap:2rem;">
                 <ul style="list-style:none; display:flex; gap:2rem; margin:0; align-items:center;">
                     <li><a href="index.html">Início</a></li>
                     <li><a href="eventos.html">Eventos</a></li>
-                    <li><a href="cadastro.html">Cadastrar Evento</a></li>
+                    <li><a href="cadastro.html" class="link-cadastrar-evento" hidden>Cadastrar Evento</a></li>
                 </ul>
-
                 <div class="user-profile-menu">
-
                     <button onclick="toggleProfileMenu()"
                             class="profile-menu-btn"
                             id="profileMenuBtn">
-
                         <i class="fas fa-user-circle"
                            style="font-size:1.5rem; color:var(--accent-color,#f7b801);">
                         </i>
-
                         <span>Minha Conta</span>
                         <i class="fas fa-caret-down"></i>
                     </button>
-
                     <div id="profileDropdown" class="profile-dropdown">
-
                         <a href="perfil.html">
                             <i class="fas fa-id-card"></i>
                             Meu Perfil
                         </a>
-
+                        <a href="meus-eventos.html" id="linkMeusEventos" hidden>
+                            <i class="fas fa-calendar-check"></i>
+                            Meus Eventos
+                        </a>
                         <hr>
-
                         <a href="login.html">
                             <i class="fas fa-user-plus"></i>
                             Criar Conta
                         </a>
-
-                        <a href="entrar.html">
+                        <a href="entrar.html" onclick="sessionStorage.removeItem('rota_token')">
                             <i class="fas fa-sign-in-alt"></i>
                             Trocar Conta
                         </a>
-
                         <hr>
-
-                        <a href="index.html" class="logout-btn">
+                        <a href="index.html" class="logout-btn" onclick="sessionStorage.removeItem('rota_token')">
                             <i class="fas fa-sign-out-alt"></i>
                             Sair
                         </a>
                     </div>
                 </div>
-
                 <button id="themeToggle" title="Alternar Modo Escuro">
                     <i class="fas fa-moon"></i>
                 </button>
             </nav>
         </div>
     </header>
-
+    <!-- EXIBIR MEUS EVENTOS SOMENTE PARA EMPRESA/CNPJ -->
+    <script>
+        (async function configurarMenuEmpresa() {
+            const link = document.getElementById("linkMeusEventos");
+            const linksCadastro = document.querySelectorAll(".link-cadastrar-evento");
+            const token = sessionStorage.getItem("rota_token");
+            if (!link || !token) return;
+            try {
+                const resposta = await fetch("http://localhost:3600/logins/perfil", {
+                    headers: { Authorization: "Bearer " + token }
+                });
+                if (!resposta.ok) return;
+                const resultado = await resposta.json();
+                if (resultado.data && resultado.data.tipo_conta === "cnpj") {
+                    link.hidden = false;
+                    linksCadastro.forEach(elemento => { elemento.hidden = false; });
+                }
+            } catch (erro) {
+                console.warn("Não foi possível verificar a conta para o menu:", erro);
+            }
+        })();
+    </script>
     <!-- CARROSSEL PRINCIPAL -->
     <div class="container">
-
         <div class="carousel-container" id="frontImgCarousel">
-
             <div class="front-carousel" id="frontCarousel">
-
                 <div class="front-carousel-item active"
                      style="background-image:url('img/fateccarrossel.png');">
-
                     <div class="carousel-item-overlay">
                         <h3>Fatec Taquaritinga</h3>
                         <p>Eventos e oportunidades para a comunidade.</p>
                     </div>
                 </div>
-
                 <div class="front-carousel-item"
                      style="background-image:url('img/Fatec inscrições.png');">
-
                     <div class="carousel-item-overlay">
                         <h3>Inscrições Fatec</h3>
                         <p>Fique por dentro das novidades acadêmicas.</p>
                     </div>
                 </div>
-
             </div>
-
             <button class="carousel-btn prev"
                     id="frontPrevBtn">&#10094;</button>
-
             <button class="carousel-btn next"
                     id="frontNextBtn">&#10095;</button>
-
             <div class="carousel-controls" id="frontCarouselDots">
                 <span class="front-carousel-dot active"></span>
                 <span class="front-carousel-dot"></span>
             </div>
-
         </div>
-
         <div id="legacyCarouselHooks" aria-hidden="true">
             <div id="carousel"></div>
             <button id="prevBtn" type="button"></button>
             <button id="nextBtn" type="button"></button>
             <div id="carouselDots"></div>
         </div>
-
     </div>
     <!-- CONTAINER PRINCIPAL FECHADO CORRETAMENTE -->
-
     <!-- CATEGORIAS -->
     <section id="categorias">
         <div class="container">
-
             <h2>Explore por Categoria</h2>
-
             <div class="categories-grid">
-
                 <div class="category-card"
                      onclick="window.location.href='eventos.html?categoria=shows'">
                     <i class="fas fa-music"></i>
                     <h3>Shows</h3>
                 </div>
-
                 <div class="category-card"
                      onclick="window.location.href='eventos.html?categoria=bares'">
                     <i class="fas fa-beer"></i>
                     <h3>Bares</h3>
                 </div>
-
                 <div class="category-card"
                      onclick="window.location.href='eventos.html?categoria=restaurantes'">
                     <i class="fas fa-utensils"></i>
                     <h3>Restaurantes</h3>
                 </div>
-
                 <div class="category-card"
                      onclick="window.location.href='eventos.html?categoria=cultural'">
                     <i class="fas fa-theater-masks"></i>
                     <h3>Cultural</h3>
                 </div>
-
             </div>
         </div>
     </section>
-
     <!-- PARCEIROS -->
     <section id="parceiros">
         <div class="container">
-
             <h2>Nossos Parceiros</h2>
-
             <div class="carousel-container"
                  id="partnersCarousel"
                  style="height:300px;">
-
                 <div class="carousel-track" id="partnersTrack">
-
                     <div class="carousel-item"
                          style="background-image:url('img/Patrocinadores.webp'); filter:hue-rotate(45deg);">
-
                         <div class="carousel-item-overlay">
                             <h3>Fatec Taquaritinga</h3>
                             <p>Nosso Patrocinador Educativo e Institucional!</p>
                         </div>
                     </div>
-
                     <div class="carousel-item active"
                          style="background-image:url('https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=1200&q=80');">
-
                         <div class="carousel-item-overlay">
                             <h3>Apoio Local - Estabelecimentos</h3>
                             <p>
@@ -392,89 +346,66 @@
                             </p>
                         </div>
                     </div>
-
                 </div>
-
                 <button class="carousel-btn prev"
                         onclick="movePartnerCarousel(-1)">
                     &#10094;
                 </button>
-
                 <button class="carousel-btn next"
                         onclick="movePartnerCarousel(1)">
                     &#10095;
                 </button>
-
                 <div id="partnersDots">
                     <span class="dot active"
                           onclick="currentPartnerSlide(0)"></span>
-
                     <span class="dot"
                           onclick="currentPartnerSlide(1)"></span>
                 </div>
             </div>
-
             <div style="text-align:center; margin-top:2rem;">
-
                 <p style="margin-bottom:1rem; font-size:1.1rem;">
                     Tem um negócio e quer mais visibilidade na cidade?
                 </p>
-
                 <a href="parceria.html" class="btn btn-secondary">
                     <i class="fas fa-handshake"></i>
                     Seja um Parceiro / Patrocinador
                 </a>
             </div>
-
         </div>
     </section>
-
     <!-- BOTÃO DE TRADUÇÃO -->
     <button id="btn-traducao" title="Traduzir página">
         <i class="fas fa-language"></i>
     </button>
-
     <!-- RODAPÉ -->
     <!-- FORA DE QUALQUER CONTAINER PRINCIPAL -->
     <footer>
         <div class="container">
-
             <div class="footer-content">
-
                 <div class="footer-section">
-
                     <h4>Apoio Institucional</h4>
-
                     <div class="fatec-banner">
-
                         <a href="https://fatectq.cps.sp.gov.br/"
-                           target="_blank"
+                           target="\_blank"
                            rel="noopener noreferrer">
-
                             <img src="img/Fatec_Taquaritinga_Logo.png"
                                  alt="Logo Fatec Taquaritinga"
                                  style="max-height:40px;">
                         </a>
-
                     </div>
-
                     <p style="margin-top:1rem; font-size:0.9rem;">
                         Projeto acadêmico desenvolvido por alunos
                         da Fatec Taquaritinga.
                     </p>
-
                 </div>
-
                 <div class="footer-section">
-
                     <h4>Links Úteis</h4>
-
                     <ul>
                         <li>
                             <a href="eventos.html">Eventos</a>
                         </li>
                         <li>
-                            <a href="cadastro.html">Cadastrar Evento</a>
+                            <a href="cadastro.html" class="link-cadastrar-evento" hidden>Cadastrar Evento</a>
                         </li>
                         <li>
                             <a href="parceria.html">Seja um Patrocinador</a>
@@ -483,41 +414,31 @@
                             <a href="nos.html">Sobre Nós</a>
                         </li>
                     </ul>
-
                 </div>
-
                 <div class="footer-section">
-
                     <h4>Contato</h4>
-
                     <ul>
                         <li>
                             <a href="mailto:contato@rotadorole.com">
                                 contato@rotadorole.com
                             </a>
                         </li>
-
                         <li>
                             <a href="tel:+5511999999999">
                                 (11) 99999-9999
                             </a>
                         </li>
                     </ul>
-
                 </div>
-
             </div>
-
             <div class="footer-bottom">
                 <p>
                     &copy; 2026 Rota do Rolê.
                     Todos os direitos reservados.
                 </p>
             </div>
-
         </div>
     </footer>
-
     <!-- ACESSIBILIDADE -->
     <div vw class="enabled">
         <div vw-access-button class="active"></div>
@@ -525,29 +446,23 @@
             <div class="vw-plugin-top-wrapper"></div>
         </div>
     </div>
-
     <!-- MENU DE PERFIL -->
     <script>
         function toggleProfileMenu() {
             const dropdown =
                 document.getElementById("profileDropdown");
-
             if (!dropdown) return;
-
             if (dropdown.style.display === "block") {
                 dropdown.style.display = "none";
             } else {
                 dropdown.style.display = "block";
             }
         }
-
         window.addEventListener('click', function(event) {
             const btn =
                 document.getElementById("profileMenuBtn");
-
             const dropdown =
                 document.getElementById("profileDropdown");
-
             if (
                 btn &&
                 dropdown &&
@@ -558,135 +473,102 @@
             }
         });
     </script>
-
     <!-- CARROSSEL PRINCIPAL -->
     <script>
         (() => {
             const slides = document.querySelectorAll(
                 "#frontImgCarousel .front-carousel-item"
             );
-
             const dots = document.querySelectorAll(
                 "#frontImgCarousel .front-carousel-dot"
             );
-
             const prevBtn =
                 document.getElementById("frontPrevBtn");
-
             const nextBtn =
                 document.getElementById("frontNextBtn");
-
             let currentSlide = 0;
-
             if (!slides.length) return;
-
             function showSlide(index) {
                 currentSlide =
                     (index + slides.length) % slides.length;
-
                 slides.forEach(slide => {
                     slide.classList.remove("active");
                 });
-
                 dots.forEach(dot => {
                     dot.classList.remove("active");
                 });
-
                 slides[currentSlide].classList.add("active");
-
                 if (dots[currentSlide]) {
                     dots[currentSlide].classList.add("active");
                 }
             }
-
             if (prevBtn) {
                 prevBtn.addEventListener("click", () => {
                     showSlide(currentSlide - 1);
                 });
             }
-
             if (nextBtn) {
                 nextBtn.addEventListener("click", () => {
                     showSlide(currentSlide + 1);
                 });
             }
-
             dots.forEach((dot, index) => {
                 dot.addEventListener("click", () => {
                     showSlide(index);
                 });
             });
-
             setInterval(() => {
                 showSlide(currentSlide + 1);
             }, 5000);
-
         })();
     </script>
-
     <!-- CARROSSEL DE PATROCINADORES -->
     <script>
         let partnerIndex = 0;
-
         const partnerSlides = document.querySelectorAll(
             "#partnersCarousel .carousel-item"
         );
-
         const partnerDots = document.querySelectorAll(
             "#partnersDots .dot"
         );
-
         let partnerAutoCycle = null;
-
         function showPartnerSlide(index) {
             if (!partnerSlides.length) return;
-
             partnerIndex =
                 (index + partnerSlides.length) %
                 partnerSlides.length;
-
             partnerSlides.forEach(slide => {
                 slide.classList.remove("active");
             });
-
             partnerDots.forEach(dot => {
                 dot.classList.remove("active");
             });
-
             partnerSlides[partnerIndex].classList.add("active");
-
             if (partnerDots[partnerIndex]) {
                 partnerDots[partnerIndex].classList.add("active");
             }
         }
-
         function movePartnerCarousel(step) {
             showPartnerSlide(partnerIndex + step);
             resetPartnerTimer();
         }
-
         function currentPartnerSlide(index) {
             showPartnerSlide(index);
             resetPartnerTimer();
         }
-
         function resetPartnerTimer() {
             clearInterval(partnerAutoCycle);
-
             if (partnerSlides.length > 1) {
                 partnerAutoCycle = setInterval(() => {
                     showPartnerSlide(partnerIndex + 1);
                 }, 4000);
             }
         }
-
         resetPartnerTimer();
     </script>
-
     <!-- TRADUÇÃO -->
     <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
     <script src="https://unpkg.com/i18next/dist/umd/i18next.min.js"></script>
-
     <script>
         const resources = {
             en: {
@@ -711,7 +593,6 @@
             }
         };
     </script>
-
     <script>
         if (window.VLibras) {
             new window.VLibras.Widget(
@@ -719,7 +600,6 @@
             );
         }
     </script>
-
     <script>
         function googleTranslateElementInit() {
             if (window.google && google.translate) {
@@ -734,24 +614,18 @@
             }
         }
     </script>
-
     <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
-
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             const btnTraducao =
                 document.getElementById("btn-traducao");
-
             if (!btnTraducao) return;
-
             btnTraducao.addEventListener("click", function() {
                 const combo =
                     document.querySelector(".goog-te-combo");
-
                 if (combo) {
                     combo.value =
                         combo.value === "en" ? "pt" : "en";
-
                     combo.dispatchEvent(new Event("change"));
                 } else {
                     alert(
@@ -761,10 +635,8 @@
             });
         });
     </script>
-
     <!-- JAVASCRIPT PRINCIPAL -->
     <script src="js/script.js"></script>
     <script src="js/eventos.js"></script>
-
 </body>
 </html>

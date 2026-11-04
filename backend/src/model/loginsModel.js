@@ -1,69 +1,46 @@
-const { db } = require("../databases/DatabaseContext.js");
-const { valuesParams, extrair_dados,  gerar_sqlFields ,
-   gerar_sqlParams, gerar_sqlSets } = require( "../utils/sqlcomandos.js")
+const { db } = require('../databases/DatabaseContext.js');
+const bcrypt = require('bcryptjs');
 
-// nome da tabele = a nome do endpoint   
 const tableName = 'logins';
+const publicFields = 'id, name, email, telefone, cidade, foto_perfil, tipo_conta, cnpj, nome_empresa, validated';
 
-
-// selecionar todos os usuarios 
-async function Get(){
-  const sqlText = `SELECT * FROM ${tableName} ORDER BY id`;
-  const [result, fields] = await db.execute(sqlText); 
-  return {"message": "Success", "data":result } 
+async function FindByEmail(email) {
+  const [rows] = await db.execute('SELECT * FROM logins WHERE email = ? LIMIT 1', [email]);
+  return rows[0] || null;
 }
 
-// selecionar um registro pelo id
-async function GetById( id ){
-  // 
-  const sqlText = `SELECT * FROM  ${tableName} WHERE id = ? ORDER BY id`;
-  const [result, fields] = await db.execute(sqlText,[id]); 
-  return {"message": "Success", "data":result } 
+async function GetById(id) {
+  const [rows] = await db.execute(`SELECT ${publicFields} FROM logins WHERE id = ? LIMIT 1`, [id]);
+  return rows[0] || null;
 }
 
-async function Post(payload){
-  // instrução sql para envio ao banco
-  if ( !payload)   return {"message": "Error", "data": "Dados não informado !" }
-  extrair_dados(payload);
-  const local_fields = gerar_sqlFields();
-  const local_params = gerar_sqlParams() ;  
-  const valuessql = valuesParams();
-  const sqlText = `INSERT INTO  ${tableName} ( ${local_fields} ) VALUES ( ${local_params} )`;  
-  // executa a consulta no banco de dados
-  const [result, fields] = await db.execute( sqlText, valuessql );
-  // retorna para a proxima camada os dados dos banco
-  return {"message": "Sucess", "data": result }
- 
+async function Post({ name, email, password, tipo_conta, cnpj, nome_empresa }) {
+  const hash = await bcrypt.hash(password, 12);
+  const [result] = await db.execute(
+    'INSERT INTO logins (name, email, password, validated, tipo_conta, cnpj, nome_empresa) VALUES (?, ?, ?, ?, ?, ?, ?)',
+    [name, email, hash, 0, tipo_conta, cnpj, nome_empresa]
+  );
+  return GetById(result.insertId);
 }
 
-async function Put(payload, id){
-  // instrução sql para envio ao banco
-  if ( !payload)   return {"message": "Error", "data": "Dados não informado !" }
-  extrair_dados(payload);
-  const local_Sets = gerar_sqlSets(); 
-  const local_values = valuesParams() ;
-  const sqlText = `UPDATE  ${tableName} SET ${local_Sets} WHERE id = ?`;
-  // vetor com os valores para envio ao banco, manter os dados na order das coluna
-  // inclui no array/vetor o valor do id na ultima posição
-  local_values.push( id );
-  // executa a consulta no banco de dados
-  
-  const [result, fields] = await db.execute( sqlText, local_values );
-  // retorna para a proxima camada os dados dos banco
-  return {"message": "Sucess", "data": result }
- 
+async function Put(id, { name, email, telefone, cidade, tipo_conta, cnpj, nome_empresa }) {
+  const [result] = await db.execute(
+    'UPDATE logins SET name = ?, email = ?, telefone = ?, cidade = ?, tipo_conta = ?, cnpj = ?, nome_empresa = ? WHERE id = ?',
+    [name, email, telefone, cidade, tipo_conta, cnpj, nome_empresa, id]
+  );
+  return result.affectedRows ? GetById(id) : null;
 }
 
-// selecionar um registro pelo id
-async function Delete( id ){
-  // instrucao sql para excluir um registro
-  const sqlText = `DELETE FROM  ${tableName} WHERE id = ?`;
-  const [result, fields] = await db.execute(sqlText,[id]); 
-  return {"message": "Success", "data":result } 
+async function UpdatePhoto(id, filename) {
+  const [result] = await db.execute('UPDATE logins SET foto_perfil = ? WHERE id = ?', [filename, id]);
+  return result.affectedRows ? GetById(id) : null;
 }
 
-function EndPointName(){
-  return tableName;
+async function UpdatePassword(id, newPassword) {
+  const hash = await bcrypt.hash(newPassword, 12);
+  const [result] = await db.execute('UPDATE logins SET password = ? WHERE id = ?', [hash, id]);
+  return result.affectedRows > 0;
 }
 
-module.exports = { Get, GetById, Post, Put, Delete, EndPointName}
+function EndPointName() { return tableName; }
+module.exports = { FindByEmail, GetById, Post, Put, UpdatePhoto, UpdatePassword, EndPointName };

@@ -4,15 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Meu Perfil | Rota do Rolê</title>
 
-    <link rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
-        /* ===== CORES DO ROTA DO ROLÊ ===== */
-
         :root {
             --azul: #004e89;
             --azul-escuro: #074873;
@@ -35,7 +31,7 @@
 
         body {
             margin: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
             background: var(--fundo);
             color: var(--texto);
             line-height: 1.5;
@@ -52,8 +48,7 @@
             font: inherit;
         }
 
-        /* ===== CABEÇALHO ===== */
-
+        /* CABEÇALHO */
         .topo {
             min-height: 66px;
             background: linear-gradient(
@@ -72,7 +67,6 @@
             max-width: 1190px;
             padding: 0 24px;
             margin: auto;
-
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -83,7 +77,6 @@
             font-size: 22px;
             font-weight: 800;
             white-space: nowrap;
-
             display: flex;
             align-items: center;
             gap: 8px;
@@ -105,64 +98,87 @@
             color: #ffe8d7;
         }
 
-        /* ===== MENU MINHA CONTA ===== */
-
-        .perfil-menu {
+        /* MENU MINHA CONTA */
+        .user-profile-menu {
             position: relative;
+            display: inline-block;
         }
 
-        .perfil-acionador {
-            border: 0;
-            border-radius: 7px;
-            padding: 10px 13px;
-            background: rgba(255,255,255,0.12);
+        .profile-menu-btn {
+            background: none;
+            border: none;
             color: white;
             cursor: pointer;
-
             display: flex;
             align-items: center;
             gap: 8px;
-            font-weight: 700;
+            font-size: 1rem;
+            font-weight: 500;
+            padding: 5px 10px;
+            border-radius: 4px;
+            transition: background 0.3s ease;
         }
 
-        .perfil-acionador .fa-circle-user {
-            color: var(--amarelo);
-            font-size: 18px;
+        .profile-menu-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
         }
 
-        .menu-lista {
+        .profile-dropdown {
+            display: none;
             position: absolute;
             right: 0;
-            top: calc(100% + 9px);
-
-            background: white;
-            color: var(--texto);
-            width: 185px;
-            border-radius: 9px;
-            padding: 6px;
-            box-shadow: 0 12px 32px rgba(28,51,79,0.16);
-
-            display: none;
+            top: 100%;
+            background-color: var(--cartao);
+            min-width: 180px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+            border-radius: 8px;
+            padding: 8px 0;
+            z-index: 1000;
+            margin-top: 10px;
+            border: 1px solid var(--borda);
         }
 
-        .menu-lista.aberto {
+        .profile-dropdown a {
+            color: var(--texto) !important;
+            padding: 10px 16px;
+            text-decoration: none;
             display: block;
+            font-size: 0.95rem;
+            border-bottom: none !important;
+            transition: background 0.2s ease;
         }
 
-        .menu-lista a {
-            display: block;
-            padding: 10px;
-            border-radius: 6px;
-            font-size: 13px;
+        .profile-dropdown a[hidden] {
+            display: none !important;
         }
 
-        .menu-lista a:hover {
-            background: #fff1ec;
-            color: var(--laranja);
+        .profile-dropdown a:hover {
+            background-color: #f8f9fa;
+            color: var(--laranja) !important;
         }
 
-        /* ===== FAIXA PRINCIPAL ===== */
+        .profile-dropdown i {
+            margin-right: 8px;
+            width: 16px;
+            text-align: center;
+        }
 
+        .profile-dropdown hr {
+            border: 0;
+            border-top: 1px solid var(--borda);
+            margin: 6px 0;
+        }
+
+        .profile-dropdown .logout-btn {
+            color: #d32f2f !important;
+            font-weight: bold;
+        }
+
+        .profile-dropdown .logout-btn:hover {
+            background-color: #ffebee;
+        }
+
+        /* TÍTULO */
         .hero {
             background: linear-gradient(
                 110deg,
@@ -170,7 +186,6 @@
                 #706074 53%,
                 #f26838 100%
             );
-
             color: white;
             padding: 49px 20px 98px;
             text-align: center;
@@ -188,8 +203,7 @@
             color: #fffdfc;
         }
 
-        /* ===== CONTAINER DO PERFIL ===== */
-
+        /* CONTEÚDO DO PERFIL */
         .pagina {
             width: min(100% - 36px, 810px);
             margin: -54px auto 90px;
@@ -199,17 +213,15 @@
         .cartao {
             background: var(--cartao);
             border-radius: 13px;
-            box-shadow: 0 10px 32px rgba(14,52,80,0.09);
+            box-shadow: 0 10px 32px rgba(14, 52, 80, 0.09);
             overflow: hidden;
         }
 
         .perfil-cabecalho {
             padding: 27px 32px 23px;
-
             display: flex;
             align-items: center;
             gap: 18px;
-
             border-bottom: 1px solid #ebeff3;
         }
 
@@ -217,15 +229,20 @@
             width: 70px;
             height: 70px;
             border-radius: 50%;
-
             background: #e7f1fa;
             color: var(--azul);
-
             display: grid;
             place-items: center;
-
             font-size: 31px;
             flex-shrink: 0;
+            overflow: hidden;
+        }
+
+        .avatar img {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            object-fit: cover;
         }
 
         .perfil-cabecalho h2 {
@@ -244,13 +261,10 @@
             display: inline-flex;
             gap: 6px;
             align-items: center;
-
             background: #eaf3fb;
             color: var(--azul);
-
             padding: 5px 9px;
             border-radius: 20px;
-
             font-size: 11px;
             font-weight: 700;
             margin-top: 8px;
@@ -260,13 +274,11 @@
             padding: 28px 34px 35px;
         }
 
-        /* ===== TÍTULOS DO FORMULÁRIO ===== */
-
+        /* FORMULÁRIO */
         .titulo-secao {
             display: flex;
             align-items: center;
             gap: 9px;
-
             font-size: 17px;
             font-weight: 800;
             color: var(--azul);
@@ -285,7 +297,7 @@
 
         .linha {
             display: grid;
-            grid-template-columns: repeat(2, minmax(0,1fr));
+            grid-template-columns: repeat(2, minmax(0, 1fr));
             gap: 20px;
         }
 
@@ -305,22 +317,24 @@
         .campo select {
             height: 44px;
             width: 100%;
-
             border: 1px solid var(--borda);
             background: white;
             border-radius: 6px;
-
             padding: 0 13px;
             outline: 0;
-
             color: var(--texto);
             font-size: 14px;
+        }
+
+        .campo input[type="file"] {
+            height: auto;
+            padding: 10px 13px;
         }
 
         .campo input:focus,
         .campo select:focus {
             border-color: var(--azul);
-            box-shadow: 0 0 0 3px rgba(0,78,137,0.08);
+            box-shadow: 0 0 0 3px rgba(0, 78, 137, 0.08);
         }
 
         .campo input::placeholder {
@@ -333,8 +347,7 @@
             margin: 12px 0 27px;
         }
 
-        /* ===== TIPO DE CONTA ===== */
-
+        /* TIPO DE CONTA */
         .seletor-tipo {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -346,12 +359,10 @@
             border: 1.5px solid var(--borda);
             border-radius: 8px;
             padding: 14px;
-
             display: flex;
             gap: 12px;
             align-items: center;
-
-            cursor: pointer;
+            cursor: default;
             transition: 0.2s;
             background: white;
         }
@@ -382,8 +393,7 @@
             display: none;
         }
 
-        /* ===== ALTERAR SENHA ===== */
-
+        /* SENHA */
         .senha-input {
             position: relative;
         }
@@ -397,18 +407,15 @@
             right: 6px;
             top: 50%;
             transform: translateY(-50%);
-
             border: 0;
             background: transparent;
             color: #69798a;
-
             width: 36px;
             height: 34px;
             cursor: pointer;
         }
 
-        /* ===== BOTÕES ===== */
-
+        /* BOTÕES */
         .acoes {
             display: flex;
             justify-content: flex-end;
@@ -422,10 +429,8 @@
             padding: 12px 22px;
             border-radius: 7px;
             border: 1px solid var(--borda);
-
             background: white;
             color: var(--azul);
-
             font-weight: 700;
             font-size: 14px;
             cursor: pointer;
@@ -441,8 +446,7 @@
             background: #eb5a29;
         }
 
-        /* ===== MENSAGENS ===== */
-
+        /* MENSAGENS */
         .feedback {
             padding: 12px 14px;
             border-radius: 7px;
@@ -467,8 +471,7 @@
             color: #19517d;
         }
 
-        /* ===== RESPONSIVIDADE ===== */
-
+        /* RESPONSIVIDADE */
         @media (max-width: 650px) {
             .topo-interno {
                 padding: 12px 18px;
@@ -510,56 +513,78 @@
 </head>
 
 <body>
-
-    <!-- ===== CABEÇALHO ===== -->
-
+    <!-- CABEÇALHO -->
     <header class="topo">
         <div class="topo-interno">
-
             <a class="marca" href="index.html">
                 <i class="fas fa-map-marker-alt"></i>
                 Rota do Rolê
             </a>
 
             <nav class="navegacao" aria-label="Navegação principal">
-
                 <a href="index.html">Início</a>
                 <a href="eventos.html">Eventos</a>
                 <a href="cadastro.html">Cadastrar Evento</a>
 
-                <div class="perfil-menu">
-
-                    <button class="perfil-acionador"
-                            id="abrirMenu"
-                            type="button"
-                            aria-expanded="false">
-
-                        <i class="fas fa-circle-user"></i>
-                        Minha Conta
+                <div class="user-profile-menu">
+                    <button
+                        type="button"
+                        class="profile-menu-btn"
+                        id="profileMenuBtn"
+                        aria-expanded="false"
+                        aria-controls="profileDropdown"
+                    >
+                        <i
+                            class="fas fa-user-circle"
+                            style="font-size: 1.5rem; color: var(--amarelo);"
+                        ></i>
+                        <span>Minha Conta</span>
                         <i class="fas fa-caret-down"></i>
                     </button>
 
-                    <div id="menuLista" class="menu-lista">
-
+                    <div id="profileDropdown" class="profile-dropdown">
                         <a href="perfil.html">
-                            <i class="far fa-id-card"></i>
+                            <i class="fas fa-id-card"></i>
                             Meu Perfil
                         </a>
 
+                        <a href="meus-eventos.html" id="linkMeusEventos" hidden>
+                            <i class="fas fa-calendar-check"></i>
+                            Meus Eventos
+                        </a>
 
-                        <a href="entrar.html">
-                            <i class="fas fa-right-to-bracket"></i>
+                        <hr>
+
+                        <a href="login.html">
+                            <i class="fas fa-user-plus"></i>
+                            Criar Conta
+                        </a>
+
+                        <a
+                            href="entrar.html"
+                            onclick="sessionStorage.removeItem('rota_token')"
+                        >
+                            <i class="fas fa-sign-in-alt"></i>
                             Trocar Conta
                         </a>
 
+                        <hr>
+
+                        <a
+                            href="index.html"
+                            class="logout-btn"
+                            onclick="sessionStorage.removeItem('rota_token')"
+                        >
+                            <i class="fas fa-sign-out-alt"></i>
+                            Sair
+                        </a>
                     </div>
                 </div>
             </nav>
         </div>
     </header>
 
-    <!-- ===== TÍTULO ===== -->
-
+    <!-- TÍTULO -->
     <section class="hero">
         <h1>Meu Perfil</h1>
         <p>
@@ -567,24 +592,17 @@
         </p>
     </section>
 
-    <!-- ===== CONTEÚDO ===== -->
-
+    <!-- CONTEÚDO -->
     <main class="pagina">
-
         <div class="cartao">
-
             <div class="perfil-cabecalho">
-
                 <div class="avatar">
                     <i class="far fa-user"></i>
                 </div>
 
                 <div>
                     <h2>Configurações da Conta</h2>
-
-                    <p>
-                        Altere seus dados de forma simples e segura.
-                    </p>
+                    <p>Altere seus dados de forma simples e segura.</p>
 
                     <span class="tipo-badge" id="indicadorTipo">
                         <i class="fas fa-user"></i>
@@ -594,17 +612,15 @@
             </div>
 
             <div class="corpo">
-
-                <div id="feedback"
-                     class="feedback"
-                     role="status"
-                     aria-live="polite">
-                </div>
-
-                <!-- ===== FORMULÁRIO ===== -->
+                <div
+                    id="feedback"
+                    class="feedback"
+                    role="status"
+                    aria-live="polite"
+                ></div>
 
                 <form id="formPerfil" autocomplete="on">
-
+                    <!-- INFORMAÇÕES PESSOAIS -->
                     <h3 class="titulo-secao">
                         <i class="fas fa-user-pen"></i>
                         Informações pessoais
@@ -615,10 +631,8 @@
                     </p>
 
                     <div class="linha">
-
                         <div class="campo">
                             <label for="nome">Nome completo *</label>
-
                             <input
                                 id="nome"
                                 name="nome"
@@ -632,7 +646,6 @@
 
                         <div class="campo">
                             <label for="email">E-mail *</label>
-
                             <input
                                 id="email"
                                 name="email"
@@ -643,30 +656,59 @@
                                 maxlength="200"
                             >
                         </div>
+                    </div>
 
+                    <div class="linha">
+                        <div class="campo">
+                            <label for="telefone">Telefone</label>
+                            <input
+                                id="telefone"
+                                maxlength="20"
+                                type="tel"
+                                autocomplete="tel"
+                            >
+                        </div>
+
+                        <div class="campo">
+                            <label for="cidade">Cidade</label>
+                            <input
+                                id="cidade"
+                                maxlength="120"
+                                autocomplete="address-level2"
+                            >
+                        </div>
+                    </div>
+
+                    <div class="campo">
+                        <label for="fotoPerfil">
+                            Foto de perfil (JPG, PNG ou WebP, até 2 MB)
+                        </label>
+                        <input
+                            id="fotoPerfil"
+                            type="file"
+                            accept="image/jpeg,image/png,image/webp"
+                        >
                     </div>
 
                     <div class="divisor"></div>
 
-                    <!-- ===== TIPO DE CONTA ===== -->
-
+                    <!-- TIPO DE CONTA -->
                     <h3 class="titulo-secao">
                         <i class="fas fa-address-card"></i>
                         Tipo de conta
                     </h3>
 
                     <p class="subtitulo">
-                        Selecione a modalidade de cadastro da sua conta.
+                        O tipo de conta é definido no cadastro e não pode ser alterado aqui.
                     </p>
 
                     <div class="seletor-tipo">
-
                         <label class="opcao">
-
                             <input
                                 type="radio"
                                 name="tipoConta"
                                 value="fisica"
+                                disabled
                                 checked
                             >
 
@@ -675,18 +717,16 @@
                                     <i class="fas fa-user"></i>
                                     Pessoa física
                                 </strong>
-
                                 <small>Uso pessoal da plataforma</small>
                             </span>
-
                         </label>
 
                         <label class="opcao">
-
                             <input
                                 type="radio"
                                 name="tipoConta"
                                 value="empresa"
+                                disabled
                             >
 
                             <span>
@@ -694,23 +734,14 @@
                                     <i class="fas fa-building"></i>
                                     Empresa / CNPJ
                                 </strong>
-
                                 <small>Perfil empresarial ou comercial</small>
                             </span>
-
                         </label>
-
                     </div>
 
-                    <!-- CAMPOS DA EMPRESA -->
-
                     <div id="dadosEmpresa" class="linha oculto">
-
                         <div class="campo">
-                            <label for="razaoSocial">
-                                Nome da empresa *
-                            </label>
-
+                            <label for="razaoSocial">Nome da empresa *</label>
                             <input
                                 type="text"
                                 name="razaoSocial"
@@ -722,7 +753,6 @@
 
                         <div class="campo">
                             <label for="cnpj">CNPJ *</label>
-
                             <input
                                 type="text"
                                 name="cnpj"
@@ -732,13 +762,11 @@
                                 maxlength="18"
                             >
                         </div>
-
                     </div>
 
                     <div class="divisor"></div>
 
-                    <!-- ===== ALTERAÇÃO DE SENHA ===== -->
-
+                    <!-- ALTERAÇÃO DE SENHA -->
                     <h3 class="titulo-secao">
                         <i class="fas fa-lock"></i>
                         Alterar senha
@@ -749,11 +777,9 @@
                     </p>
 
                     <div class="campo">
-
                         <label for="senhaAtual">Senha atual</label>
 
                         <div class="senha-input">
-
                             <input
                                 id="senhaAtual"
                                 type="password"
@@ -764,25 +790,18 @@
                             <button
                                 type="button"
                                 class="ver-senha"
-                                aria-label="Mostrar senha">
-
+                                aria-label="Mostrar senha"
+                            >
                                 <i class="far fa-eye"></i>
-
                             </button>
-
                         </div>
                     </div>
 
                     <div class="linha">
-
                         <div class="campo">
-
-                            <label for="novaSenha">
-                                Nova senha
-                            </label>
+                            <label for="novaSenha">Nova senha</label>
 
                             <div class="senha-input">
-
                                 <input
                                     id="novaSenha"
                                     type="password"
@@ -794,22 +813,19 @@
                                 <button
                                     type="button"
                                     class="ver-senha"
-                                    aria-label="Mostrar senha">
-
+                                    aria-label="Mostrar senha"
+                                >
                                     <i class="far fa-eye"></i>
-
                                 </button>
                             </div>
                         </div>
 
                         <div class="campo">
-
                             <label for="confirmarSenha">
                                 Confirmar nova senha
                             </label>
 
                             <div class="senha-input">
-
                                 <input
                                     id="confirmarSenha"
                                     type="password"
@@ -820,275 +836,350 @@
                                 <button
                                     type="button"
                                     class="ver-senha"
-                                    aria-label="Mostrar senha">
-
+                                    aria-label="Mostrar senha"
+                                >
                                     <i class="far fa-eye"></i>
-
                                 </button>
                             </div>
                         </div>
-
                     </div>
 
-                    <!-- ===== BOTÕES ===== -->
-
+                    <!-- BOTÕES -->
                     <div class="acoes">
-
                         <button class="botao" type="reset">
                             Cancelar alterações
                         </button>
 
                         <button
                             class="botao botao-primario"
-                            type="submit">
-
+                            type="submit"
+                        >
                             <i class="fas fa-floppy-disk"></i>
                             Salvar alterações
-
                         </button>
                     </div>
-
                 </form>
             </div>
         </div>
     </main>
 
-    <!-- ===== JAVASCRIPT DA PÁGINA ===== -->
-
     <script>
-        // Interface visual do perfil.
-        // A integração com a API e o MySQL será feita no backend.
-        // Dados pessoais e senhas não são armazenados no localStorage.
+        const API = "http://localhost:3600";
 
-        const form = document.getElementById('formPerfil');
+        const form = document.getElementById("formPerfil");
+        const feedback = document.getElementById("feedback");
+        const indicadorTipo = document.getElementById("indicadorTipo");
+        const dadosEmpresa = document.getElementById("dadosEmpresa");
+        const cnpj = document.getElementById("cnpj");
+        const razaoSocial = document.getElementById("razaoSocial");
 
-        const feedback = document.getElementById('feedback');
+        const menuBtn = document.getElementById("profileMenuBtn");
+        const menuLista = document.getElementById("profileDropdown");
+        const linkMeusEventos = document.getElementById("linkMeusEventos");
 
-        const indicadorTipo = document.getElementById('indicadorTipo');
+        const token = sessionStorage.getItem("rota_token");
 
-        const dadosEmpresa = document.getElementById('dadosEmpresa');
+        let dadosIniciais = null;
 
-        const cnpj = document.getElementById('cnpj');
+        /* MENU MINHA CONTA */
+        menuBtn.addEventListener("click", function () {
+            const aberto = menuLista.style.display === "block";
 
-        const razaoSocial = document.getElementById('razaoSocial');
+            menuLista.style.display = aberto ? "none" : "block";
+            menuBtn.setAttribute("aria-expanded", String(!aberto));
+        });
 
-        const menuBtn = document.getElementById('abrirMenu');
+        document.addEventListener("click", function (event) {
+            if (!event.target.closest(".user-profile-menu")) {
+                menuLista.style.display = "none";
+                menuBtn.setAttribute("aria-expanded", "false");
+            }
+        });
 
-        const menuLista = document.getElementById('menuLista');
-
-
-        // ===== EXIBIR MENSAGENS =====
-
-        function mostrarFeedback(texto, classe = 'erro') {
-
+        /* MENSAGENS */
+        function mostrarFeedback(texto, classe = "erro") {
             feedback.textContent = texto;
-
-            feedback.className =
-                `feedback visivel ${classe}`;
+            feedback.className = `feedback visivel ${classe}`;
 
             feedback.scrollIntoView({
-                behavior: 'smooth',
-                block: 'nearest'
+                behavior: "smooth",
+                block: "nearest"
             });
         }
 
-
-        // ===== ALTERAR TIPO DE CONTA =====
-
+        /* TIPO DE CONTA */
         function mudarTipo() {
+            const empresa = form.querySelector(
+                'input[name="tipoConta"][value="empresa"]'
+            ).checked;
 
-            const empresa =
-                form.elements.tipoConta.value === 'empresa';
-
-            dadosEmpresa.classList.toggle('oculto', !empresa);
-
+            dadosEmpresa.classList.toggle("oculto", !empresa);
             cnpj.required = empresa;
-
             razaoSocial.required = empresa;
 
-            if (empresa) {
-                indicadorTipo.innerHTML =
-                    '<i class="fas fa-building"></i> Empresa / CNPJ';
-            } else {
-                indicadorTipo.innerHTML =
-                    '<i class="fas fa-user"></i> Pessoa física';
+            indicadorTipo.innerHTML = empresa
+                ? '<i class="fas fa-building"></i> Empresa / CNPJ'
+                : '<i class="fas fa-user"></i> Pessoa física';
+
+            linkMeusEventos.hidden = !empresa;
+        }
+
+        /* MÁSCARA DO CNPJ */
+        cnpj.addEventListener("input", function () {
+            const valor = cnpj.value
+                .replace(/\D/g, "")
+                .slice(0, 14);
+
+            cnpj.value = valor
+                .replace(/^(\d{2})(\d)/, "$1.$2")
+                .replace(/^(\d{2})\.(\d{3})(\d)/, "$1.$2.$3")
+                .replace(/\.(\d{3})(\d)/, ".$1/$2")
+                .replace(/(\d{4})(\d)/, "$1-$2");
+        });
+
+        /* MOSTRAR OU OCULTAR SENHAS */
+        document.querySelectorAll(".ver-senha").forEach(botao => {
+            botao.addEventListener("click", function () {
+                const input = botao.parentElement.querySelector("input");
+
+                input.type = input.type === "password"
+                    ? "text"
+                    : "password";
+
+                botao.setAttribute(
+                    "aria-label",
+                    input.type === "password"
+                        ? "Mostrar senha"
+                        : "Ocultar senha"
+                );
+
+                botao.querySelector("i").className =
+                    input.type === "password"
+                        ? "far fa-eye"
+                        : "far fa-eye-slash";
+            });
+        });
+
+        /* REQUISIÇÕES PARA API */
+        async function requisicao(url, options = {}) {
+            const resposta = await fetch(API + url, {
+                ...options,
+                headers: {
+                    Authorization: "Bearer " + token,
+                    ...(options.headers || {})
+                }
+            });
+
+            if (resposta.status === 401 || resposta.status === 403) {
+                sessionStorage.removeItem("rota_token");
+                window.location.replace("entrar.html");
+
+                throw new Error(
+                    "Sessão inválida ou expirada. Faça login novamente."
+                );
+            }
+
+            const json = await resposta.json();
+
+            if (!resposta.ok) {
+                throw new Error(
+                    json.message || "Erro na requisição."
+                );
+            }
+
+            return json.data;
+        }
+
+        /* CARREGAR PERFIL DO MYSQL */
+        async function carregarPerfil() {
+            try {
+                const usuario = await requisicao("/logins/perfil");
+
+                dadosIniciais = usuario;
+
+                document.getElementById("nome").value =
+                    usuario.name || "";
+
+                document.getElementById("email").value =
+                    usuario.email || "";
+
+                document.getElementById("telefone").value =
+                    usuario.telefone || "";
+
+                document.getElementById("cidade").value =
+                    usuario.cidade || "";
+
+                const empresa = usuario.tipo_conta === "cnpj";
+
+                form.querySelector(
+                    'input[name="tipoConta"][value="empresa"]'
+                ).checked = empresa;
+
+                form.querySelector(
+                    'input[name="tipoConta"][value="fisica"]'
+                ).checked = !empresa;
+
+                cnpj.value = usuario.cnpj || "";
+                razaoSocial.value = usuario.nome_empresa || "";
+
+                mudarTipo();
+
+                const avatar = document.querySelector(".avatar");
+
+                if (usuario.foto_perfil) {
+                    avatar.replaceChildren();
+
+                    const img = document.createElement("img");
+                    img.src = API + usuario.foto_perfil;
+                    img.alt = "Foto do perfil";
+
+                    avatar.appendChild(img);
+                } else {
+                    avatar.innerHTML = '<i class="far fa-user"></i>';
+                }
+
+            } catch (erro) {
+                mostrarFeedback(erro.message);
             }
         }
 
-        form.querySelectorAll('input[name="tipoConta"]')
-            .forEach(radio => {
-
-                radio.addEventListener('change', mudarTipo);
-
-            });
-
-
-        // ===== MÁSCARA DO CNPJ =====
-
-        cnpj.addEventListener('input', () => {
-
-            const v = cnpj.value
-                .replace(/\D/g, '')
-                .slice(0, 14);
-
-            cnpj.value = v
-                .replace(/^(\d{2})(\d)/, '$1.$2')
-                .replace(/^(\d{2})\.(\d{3})(\d)/, '$1.$2.$3')
-                .replace(/\.(\d{3})(\d)/, '.$1/$2')
-                .replace(/(\d{4})(\d)/, '$1-$2');
-
-        });
-
-
-        // ===== MOSTRAR OU OCULTAR SENHA =====
-
-        document.querySelectorAll('.ver-senha')
-            .forEach(botao => {
-
-                botao.addEventListener('click', () => {
-
-                    const input =
-                        botao.parentElement.querySelector('input');
-
-                    input.type =
-                        input.type === 'password'
-                            ? 'text'
-                            : 'password';
-
-                    botao.setAttribute(
-                        'aria-label',
-                        input.type === 'password'
-                            ? 'Mostrar senha'
-                            : 'Ocultar senha'
-                    );
-
-                    botao.querySelector('i').className =
-                        input.type === 'password'
-                            ? 'far fa-eye'
-                            : 'far fa-eye-slash';
-
-                });
-
-            });
-
-
-        // ===== VALIDAÇÃO DO FORMULÁRIO =====
-
-        form.addEventListener('submit', (event) => {
-
+        /* SALVAR ALTERAÇÕES */
+        form.addEventListener("submit", async function (event) {
             event.preventDefault();
 
-            const atual =
-                document.getElementById('senhaAtual').value;
-
-            const nova =
-                document.getElementById('novaSenha').value;
-
-            const confirmar =
-                document.getElementById('confirmarSenha').value;
-
-            // Validar alteração de senha
-
-            if (atual || nova || confirmar) {
-
-                if (!atual || !nova || !confirmar) {
-
-                    mostrarFeedback(
-                        'Para alterar a senha, preencha os três campos de senha.'
-                    );
-
-                    return;
-                }
-
-                if (nova.length < 8) {
-
-                    mostrarFeedback(
-                        'A nova senha precisa ter pelo menos 8 caracteres.'
-                    );
-
-                    return;
-                }
-
-                if (nova !== confirmar) {
-
-                    mostrarFeedback(
-                        'A confirmação da nova senha não coincide.'
-                    );
-
-                    return;
-                }
+            if (!token) {
+                return mostrarFeedback("Entre na sua conta primeiro.");
             }
 
-            // Validar quantidade de dígitos do CNPJ
+            if (!dadosIniciais) {
+                return mostrarFeedback(
+                    "Aguarde o carregamento do perfil."
+                );
+            }
+
+            const atual = document.getElementById("senhaAtual").value;
+            const nova = document.getElementById("novaSenha").value;
+            const confirmar = document.getElementById("confirmarSenha").value;
 
             if (
-                form.elements.tipoConta.value === 'empresa' &&
-                cnpj.value.replace(/\D/g, '').length !== 14
+                (atual || nova || confirmar) &&
+                (!atual || nova.length < 8 || nova !== confirmar)
             ) {
+                return mostrarFeedback(
+                    "Confira a senha atual, a nova senha (mínimo 8 caracteres) e a confirmação."
+                );
+            }
+
+            const tipoConta = dadosIniciais.tipo_conta === "cnpj"
+                ? "cnpj"
+                : "usuario";
+
+            const dados = {
+                name: document.getElementById("nome").value.trim(),
+                email: document.getElementById("email").value.trim(),
+                telefone: document.getElementById("telefone").value.trim(),
+                cidade: document.getElementById("cidade").value.trim(),
+                tipoConta,
+                cnpj: tipoConta === "cnpj" ? cnpj.value : null,
+                nomeEmpresa: tipoConta === "cnpj"
+                    ? razaoSocial.value.trim()
+                    : null
+            };
+
+            if (
+                tipoConta === "cnpj" &&
+                dados.cnpj.replace(/\D/g, "").length !== 14
+            ) {
+                return mostrarFeedback(
+                    "Informe CNPJ com 14 dígitos."
+                );
+            }
+
+            const foto = document.getElementById("fotoPerfil").files[0];
+
+            if (foto && foto.size > 2 * 1024 * 1024) {
+                return mostrarFeedback("Foto maior que 2 MB.");
+            }
+
+            const botao = form.querySelector('[type="submit"]');
+            botao.disabled = true;
+
+            try {
+                await requisicao("/logins/perfil", {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(dados)
+                });
+
+                if (foto) {
+                    const formData = new FormData();
+                    formData.append("foto", foto);
+
+                    await requisicao("/logins/foto", {
+                        method: "POST",
+                        body: formData
+                    });
+                }
+
+                if (nova) {
+                    await requisicao("/logins/senha", {
+                        method: "PUT",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            senhaAtual: atual,
+                            novaSenha: nova
+                        })
+                    });
+
+                    sessionStorage.removeItem("rota_token");
+
+                    alert("Senha alterada. Faça login novamente.");
+                    window.location.href = "entrar.html";
+                    return;
+                }
+
+                await carregarPerfil();
 
                 mostrarFeedback(
-                    'Informe um CNPJ com 14 dígitos.'
+                    "Alterações salvas no MySQL!",
+                    "info"
                 );
 
-                return;
+            } catch (erro) {
+                mostrarFeedback(erro.message);
+            } finally {
+                botao.disabled = false;
             }
-
-            // Integração futura com o backend
-
-            mostrarFeedback(
-                'Formulário validado. Para salvar as informações no banco de dados, ainda é necessário integrar esta página à API do Rota do Rolê.',
-                'info'
-            );
-
         });
 
+        /* CANCELAR ALTERAÇÕES */
+        form.addEventListener("reset", function () {
+            feedback.className = "feedback";
 
-        // ===== LIMPAR FORMULÁRIO =====
+            setTimeout(function () {
+                mudarTipo();
 
-        form.addEventListener('reset', () => {
-
-            feedback.className = 'feedback';
-
-            setTimeout(mudarTipo, 0);
-
+                if (dadosIniciais) {
+                    carregarPerfil();
+                }
+            }, 0);
         });
 
+        /* VERIFICAR SESSÃO */
+        if (!token) {
+            linkMeusEventos.hidden = true;
+            form.querySelector('[type="submit"]').disabled = true;
 
-        // ===== MENU MINHA CONTA =====
-
-        menuBtn.addEventListener('click', () => {
-
-            const aberto =
-                menuLista.classList.toggle('aberto');
-
-            menuBtn.setAttribute(
-                'aria-expanded',
-                String(aberto)
-            );
-
-        });
-
-        document.addEventListener('click', (event) => {
-
-            if (!event.target.closest('.perfil-menu')) {
-
-                menuLista.classList.remove('aberto');
-
-                menuBtn.setAttribute(
-                    'aria-expanded',
-                    'false'
-                );
-
-            }
-
-        });
-
-
-        // ===== INICIALIZAÇÃO =====
+            window.location.replace("entrar.html");
+        } else {
+            carregarPerfil();
+        }
 
         mudarTipo();
-
     </script>
-
 </body>
 </html>

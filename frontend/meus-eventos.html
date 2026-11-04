@@ -1,0 +1,1174 @@
+
+<!doctype html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Meus Eventos | Rota do Rolê</title>
+
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+    <style>
+        :root {
+            --azul: #004e89;
+            --laranja: #ff6b35;
+            --borda-evento: #dfe5eb;
+        }
+
+        /* CABEÇALHO */
+        header {
+            margin: 0;
+        }
+
+        header .header-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .meus-navegacao {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .meus-navegacao ul {
+            list-style: none;
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* MENU MINHA CONTA */
+        .user-profile-menu {
+            position: relative;
+            display: inline-block;
+        }
+
+        .profile-menu-btn {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            padding: 5px 10px;
+            border-radius: 4px;
+            transition: background 0.3s ease;
+        }
+
+        .profile-menu-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .profile-dropdown {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 100%;
+            background-color: var(--card-bg, #ffffff);
+            min-width: 180px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+            border-radius: 8px;
+            padding: 8px 0;
+            z-index: 1000;
+            margin-top: 10px;
+            border: 1px solid var(--border-color, #ddd);
+        }
+
+        .profile-dropdown a {
+            color: var(--dark-text, #2c3e50) !important;
+            padding: 10px 16px;
+            text-decoration: none;
+            display: block;
+            font-size: 0.95rem;
+            border-bottom: none !important;
+            transition: background 0.2s ease;
+        }
+
+        .profile-dropdown a[hidden] {
+            display: none !important;
+        }
+
+        .profile-dropdown a:hover {
+            background-color: var(--light-bg, #f8f9fa);
+            color: var(--primary-color, #ff6b35) !important;
+        }
+
+        .profile-dropdown i {
+            margin-right: 8px;
+            width: 16px;
+            text-align: center;
+        }
+
+        .profile-dropdown hr {
+            border: 0;
+            border-top: 1px solid var(--border-color, #ddd);
+            margin: 6px 0;
+        }
+
+        .profile-dropdown .logout-btn {
+            color: #d32f2f !important;
+            font-weight: bold;
+        }
+
+        .profile-dropdown .logout-btn:hover {
+            background-color: #ffebee;
+        }
+
+        /* TÍTULO */
+        .meus-hero {
+            background: linear-gradient(
+                110deg,
+                #104b79,
+                #686074,
+                #f26838
+            );
+            padding: 48px 20px;
+            color: #fff;
+            text-align: center;
+            margin: 0;
+        }
+
+        .meus-hero h1,
+        .meus-hero p {
+            color: #fff;
+        }
+
+        .meus-hero p {
+            margin: 0;
+        }
+
+        /* CONTEÚDO */
+        .meus-conteudo {
+            max-width: 1200px;
+            margin: 35px auto 70px;
+            padding: 0 20px;
+        }
+
+        .meus-acoes {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .meus-acoes h2 {
+            color: var(--azul);
+            margin: 0;
+        }
+
+        .meus-botoes {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .meus-btn {
+            border: 0;
+            border-radius: 7px;
+            padding: 11px 17px;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .meus-btn-azul {
+            background: var(--azul);
+            color: #fff;
+        }
+
+        .meus-btn-laranja {
+            background: var(--laranja);
+            color: #fff;
+        }
+
+        .meus-btn-excluir {
+            background: #c62828;
+            color: #fff;
+        }
+
+        .meus-btn-cancelar {
+            background: #e9edf2;
+            color: #25364a;
+        }
+
+        .meus-btn:hover {
+            filter: brightness(0.92);
+        }
+
+        .meus-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        /* MENSAGENS */
+        .meus-mensagem {
+            padding: 16px;
+            border-radius: 8px;
+            background: var(--card-bg, #fff);
+            border: 1px solid var(--borda-evento);
+            margin-bottom: 20px;
+        }
+
+        .meus-mensagem.erro {
+            color: #b71c1c;
+            border-color: #e9aaaa;
+        }
+
+        .meus-mensagem[hidden] {
+            display: none;
+        }
+
+        /* CARDS */
+        .meus-grade {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 24px;
+            align-items: stretch;
+        }
+
+        .meus-card {
+            min-width: 0;
+            background: var(--card-bg, #fff);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 18px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--border-color, #ddd);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .meus-imagem {
+            height: 185px;
+            flex-shrink: 0;
+            background: linear-gradient(135deg, #004e89, #ff6b35);
+            background-position: center;
+            background-size: cover;
+            position: relative;
+        }
+
+        .meus-categoria {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            background: var(--laranja);
+            color: #fff;
+            padding: 5px 11px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .meus-card-corpo {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .meus-card-corpo h3 {
+            color: var(--azul);
+            margin: 0 0 13px;
+            font-size: 20px;
+            overflow-wrap: anywhere;
+        }
+
+        .meus-info {
+            font-size: 14px;
+            margin: 8px 0;
+            color: var(--dark-text, #344054);
+            overflow-wrap: anywhere;
+        }
+
+        .meus-info i {
+            color: var(--laranja);
+            margin-right: 7px;
+        }
+
+        .meus-descricao {
+            margin: 14px 0;
+            font-size: 14px;
+            line-height: 1.6;
+            overflow-wrap: anywhere;
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 4;
+            line-clamp: 4;
+            overflow: hidden;
+        }
+
+        .meus-card-botoes {
+            display: flex;
+            gap: 10px;
+            margin-top: auto;
+            padding-top: 14px;
+        }
+
+        .meus-card-botoes button {
+            flex: 1;
+            min-width: 0;
+        }
+
+        /* MODAL DE EDIÇÃO */
+        .meus-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.65);
+            z-index: 99999;
+            padding: 20px;
+            overflow-y: auto;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .meus-modal.aberto {
+            display: flex;
+        }
+
+        .meus-modal-conteudo {
+            background: #fff;
+            color: #25364a;
+            width: 100%;
+            max-width: 720px;
+            border-radius: 12px;
+            padding: 28px;
+            margin: auto;
+        }
+
+        .meus-modal-conteudo h2 {
+            color: var(--azul);
+            margin-top: 0;
+        }
+
+        .meus-form-grade {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 16px;
+        }
+
+        .meus-campo {
+            margin-bottom: 15px;
+            min-width: 0;
+        }
+
+        .meus-campo label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 700;
+            font-size: 13px;
+            color: var(--azul);
+        }
+
+        .meus-campo input,
+        .meus-campo select,
+        .meus-campo textarea {
+            width: 100%;
+            border: 1px solid #dfe5eb;
+            border-radius: 6px;
+            padding: 11px;
+            font: inherit;
+            background: #fff;
+            color: #25364a;
+            box-sizing: border-box;
+        }
+
+        .meus-campo textarea {
+            min-height: 110px;
+            resize: vertical;
+        }
+
+        .meus-modal-acoes {
+            display: flex;
+            justify-content: flex-end;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        /* RESPONSIVIDADE */
+        @media (max-width: 950px) {
+            .meus-grade {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 650px) {
+            .meus-grade,
+            .meus-form-grade {
+                grid-template-columns: 1fr;
+            }
+
+            .meus-modal-conteudo {
+                padding: 20px;
+            }
+
+            .meus-card-botoes {
+                flex-direction: column;
+            }
+
+            .meus-acoes {
+                align-items: flex-start;
+            }
+
+            header .header-container {
+                flex-wrap: wrap;
+                gap: 12px;
+            }
+
+            .meus-navegacao {
+                flex-wrap: wrap;
+                gap: 12px;
+            }
+
+            .meus-navegacao ul {
+                flex-wrap: wrap;
+                gap: 12px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- CABEÇALHO -->
+    <header>
+        <div class="header-container">
+            <a href="index.html" class="logo">
+                <i class="fas fa-map-marker-alt"></i>
+                Rota do Rolê
+            </a>
+
+            <nav class="meus-navegacao">
+                <ul>
+                    <li><a href="index.html">Início</a></li>
+                    <li><a href="eventos.html">Eventos</a></li>
+                    <li><a href="cadastro.html">Cadastrar Evento</a></li>
+                </ul>
+
+                <div class="user-profile-menu">
+                    <button
+                        type="button"
+                        class="profile-menu-btn"
+                        id="profileMenuBtn"
+                        aria-expanded="false"
+                        aria-controls="profileDropdown"
+                    >
+                        <i
+                            class="fas fa-user-circle"
+                            style="font-size: 1.5rem; color: var(--accent-color, #f7b801);"
+                        ></i>
+
+                        <span>Minha Conta</span>
+                        <i class="fas fa-caret-down"></i>
+                    </button>
+
+                    <div id="profileDropdown" class="profile-dropdown">
+                        <a href="perfil.html">
+                            <i class="fas fa-id-card"></i>
+                            Meu Perfil
+                        </a>
+
+                        <a
+                            href="meus-eventos.html"
+                            id="linkMeusEventos"
+                            hidden
+                        >
+                            <i class="fas fa-calendar-check"></i>
+                            Meus Eventos
+                        </a>
+
+                        <hr>
+
+                        <a href="login.html">
+                            <i class="fas fa-user-plus"></i>
+                            Criar Conta
+                        </a>
+
+                        <a
+                            href="entrar.html"
+                            onclick="sessionStorage.removeItem('rota_token')"
+                        >
+                            <i class="fas fa-sign-in-alt"></i>
+                            Trocar Conta
+                        </a>
+
+                        <hr>
+
+                        <a
+                            href="index.html"
+                            class="logout-btn"
+                            onclick="sessionStorage.removeItem('rota_token')"
+                        >
+                            <i class="fas fa-sign-out-alt"></i>
+                            Sair
+                        </a>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- TÍTULO -->
+    <section class="meus-hero">
+        <h1>
+            <i class="fas fa-calendar-check"></i>
+            Meus Eventos
+        </h1>
+
+        <p>
+            Visualize e gerencie os eventos cadastrados pela sua empresa.
+        </p>
+    </section>
+
+    <!-- EVENTOS DA EMPRESA -->
+    <main class="meus-conteudo">
+        <div class="meus-acoes">
+            <h2>Eventos da minha empresa</h2>
+
+            <div class="meus-botoes">
+                <a
+                    class="meus-btn meus-btn-azul"
+                    href="eventos.html"
+                >
+                    <i class="fas fa-arrow-left"></i>
+                    Todos os Eventos
+                </a>
+
+                <a
+                    class="meus-btn meus-btn-laranja"
+                    href="cadastro.html"
+                >
+                    <i class="fas fa-plus"></i>
+                    Cadastrar Evento
+                </a>
+            </div>
+        </div>
+
+        <div
+            id="mensagemEventos"
+            class="meus-mensagem"
+            role="status"
+            aria-live="polite"
+        >
+            Carregando eventos da sua empresa...
+        </div>
+
+        <div id="gradeMeusEventos" class="meus-grade"></div>
+    </main>
+
+    <!-- MODAL DE EDIÇÃO -->
+    <div
+        id="modalEditar"
+        class="meus-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="tituloModal"
+        aria-hidden="true"
+    >
+        <div class="meus-modal-conteudo">
+            <h2 id="tituloModal">
+                <i class="fas fa-pen-to-square"></i>
+                Editar Evento
+            </h2>
+
+            <form id="formEditar">
+                <input type="hidden" id="editarId" />
+
+                <div class="meus-campo">
+                    <label for="editarTitulo">Título *</label>
+                    <input id="editarTitulo" required />
+                </div>
+
+                <div class="meus-campo">
+                    <label for="editarDescricao">Descrição *</label>
+                    <textarea id="editarDescricao" required></textarea>
+                </div>
+
+                <div class="meus-form-grade">
+                    <div class="meus-campo">
+                        <label for="editarData">Data *</label>
+                        <input type="date" id="editarData" required />
+                    </div>
+
+                    <div class="meus-campo">
+                        <label for="editarHorario">Horário</label>
+                        <input type="time" id="editarHorario" />
+                    </div>
+
+                    <div class="meus-campo">
+                        <label for="editarCategoria">Categoria</label>
+                        <select id="editarCategoria">
+                            <option value="shows">Shows</option>
+                            <option value="bares">Bares</option>
+                            <option value="restaurantes">Restaurantes</option>
+                            <option value="cultural">Cultural</option>
+                            <option value="esportes">Esportes</option>
+                        </select>
+                    </div>
+
+                    <div class="meus-campo">
+                        <label for="editarDuracao">Duração (horas)</label>
+                        <input
+                            type="number"
+                            min="0"
+                            id="editarDuracao"
+                        />
+                    </div>
+
+                    <div class="meus-campo">
+                        <label for="editarLocalizacao">Local</label>
+                        <input id="editarLocalizacao" />
+                    </div>
+
+                    <div class="meus-campo">
+                        <label for="editarCidade">Cidade</label>
+                        <input id="editarCidade" />
+                    </div>
+
+                    <div class="meus-campo">
+                        <label for="editarBairro">Bairro</label>
+                        <input id="editarBairro" />
+                    </div>
+
+                    <div class="meus-campo">
+                        <label for="editarIngresso">Ingresso</label>
+                        <select id="editarIngresso">
+                            <option value="">Selecione</option>
+                            <option value="gratuito">Gratuito</option>
+                            <option value="pago">Pago</option>
+                        </select>
+                    </div>
+
+                    <div class="meus-campo">
+                        <label for="editarPreco">Preço (R$)</label>
+                        <input
+                            type="number"
+                            min="0"
+                            step="1"
+                            id="editarPreco"
+                        />
+                    </div>
+
+                    <div class="meus-campo">
+                        <label for="editarLink">Link do evento</label>
+                        <input type="url" id="editarLink" />
+                    </div>
+
+                    <div class="meus-campo">
+                        <label for="editarNome">Responsável</label>
+                        <input id="editarNome" />
+                    </div>
+
+                    <div class="meus-campo">
+                        <label for="editarEmail">E-mail</label>
+                        <input type="email" id="editarEmail" />
+                    </div>
+
+                    <div class="meus-campo">
+                        <label for="editarTelefone">Telefone</label>
+                        <input id="editarTelefone" maxlength="20" />
+                    </div>
+                </div>
+
+                <p style="font-size: 13px; color: #697a8b;">
+                    A imagem atual será mantida nesta edição.
+                </p>
+
+                <div class="meus-modal-acoes">
+                    <button
+                        type="button"
+                        class="meus-btn meus-btn-cancelar"
+                        id="cancelarEdicao"
+                    >
+                        Cancelar
+                    </button>
+
+                    <button
+                        type="submit"
+                        class="meus-btn meus-btn-laranja"
+                        id="salvarEdicao"
+                    >
+                        <i class="fas fa-floppy-disk"></i>
+                        Salvar Alterações
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const API_EVENTOS = "http://localhost:3600/eventos";
+        const API_LOGIN = "http://localhost:3600/logins/perfil";
+
+        const token = sessionStorage.getItem("rota_token");
+
+        const grade = document.getElementById("gradeMeusEventos");
+        const mensagem = document.getElementById("mensagemEventos");
+        const modal = document.getElementById("modalEditar");
+        const formEditar = document.getElementById("formEditar");
+
+        const menuBtn = document.getElementById("profileMenuBtn");
+        const menuLista = document.getElementById("profileDropdown");
+        const linkMeusEventos = document.getElementById("linkMeusEventos");
+
+        let meusEventos = [];
+
+        /* MENU MINHA CONTA */
+        menuBtn.addEventListener("click", function () {
+            const aberto = menuLista.style.display === "block";
+
+            menuLista.style.display = aberto ? "none" : "block";
+            menuBtn.setAttribute("aria-expanded", String(!aberto));
+        });
+
+        document.addEventListener("click", function (evento) {
+            if (!evento.target.closest(".user-profile-menu")) {
+                menuLista.style.display = "none";
+                menuBtn.setAttribute("aria-expanded", "false");
+            }
+        });
+
+        /* MENSAGENS */
+        function mostrarMensagem(texto, erro = false) {
+            mensagem.textContent = texto;
+
+            mensagem.className = erro
+                ? "meus-mensagem erro"
+                : "meus-mensagem";
+
+            mensagem.hidden = false;
+        }
+
+        function esconderMensagem() {
+            mensagem.hidden = true;
+        }
+
+        /* CAMPOS */
+        function valorCampo(id) {
+            return document.getElementById(id).value;
+        }
+
+        function preencherCampo(id, valor) {
+            document.getElementById(id).value = valor ?? "";
+        }
+
+        function dataSimples(valor) {
+            return valor ? String(valor).slice(0, 10) : "";
+        }
+
+        function formatarData(valor) {
+            const partes = dataSimples(valor).split("-");
+
+            return partes.length === 3
+                ? partes[2] + "/" + partes[1] + "/" + partes[0]
+                : "Data a definir";
+        }
+
+        function criarElemento(tag, classe, texto) {
+            const el = document.createElement(tag);
+
+            if (classe) {
+                el.className = classe;
+            }
+
+            if (texto !== undefined) {
+                el.textContent = texto;
+            }
+
+            return el;
+        }
+
+        /* REQUISIÇÕES PARA API */
+        async function requisicao(url, opcoes = {}) {
+            const resposta = await fetch(url, {
+                ...opcoes,
+                headers: {
+                    Authorization: "Bearer " + token,
+                    ...(opcoes.headers || {})
+                }
+            });
+
+            let resultado;
+
+            try {
+                resultado = await resposta.json();
+            } catch {
+                throw new Error("Resposta inválida da API.");
+            }
+
+            if (resposta.status === 401) {
+                sessionStorage.removeItem("rota_token");
+                window.location.replace("entrar.html");
+
+                throw new Error(
+                    "Sua sessão expirou. Faça login novamente."
+                );
+            }
+
+            if (!resposta.ok) {
+                throw new Error(
+                    resultado.message ||
+                    "Não foi possível concluir a operação."
+                );
+            }
+
+            return resultado;
+        }
+
+        /* CRIAR CARD DO EVENTO */
+        function criarCard(evento) {
+            const card = criarElemento("article", "meus-card");
+            const imagem = criarElemento("div", "meus-imagem");
+
+            const arquivo = String(
+                evento.imagem || evento.foto || ""
+            )
+                .trim()
+                .split(/[\\/]/)
+                .pop();
+
+            if (arquivo) {
+                imagem.style.backgroundImage =
+                    'url("http://localhost:3600/uploads/' +
+                    encodeURIComponent(arquivo) +
+                    '")';
+            }
+
+            imagem.appendChild(
+                criarElemento(
+                    "span",
+                    "meus-categoria",
+                    evento.categoria || "Evento"
+                )
+            );
+
+            const corpo = criarElemento("div", "meus-card-corpo");
+
+            corpo.appendChild(
+                criarElemento(
+                    "h3",
+                    "",
+                    evento.titulo || "Sem título"
+                )
+            );
+
+            const informacoes = [
+                [
+                    "fa-calendar",
+                    formatarData(evento.data)
+                ],
+                [
+                    "fa-clock",
+                    String(evento.horario || "").slice(0, 5) ||
+                    "A definir"
+                ],
+                [
+                    "fa-location-dot",
+                    [
+                        evento.localizacao || evento.local,
+                        evento.cidade
+                    ].filter(Boolean).join(", ") ||
+                    "Local a definir"
+                ]
+            ];
+
+            informacoes.forEach(([icone, texto]) => {
+                const linha = criarElemento("p", "meus-info");
+
+                linha.append(
+                    criarElemento("i", "fas " + icone),
+                    document.createTextNode(" " + texto)
+                );
+
+                corpo.appendChild(linha);
+            });
+
+            corpo.appendChild(
+                criarElemento(
+                    "p",
+                    "meus-descricao",
+                    evento.descricao || "Sem descrição."
+                )
+            );
+
+            const acoes = criarElemento(
+                "div",
+                "meus-card-botoes"
+            );
+
+            const editar = criarElemento(
+                "button",
+                "meus-btn meus-btn-azul",
+                "Editar"
+            );
+
+            editar.type = "button";
+
+            editar.addEventListener("click", () => {
+                abrirEdicao(evento.id);
+            });
+
+            const excluir = criarElemento(
+                "button",
+                "meus-btn meus-btn-excluir",
+                "Excluir"
+            );
+
+            excluir.type = "button";
+
+            excluir.addEventListener("click", () => {
+                excluirEvento(evento.id);
+            });
+
+            acoes.append(editar, excluir);
+            corpo.appendChild(acoes);
+
+            card.append(imagem, corpo);
+
+            return card;
+        }
+
+        /* CARREGAR EVENTOS DA EMPRESA */
+        async function carregarEventos() {
+            mostrarMensagem(
+                "Carregando eventos da sua empresa..."
+            );
+
+            grade.replaceChildren();
+
+            try {
+                const resultado = await requisicao(
+                    API_EVENTOS + "/meus"
+                );
+
+                meusEventos = Array.isArray(resultado.data)
+                    ? resultado.data
+                    : [];
+
+                if (!meusEventos.length) {
+                    mostrarMensagem(
+                        "Sua empresa ainda não possui eventos cadastrados."
+                    );
+                    return;
+                }
+
+                esconderMensagem();
+
+                meusEventos.forEach(evento => {
+                    grade.appendChild(criarCard(evento));
+                });
+
+            } catch (erro) {
+                mostrarMensagem(erro.message, true);
+            }
+        }
+
+        /* ABRIR EDIÇÃO */
+        function abrirEdicao(id) {
+            const evento = meusEventos.find(
+                item => String(item.id) === String(id)
+            );
+
+            if (!evento) {
+                alert("Evento não encontrado.");
+                return;
+            }
+
+            const campos = {
+                editarId: evento.id,
+                editarTitulo: evento.titulo,
+                editarDescricao: evento.descricao,
+                editarData: dataSimples(evento.data),
+                editarHorario: String(
+                    evento.horario || ""
+                ).slice(0, 5),
+                editarCategoria: evento.categoria || "cultural",
+                editarDuracao: evento.duracao,
+                editarLocalizacao: evento.localizacao,
+                editarCidade: evento.cidade,
+                editarBairro: evento.bairro,
+                editarIngresso: evento.ingresso,
+                editarPreco: evento.preco,
+                editarLink: evento.link,
+                editarNome: evento.nome,
+                editarEmail: evento.email,
+                editarTelefone: evento.telefone
+            };
+
+            Object.entries(campos).forEach(([id, valor]) => {
+                preencherCampo(id, valor);
+            });
+
+            modal.classList.add("aberto");
+            modal.setAttribute("aria-hidden", "false");
+
+            document.getElementById("editarTitulo").focus();
+        }
+
+        /* FECHAR EDIÇÃO */
+        function fecharEdicao() {
+            modal.classList.remove("aberto");
+            modal.setAttribute("aria-hidden", "true");
+            formEditar.reset();
+        }
+
+        document
+            .getElementById("cancelarEdicao")
+            .addEventListener("click", fecharEdicao);
+
+        modal.addEventListener("click", evento => {
+            if (evento.target === modal) {
+                fecharEdicao();
+            }
+        });
+
+        document.addEventListener("keydown", evento => {
+            if (
+                evento.key === "Escape" &&
+                modal.classList.contains("aberto")
+            ) {
+                fecharEdicao();
+            }
+        });
+
+        /* SALVAR ALTERAÇÕES DO EVENTO */
+        formEditar.addEventListener("submit", async evento => {
+            evento.preventDefault();
+
+            const id = valorCampo("editarId");
+            const botao = document.getElementById("salvarEdicao");
+
+            const dados = {
+                titulo: valorCampo("editarTitulo").trim(),
+                descricao: valorCampo("editarDescricao").trim(),
+                data: valorCampo("editarData"),
+                horario: valorCampo("editarHorario") || null,
+                categoria: valorCampo("editarCategoria"),
+                duracao: valorCampo("editarDuracao") || null,
+                localizacao: valorCampo("editarLocalizacao"),
+                cidade: valorCampo("editarCidade"),
+                bairro: valorCampo("editarBairro"),
+                ingresso: valorCampo("editarIngresso"),
+                preco: valorCampo("editarPreco") || null,
+                link: valorCampo("editarLink"),
+                nome: valorCampo("editarNome"),
+                email: valorCampo("editarEmail"),
+                telefone: valorCampo("editarTelefone")
+            };
+
+            botao.disabled = true;
+
+            try {
+                await requisicao(
+                    API_EVENTOS + "/" + encodeURIComponent(id),
+                    {
+                        method: "PUT",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify(dados)
+                    }
+                );
+
+                fecharEdicao();
+
+                alert("Evento atualizado com sucesso!");
+
+                await carregarEventos();
+
+            } catch (erro) {
+                alert(erro.message);
+            } finally {
+                botao.disabled = false;
+            }
+        });
+
+        /* EXCLUIR EVENTO */
+        async function excluirEvento(id) {
+            const evento = meusEventos.find(
+                item => String(item.id) === String(id)
+            );
+
+            if (!evento) {
+                return;
+            }
+
+            const confirmado = window.confirm(
+                'Deseja realmente excluir o evento "' +
+                evento.titulo +
+                '"?\n\nEsta ação não poderá ser desfeita.'
+            );
+
+            if (!confirmado) {
+                return;
+            }
+
+            try {
+                await requisicao(
+                    API_EVENTOS + "/" + encodeURIComponent(id),
+                    {
+                        method: "DELETE"
+                    }
+                );
+
+                alert("Evento excluído com sucesso!");
+
+                await carregarEventos();
+
+            } catch (erro) {
+                alert(erro.message);
+            }
+        }
+
+        /* VERIFICAR EMPRESA E INICIAR PÁGINA */
+        async function iniciarPagina() {
+            linkMeusEventos.hidden = true;
+
+            if (!token) {
+                window.location.replace("entrar.html");
+                return;
+            }
+
+            try {
+                const resultado = await requisicao(API_LOGIN);
+
+                if (
+                    !resultado.data ||
+                    resultado.data.tipo_conta !== "cnpj"
+                ) {
+                    mostrarMensagem(
+                        "Esta página é exclusiva para contas Empresa/CNPJ.",
+                        true
+                    );
+
+                    return;
+                }
+
+                linkMeusEventos.hidden = false;
+
+                await carregarEventos();
+
+            } catch (erro) {
+                mostrarMensagem(erro.message, true);
+            }
+        }
+
+        iniciarPagina();
+    </script>
+</body>
+</html>

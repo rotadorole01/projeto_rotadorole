@@ -1,34 +1,43 @@
-const Routes = require("express");
+
+const express = require("express");
 const myController = require("../controller/categoriasController.js");
 
-const routes = Routes();
+const routes = express.Router();
 
 const endPoint = `/${myController.EndPointName()}`;
 
-routes.get(endPoint, async (req,res)=>{
-   const responseData = await myController.Get(req,res);
-   res.status(200).json(responseData);
+// LISTAR TODAS AS CATEGORIAS - PÚBLICO
+routes.get(endPoint, async (req, res) => {
+    try {
+        const responseData = await myController.Get(req, res);
+
+        return res.status(200).json(responseData);
+    } catch (error) {
+        console.error("Erro ao listar categorias:", error);
+
+        return res.status(500).json({
+            message: "Erro interno ao listar categorias."
+        });
+    }
 });
 
-routes.get( `${endPoint}/:id` , async ( req,res ) => {
-   const responseData = await myController.GetById(req,res);
-   res.status(200).json(responseData);
-}
-);
+// CONSULTAR CATEGORIA PELO ID - PÚBLICO
+routes.get(`${endPoint}/:id`, async (req, res) => {
+    try {
+        const responseData = await myController.GetById(req, res);
 
-routes.post(endPoint,(req,res)=>{
-   const responseData = myController.Post(req,res);
-   res.status(201).json(responseData);
+        return res.status(200).json(responseData);
+    } catch (error) {
+        console.error("Erro ao consultar categoria:", error);
+
+        return res.status(500).json({
+            message: "Erro interno ao consultar categoria."
+        });
+    }
 });
 
-routes.put(`${endPoint}/:id`,(req,res)=>{
-    const responseData = myController.Put(req,res);
-   res.status(201).json(responseData);
-});
-
-routes.delete(`${endPoint}/:id`,(req,res)=>{
-   const responseData = myController.Delete(req,res);
-   res.status(201).json(responseData);
-});
+// CADASTRO, EDIÇÃO E EXCLUSÃO DE CATEGORIAS
+// Temporariamente desativados por segurança.
+// Os dados existentes no MySQL são preservados.
 
 module.exports = routes;

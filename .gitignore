@@ -40,3 +40,10 @@ yarn-error.*
 # generated native folders
 /ios
 /android
+
+# Imagens enviadas pelos usuários
+backend/uploads/
+
+# Outros arquivos de ambiente
+.env.*
+!.env.example

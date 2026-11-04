@@ -1,60 +1,207 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Eventos - Rota do Rolê</title>
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
+
+    <style>
+        /* MENU MINHA CONTA - MESMO PADRÃO DA PÁGINA INICIAL */
+
+        .user-profile-menu {
+            position: relative;
+            display: inline-block;
+        }
+
+        .profile-menu-btn {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            padding: 5px 10px;
+            border-radius: 4px;
+            transition: background 0.3s ease;
+        }
+
+        .profile-menu-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .profile-dropdown {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 100%;
+            background-color: var(--card-bg, #ffffff);
+            min-width: 180px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+            border-radius: 8px;
+            padding: 8px 0;
+            z-index: 1000;
+            margin-top: 10px;
+            border: 1px solid var(--border-color, #ddd);
+        }
+
+        .profile-dropdown a {
+            color: var(--dark-text, #2c3e50) !important;
+            padding: 10px 16px;
+            text-decoration: none;
+            display: block;
+            font-size: 0.95rem;
+            border-bottom: none !important;
+            transition: background 0.2s ease;
+        }
+
+        .profile-dropdown a[hidden] {
+            display: none !important;
+        }
+
+        /* Links exclusivos para Empresa/CNPJ permanecem ocultos até a API confirmar a conta. */
+        .somente-empresa[hidden] {
+            display: none !important;
+        }
+
+        .profile-dropdown a:hover {
+            background-color: var(--light-bg, #f8f9fa);
+            color: var(--primary-color, #ff6b35) !important;
+        }
+
+        .profile-dropdown i {
+            margin-right: 8px;
+            width: 16px;
+            text-align: center;
+        }
+
+        .profile-dropdown hr {
+            border: 0;
+            border-top: 1px solid var(--border-color, #ddd);
+            margin: 6px 0;
+        }
+
+        .profile-dropdown .logout-btn {
+            color: #d32f2f !important;
+            font-weight: bold;
+        }
+
+        .profile-dropdown .logout-btn:hover {
+            background-color: #ffebee;
+        }
+    </style>
 </head>
+
 <body>
     <div id="google_translate_element"></div>
+
+    <!-- CABEÇALHO -->
     <header>
         <div class="header-container">
             <a href="index.html" class="logo">
                 <i class="fas fa-map-marker-alt"></i>
                 Rota do Rolê
             </a>
+
             <nav style="display: flex; align-items: center; gap: 2rem;">
-    <ul style="list-style: none; display: flex; gap: 2rem; margin: 0; align-items: center;">
-        <li><a href="index.html">Início</a></li>
-        <li><a href="eventos.html">Eventos</a></li>
-        <li><a href="cadastro.html">Cadastrar Evento</a></li>
-    </ul>
+                <ul style="list-style: none; display: flex; gap: 2rem; margin: 0; align-items: center;">
+                    <li><a href="index.html">Início</a></li>
+                    <li><a href="eventos.html">Eventos</a></li>
+                    <li class="somente-empresa" hidden><a href="cadastro.html">Cadastrar Evento</a></li>
+                </ul>
 
-    <div class="user-profile-menu">
-        <button onclick="toggleProfileMenu()" class="profile-menu-btn" id="profileMenuBtn">
-            <i class="fas fa-user-circle" style="font-size: 1.5rem; color: var(--accent-color, #f7b801);"></i>
-            <span>Minha Conta</span>
-            <i class="fas fa-caret-down" style="font-size: 0.8rem;"></i>
-        </button>
+                <!-- MENU MINHA CONTA -->
+                <div class="user-profile-menu">
+                    <button
+                        type="button"
+                        onclick="toggleProfileMenu()"
+                        class="profile-menu-btn"
+                        id="profileMenuBtn"
+                        aria-expanded="false"
+                        aria-controls="profileDropdown"
+                    >
+                        <i
+                            class="fas fa-user-circle"
+                            style="font-size: 1.5rem; color: var(--accent-color, #f7b801);"
+                        ></i>
 
-        <div id="profileDropdown" class="profile-dropdown">
-            <a href="perfil.html"><i class="fas fa-id-card"></i> Meu Perfil</a>
-            <hr>
-            <a href="login.html"><i class="fas fa-user-plus"></i> Criar Conta</a>
-            <a href="entrar.html"><i class="fas fa-sign-in-alt"></i> Trocar Conta</a>
-            <hr>
-            <a href="index.html" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Sair</a>
-        </div>
-    </div>
+                        <span>Minha Conta</span>
+                        <i class="fas fa-caret-down"></i>
+                    </button>
 
-    <button id="themeToggle" title="Alternar Modo Escuro">
-        <i class="fas fa-moon"></i>
-    </button>
-</nav>
+                    <div id="profileDropdown" class="profile-dropdown">
+                        <a href="perfil.html">
+                            <i class="fas fa-id-card"></i>
+                            Meu Perfil
+                        </a>
+
+                        <!-- SOMENTE PARA EMPRESA/CNPJ -->
+                        <a href="meus-eventos.html" id="linkMeusEventos" hidden>
+                            <i class="fas fa-calendar-check"></i>
+                            Meus Eventos
+                        </a>
+
+                        <hr>
+
+                        <a href="login.html">
+                            <i class="fas fa-user-plus"></i>
+                            Criar Conta
+                        </a>
+
+                        <a
+                            href="entrar.html"
+                            onclick="sessionStorage.removeItem('rota_token')"
+                        >
+                            <i class="fas fa-sign-in-alt"></i>
+                            Trocar Conta
+                        </a>
+
+                        <hr>
+
+                        <a
+                            href="index.html"
+                            class="logout-btn"
+                            onclick="sessionStorage.removeItem('rota_token')"
+                        >
+                            <i class="fas fa-sign-out-alt"></i>
+                            Sair
+                        </a>
+                    </div>
+                </div>
+
+                <button id="themeToggle" title="Alternar Modo Escuro">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </nav>
         </div>
     </header>
 
+    <!-- CONTEÚDO DOS EVENTOS -->
     <section id="eventos">
         <div class="container">
             <h2>Todos os Eventos</h2>
 
+            <!-- PESQUISA -->
             <div style="margin: 2rem 0; display: flex; gap: 1rem; flex-wrap: wrap;">
-                <input type="text" id="searchInput" placeholder="Buscar eventos..." style="flex: 1; min-width: 200px; padding: 0.8rem; border: 2px solid var(--border-color); background-color: var(--card-bg); color: var(--dark-text); border-radius: 6px; font-size: 1rem;">
-                <button onclick="searchEvents()" class="btn">Buscar</button>
+                <input
+                    type="text"
+                    id="searchInput"
+                    placeholder="Buscar eventos..."
+                    style="flex: 1; min-width: 200px; padding: 0.8rem; border: 2px solid var(--border-color); background-color: var(--card-bg); color: var(--dark-text); border-radius: 6px; font-size: 1rem;"
+                >
+
+                <button onclick="searchEvents()" class="btn">
+                    Buscar
+                </button>
             </div>
 
+            <!-- FILTROS -->
             <div class="filters">
                 <button class="filter-btn active" data-category="all">Todos</button>
                 <button class="filter-btn" data-category="shows">Shows</button>
@@ -63,449 +210,941 @@
                 <button class="filter-btn" data-category="cultural">Cultural</button>
             </div>
 
-            <div id="fila-container" style="margin: 2rem 0; padding: 1rem; border: 2px solid var(--border-color); border-radius: 10px;">
-    <h3>Fila de Interesse</h3>
+            <!-- FILA DE INTERESSE -->
+            <div
+                id="fila-container"
+                style="margin: 2rem 0; padding: 1rem; border: 2px solid var(--border-color); border-radius: 10px;"
+            >
+                <h3>Fila de Interesse</h3>
 
-    <ul id="fila-lista" class="fila-estilizada"></ul>
+                <ul id="fila-lista" class="fila-estilizada"></ul>
 
-    <button onclick="removerPrimeiroEvento()" class="btn">
-        Remover Primeiro da Fila
-    </button>
-</div>
+                <button onclick="removerPrimeiroEvento()" class="btn">
+                    Remover Primeiro da Fila
+                </button>
+            </div>
 
+            <!-- CARDS DE EVENTOS -->
             <div class="events-grid">
+
                 <div class="event-card" data-category="shows">
-                    <div class="event-card-image" style="background-image: url('img/FestivaldeJazz.webp');">
+                    <div
+                        class="event-card-image"
+                        style="background-image: url('img/FestivaldeJazz.webp');"
+                    >
                         <span class="event-card-badge">Shows</span>
                     </div>
+
                     <div class="event-card-content">
                         <h3>Festival de Jazz na Praça</h3>
+
                         <div class="event-card-meta">
                             <span><i class="fas fa-calendar"></i> 15 de Maio</span>
                             <span><i class="fas fa-clock"></i> 18:00</span>
                         </div>
+
                         <div class="event-card-meta">
                             <span><i class="fas fa-map-marker-alt"></i> Praça Central</span>
                         </div>
-                        <p class="event-card-description">Um evento cultural incrível com os melhores músicos da região. Entrada gratuita para todos!</p>
+
+                        <p class="event-card-description">
+                            Um evento cultural incrível com os melhores músicos da região.
+                            Entrada gratuita para todos!
+                        </p>
+
                         <div class="event-card-actions">
-    <a
-        href="#"
-        target="_blank"
-        class="btn btn-small inscrever-btn">
-        Inscrever-se
-    </a>
-</div>
+                            <a href="#" target="_blank" class="btn btn-small inscrever-btn">
+                                Inscrever-se
+                            </a>
+                        </div>
                     </div>
                 </div>
 
                 <div class="event-card" data-category="shows">
-                    <div class="event-card-image" style="background-image: url('img/NoitedeSamba.webp');">
+                    <div
+                        class="event-card-image"
+                        style="background-image: url('img/NoitedeSamba.webp');"
+                    >
                         <span class="event-card-badge">Shows</span>
                     </div>
+
                     <div class="event-card-content">
                         <h3>Noite de Samba com Raízes</h3>
+
                         <div class="event-card-meta">
                             <span><i class="fas fa-calendar"></i> 22 de Maio</span>
                             <span><i class="fas fa-clock"></i> 20:00</span>
                         </div>
+
                         <div class="event-card-meta">
-                            <span><i class="fas fa-map-marker-alt"></i> Espaço Cultural Downtown</span>
+                            <span>
+                                <i class="fas fa-map-marker-alt"></i>
+                                Espaço Cultural Downtown
+                            </span>
                         </div>
-                        <p class="event-card-description">Samba ao vivo com as melhores escolas da região. Venha dançar e se divertir!</p>
-                        <a href="#"
-   target="_blank"
-   class="btn btn-small inscrever-btn">
-    Inscrever-se
-</a>
+
+                        <p class="event-card-description">
+                            Samba ao vivo com as melhores escolas da região.
+                            Venha dançar e se divertir!
+                        </p>
+
+                        <a href="#" target="_blank" class="btn btn-small inscrever-btn">
+                            Inscrever-se
+                        </a>
                     </div>
                 </div>
 
                 <div class="event-card" data-category="shows">
-                    <div class="event-card-image" style="background-image: url('img/Festaeletronica.webp');">
+                    <div
+                        class="event-card-image"
+                        style="background-image: url('img/Festaeletronica.webp');"
+                    >
                         <span class="event-card-badge">Shows</span>
                     </div>
+
                     <div class="event-card-content">
                         <h3>Eletrônico Fest 2026</h3>
+
                         <div class="event-card-meta">
                             <span><i class="fas fa-calendar"></i> 28 de Maio</span>
                             <span><i class="fas fa-clock"></i> 22:00</span>
                         </div>
+
                         <div class="event-card-meta">
                             <span><i class="fas fa-map-marker-alt"></i> Arena Eventos</span>
                         </div>
-                        <p class="event-card-description">Festival de música eletrônica com os melhores DJs nacionais e internacionais!</p>
-                        <a href="#"
-   target="_blank"
-   class="btn btn-small inscrever-btn">
-    Inscrever-se
-</a>
+
+                        <p class="event-card-description">
+                            Festival de música eletrônica com os melhores DJs nacionais
+                            e internacionais!
+                        </p>
+
+                        <a href="#" target="_blank" class="btn btn-small inscrever-btn">
+                            Inscrever-se
+                        </a>
                     </div>
                 </div>
 
                 <div class="event-card" data-category="bares">
-                    <div class="event-card-image" style="background-image: url('img/BardoseuZe.webp');">
+                    <div
+                        class="event-card-image"
+                        style="background-image: url('img/BardoseuZe.webp');"
+                    >
                         <span class="event-card-badge">Bares</span>
                     </div>
+
                     <div class="event-card-content">
                         <h3>Noite do Rock no Bar do Zé</h3>
+
                         <div class="event-card-meta">
                             <span><i class="fas fa-calendar"></i> 20 de Maio</span>
                             <span><i class="fas fa-clock"></i> 21:00</span>
                         </div>
+
                         <div class="event-card-meta">
-                            <span><i class="fas fa-map-marker-alt"></i> Rua das Flores, 123</span>
+                            <span>
+                                <i class="fas fa-map-marker-alt"></i>
+                                Rua das Flores, 123
+                            </span>
                         </div>
-                        <p class="event-card-description">As melhores bandas de rock clássico a noite toda. Chopp gelado e muita diversão!</p>
-                        <a href="#"
-   target="_blank"
-   class="btn btn-small inscrever-btn">
-    Inscrever-se
-</a>
+
+                        <p class="event-card-description">
+                            As melhores bandas de rock clássico a noite toda.
+                            Chopp gelado e muita diversão!
+                        </p>
+
+                        <a href="#" target="_blank" class="btn btn-small inscrever-btn">
+                            Inscrever-se
+                        </a>
                     </div>
                 </div>
 
                 <div class="event-card" data-category="restaurantes">
-                    <div class="event-card-image" style="background-image: url('img/Degustacaodevinho.webp');">
+                    <div
+                        class="event-card-image"
+                        style="background-image: url('img/Degustacaodevinho.webp');"
+                    >
                         <span class="event-card-badge">Restaurantes</span>
                     </div>
+
                     <div class="event-card-content">
                         <h3>Degustação de Vinhos</h3>
+
                         <div class="event-card-meta">
                             <span><i class="fas fa-calendar"></i> 01 de Junho</span>
                             <span><i class="fas fa-clock"></i> 19:30</span>
                         </div>
+
                         <div class="event-card-meta">
-                            <span><i class="fas fa-map-marker-alt"></i> Restaurante Bella Italia</span>
+                            <span>
+                                <i class="fas fa-map-marker-alt"></i>
+                                Restaurante Bella Italia
+                            </span>
                         </div>
-                        <p class="event-card-description">Venha conhecer os melhores vinhos nacionais e importados com especialistas.</p>
-                        <a href="#"
-   target="_blank"
-   class="btn btn-small inscrever-btn">
-    Inscrever-se
-</a>
+
+                        <p class="event-card-description">
+                            Venha conhecer os melhores vinhos nacionais e importados
+                            com especialistas.
+                        </p>
+
+                        <a href="#" target="_blank" class="btn btn-small inscrever-btn">
+                            Inscrever-se
+                        </a>
                     </div>
                 </div>
 
                 <div class="event-card" data-category="cultural">
-                    <div class="event-card-image" style="background-image: url('img/Curso\ Cáculo\ -\ Fatec.png');">
+                    <div
+                        class="event-card-image"
+                        style="background-image: url('img/Curso\ Cáculo\ -\ Fatec.png');"
+                    >
                         <span class="event-card-badge">Cultural</span>
                     </div>
+
                     <div class="event-card-content">
-                        <h3>Curso de Cálculo: Reforçado e Aprendizado </h3>
+                        <h3>Curso de Cálculo: Reforçado e Aprendizado</h3>
+
                         <div class="event-card-meta">
-                            <span><i class="fas fa-calendar"></i> 15 de Maio </span>
+                            <span><i class="fas fa-calendar"></i> 15 de Maio</span>
                             <span><i class="fas fa-clock"></i> 19:00</span>
                         </div>
+
                         <div class="event-card-meta">
-                            <span><i class="fas fa-map-marker-alt"></i> Fatec Taquaritinga, Av. Dr. Flávio Henrique Lemos 585 (Portal Itamaracá), Taquaritinga-SP, 15906-522 </span>
+                            <span>
+                                <i class="fas fa-map-marker-alt"></i>
+                                Fatec Taquaritinga, Av. Dr. Flávio Henrique Lemos 585
+                                (Portal Itamaracá), Taquaritinga-SP, 15906-522
+                            </span>
                         </div>
+
                         <div class="event-card-description">
                             <p>O que esperar do curso:</p>
-                            <p>Aulas Presenciais: Interação direta com o professor e troca de experiências com outros alunos.<br>
-                            Foco na Prática: Chega de teoria abstrata! O aprendizado acontece por meio da resolução de exercícios passo a passo.<br>
-                            Tecnologia e Suporte: Utilização de lousa digital para uma visualização clara e dinâmica, das 19:00 até 22:00.</p>
+
+                            <p>
+                                Aulas Presenciais: Interação direta com o professor e troca
+                                de experiências com outros alunos.<br>
+                                Foco na Prática: Chega de teoria abstrata! O aprendizado
+                                acontece por meio da resolução de exercícios passo a passo.<br>
+                                Tecnologia e Suporte: Utilização de lousa digital para uma
+                                visualização clara e dinâmica, das 19:00 até 22:00.
+                            </p>
                         </div>
-                        <a href="https://fatectq.cps.sp.gov.br/curso-de-calculo-reforco-e-aprendizado/"
-   target="_blank"
-   class="btn btn-small inscrever-btn">
-    Inscrever-se
-</a>
+
+                        <a
+                            href="https://fatectq.cps.sp.gov.br/curso-de-calculo-reforco-e-aprendizado/"
+                            target="_blank"
+                            class="btn btn-small inscrever-btn"
+                        >
+                            Inscrever-se
+                        </a>
                     </div>
                 </div>
 
                 <div class="event-card" data-category="cultural">
-                    <div class="event-card-image" style="background-image: url('img/Fatec\ inscrições.png');">
+                    <div
+                        class="event-card-image"
+                        style="background-image: url('img/Fatec\ inscrições.png');"
+                    >
                         <span class="event-card-badge">Cultural</span>
                     </div>
+
                     <div class="event-card-content">
                         <h3>Vestibular Fatec</h3>
+
                         <div class="event-card-meta">
                             <span><i class="fas fa-calendar"></i> 2026-04-07</span>
                             <span><i class="fas fa-clock"></i> 15:00</span>
                         </div>
+
                         <div class="event-card-meta">
-                            <span><i class="fas fa-map-marker-alt"></i> Fatec Taquaritinga, Av. Dr. Flávio Henrique Lemos 585 (Portal Itamaracá), Taquaritinga-SP, 15906-522</span>
+                            <span>
+                                <i class="fas fa-map-marker-alt"></i>
+                                Fatec Taquaritinga, Av. Dr. Flávio Henrique Lemos 585
+                                (Portal Itamaracá), Taquaritinga-SP, 15906-522
+                            </span>
                         </div>
-                        <p class="event-card-description">Inscrições para o processo seletivo da Fatec, venha fazer seu curso superior gratuito e ficar em outro nível, inscrições abertas do dia 07/04/2026 até as 15hrs de 01/06/2026.</p>
-                        <a href="https://vestibular.fatec.sp.gov.br/home/"
-   target="_blank"
-   class="btn btn-small inscrever-btn">
-    Inscrever-se
-</a>
+
+                        <p class="event-card-description">
+                            Inscrições para o processo seletivo da Fatec, venha fazer
+                            seu curso superior gratuito e ficar em outro nível,
+                            inscrições abertas do dia 07/04/2026 até as 15hrs
+                            de 01/06/2026.
+                        </p>
+
+                        <a
+                            href="https://vestibular.fatec.sp.gov.br/home/"
+                            target="_blank"
+                            class="btn btn-small inscrever-btn"
+                        >
+                            Inscrever-se
+                        </a>
                     </div>
                 </div>
 
                 <div class="event-card" data-category="cultural">
-                    <div class="event-card-image" style="background-image: url(img/foto_pizza.jpeg);">
+                    <div
+                        class="event-card-image"
+                        style="background-image: url(img/foto_pizza.jpeg);"
+                    >
                         <span class="event-card-badge">Cultural</span>
                     </div>
+
                     <div class="event-card-content">
                         <h3>Campanha institucional para melhoria da climatização das salas de aulas</h3>
+
                         <div class="event-card-meta">
                             <span><i class="fas fa-calendar"></i> 07 de março de 2026</span>
                             <span><i class="fas fa-clock"></i> 11:00</span>
                         </div>
+
                         <div class="event-card-meta">
-                            <span><i class="fas fa-map-marker-alt"></i> Fatec Taquaritinga, Av. Dr. Flávio Henrique Lemos 585 (Portal Itamaracá), Taquaritinga-SP, 15906-522, Brasil</span>
+                            <span>
+                                <i class="fas fa-map-marker-alt"></i>
+                                Fatec Taquaritinga, Av. Dr. Flávio Henrique Lemos 585
+                                (Portal Itamaracá), Taquaritinga-SP, 15906-522, Brasil
+                            </span>
                         </div>
+
                         <div class="event-card-description">
-                            <p>Estamos iniciando uma deliciosa promoção para angariar fundos para a melhoria da climatização das salas de aulas da Fatec Taquaritinga!</p>
-                            <p>Pedidos: até 01/05/2026 <br> Retirada: 06/05/2026 a 08/05/2026</p>
+                            <p>
+                                Estamos iniciando uma deliciosa promoção para angariar
+                                fundos para a melhoria da climatização das salas de aulas
+                                da Fatec Taquaritinga!
+                            </p>
+
+                            <p>
+                                Pedidos: até 01/05/2026<br>
+                                Retirada: 06/05/2026 a 08/05/2026
+                            </p>
                         </div>
-                        <a href="#"
-   target="_blank"
-   class="btn btn-small inscrever-btn">
-    Inscrever-se
-</a>
+
+                        <a href="#" target="_blank" class="btn btn-small inscrever-btn">
+                            Inscrever-se
+                        </a>
                     </div>
                 </div>
 
                 <div class="event-card" data-category="esportes">
-                    <div class="event-card-image" style="background-image: url('img/Karate\ gratuito.png');">
+                    <div
+                        class="event-card-image"
+                        style="background-image: url('img/Karate\ gratuito.png');"
+                    >
                         <span class="event-card-badge">Esportes</span>
                     </div>
+
                     <div class="event-card-content">
                         <h3>Aulas de karatê</h3>
+
                         <div class="event-card-meta">
                             <span><i class="fas fa-calendar"></i> 2026-06-18</span>
                             <span><i class="fas fa-clock"></i> 18:00</span>
                         </div>
+
                         <div class="event-card-meta">
-                            <span><i class="fas fa-map-marker-alt"></i> Ginásio Poliesportivo de Taquaritinga (SP)</span>
+                            <span>
+                                <i class="fas fa-map-marker-alt"></i>
+                                Ginásio Poliesportivo de Taquaritinga (SP)
+                            </span>
                         </div>
-                        <p class="event-card-description">Conta com um projeto social que dá oportunidade para crianças e adolescentes, de 5 a 18 anos, aprenderem karatê de forma gratuita.</p>
-                        <a href="#"
-   target="_blank"
-   class="btn btn-small inscrever-btn">
-    Inscrever-se
-</a>
+
+                        <p class="event-card-description">
+                            Conta com um projeto social que dá oportunidade para crianças
+                            e adolescentes, de 5 a 18 anos, aprenderem karatê
+                            de forma gratuita.
+                        </p>
+
+                        <a href="#" target="_blank" class="btn btn-small inscrever-btn">
+                            Inscrever-se
+                        </a>
                     </div>
                 </div>
+
             </div>
         </div>
     </section>
 
-    <button id="btn-traducao" title="Traduzir página" style="position: fixed; bottom: 80px; right: 10px; z-index: 9999; width: 43px; height: 43px; background: #1565c0; color: white; border: none; border-radius: 8px; cursor: pointer;">
+    <!-- BOTÃO DE TRADUÇÃO -->
+    <button
+        id="btn-traducao"
+        title="Traduzir página"
+        style="position: fixed; bottom: 80px; right: 10px; z-index: 9999; width: 43px; height: 43px; background: #1565c0; color: white; border: none; border-radius: 8px; cursor: pointer;"
+    >
         <i class="fas fa-language"></i>
     </button>
-    
+
+    <!-- RODAPÉ -->
     <footer>
         <div class="container">
             <div class="footer-content">
+
                 <div class="footer-section">
                     <h4>Apoio Institucional</h4>
+
                     <div class="fatec-banner">
-                        <a href="https://fatectq.cps.sp.gov.br/" target="_blank" rel="noopener noreferrer">
-                            <img src="img/Fatec_Taquaritinga_Logo.png" alt="Logo Fatec Taquaritinga" style="max-height: 40px;">
+                        <a
+                            href="https://fatectq.cps.sp.gov.br/"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            <img
+                                src="img/Fatec_Taquaritinga_Logo.png"
+                                alt="Logo Fatec Taquaritinga"
+                                style="max-height: 40px;"
+                            >
                         </a>
                     </div>
-                    <p style="margin-top: 1rem; font-size: 0.9rem;">Projeto acadêmico desenvolvido por alunos da Fatec Taquaritinga.</p>
+
+                    <p style="margin-top: 1rem; font-size: 0.9rem;">
+                        Projeto acadêmico desenvolvido por alunos da Fatec Taquaritinga.
+                    </p>
                 </div>
+
                 <div class="footer-section">
                     <h4>Links Úteis</h4>
+
                     <ul>
                         <li><a href="eventos.html">Eventos</a></li>
-                        <li><a href="cadastro.html">Cadastrar Evento</a></li>
+                        <li class="somente-empresa" hidden><a href="cadastro.html">Cadastrar Evento</a></li>
                         <li><a href="parceria.html">Seja um Patrocinador</a></li>
                         <li><a href="nos.html">Sobre Nós</a></li>
                     </ul>
                 </div>
+
                 <div class="footer-section">
                     <h4>Contato</h4>
+
                     <ul>
-                        <li><a href="mailto:contato@rotadorole.com">contato@rotadorole.com</a></li>
-                        <li><a href="tel:+5511999999999">(11) 99999-9999</a></li>
+                        <li>
+                            <a href="mailto:contato@rotadorole.com">
+                                contato@rotadorole.com
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="tel:+5511999999999">
+                                (11) 99999-9999
+                            </a>
+                        </li>
                     </ul>
                 </div>
+
             </div>
+
             <div class="footer-bottom">
                 <p>&copy; 2026 Rota do Rolê. Todos os direitos reservados.</p>
             </div>
         </div>
     </footer>
 
+    <!-- ACESSIBILIDADE -->
     <div vw class="enabled">
         <div vw-access-button class="active"></div>
+
         <div vw-plugin-wrapper>
             <div class="vw-plugin-top-wrapper"></div>
         </div>
     </div>
 
-    <!-- SCRIPTS JAVASCRIPT CORRIGIDOS E UNIFICADOS -->
+    <!-- MODO ESCURO -->
     <script>
-        // --- 1. GESTÃO DO MODO ESCURO ---
         const themeToggle = document.getElementById("themeToggle");
         const savedTheme = localStorage.getItem("theme");
 
-        if(savedTheme){
+        if (savedTheme) {
             document.documentElement.setAttribute("data-theme", savedTheme);
         }
 
         themeToggle.addEventListener("click", () => {
             const currentTheme = document.documentElement.getAttribute("data-theme");
-            if(currentTheme === "dark"){
-                document.documentElement.setAttribute("data-theme","light");
-                localStorage.setItem("theme","light");
+
+            if (currentTheme === "dark") {
+                document.documentElement.setAttribute("data-theme", "light");
+                localStorage.setItem("theme", "light");
             } else {
-                document.documentElement.setAttribute("data-theme","dark");
-                localStorage.setItem("theme","dark");
+                document.documentElement.setAttribute("data-theme", "dark");
+                localStorage.setItem("theme", "dark");
+            }
+        });
+    </script>
+
+    <!-- MENU MINHA CONTA -->
+    <script>
+        function toggleProfileMenu() {
+            const dropdown = document.getElementById("profileDropdown");
+            const botao = document.getElementById("profileMenuBtn");
+
+            if (!dropdown) return;
+
+            const aberto = dropdown.style.display === "block";
+
+            dropdown.style.display = aberto ? "none" : "block";
+
+            if (botao) {
+                botao.setAttribute("aria-expanded", String(!aberto));
+            }
+        }
+
+        window.addEventListener("click", function (event) {
+            const botao = document.getElementById("profileMenuBtn");
+            const dropdown = document.getElementById("profileDropdown");
+
+            if (
+                botao &&
+                dropdown &&
+                !botao.contains(event.target) &&
+                !dropdown.contains(event.target)
+            ) {
+                dropdown.style.display = "none";
+                botao.setAttribute("aria-expanded", "false");
             }
         });
 
-        // --- 2. GESTÃO DOS FILTROS CLICÁVEIS (CATEGORIAS) ---
+        // Exibe Meus Eventos somente para Empresa/CNPJ autenticada.
+        (async function configurarMenuEmpresa() {
+            const link = document.getElementById("linkMeusEventos");
+            const linksCadastro = document.querySelectorAll(".somente-empresa");
+            const token = sessionStorage.getItem("rota_token");
+
+            if (!token) return;
+
+            try {
+                const resposta = await fetch(
+                    "http://localhost:3600/logins/perfil",
+                    {
+                        headers: {
+                            Authorization: "Bearer " + token
+                        }
+                    }
+                );
+
+                if (!resposta.ok) return;
+
+                const resultado = await resposta.json();
+
+                if (
+                    resultado.data &&
+                    resultado.data.tipo_conta === "cnpj"
+                ) {
+                    if (link) link.hidden = false;
+                    linksCadastro.forEach(elemento => {
+                        elemento.hidden = false;
+                    });
+                }
+            } catch (erro) {
+                console.warn(
+                    "Não foi possível verificar a conta para o menu:",
+                    erro
+                );
+            }
+        })();
+    </script>
+
+    <!-- FILTROS E PESQUISA -->
+    <script>
         document.addEventListener("DOMContentLoaded", function () {
-            const filterButtons = document.querySelectorAll('.filter-btn');
-            const eventCards = document.querySelectorAll('.event-card');
+            const filterButtons = document.querySelectorAll(".filter-btn");
 
             filterButtons.forEach(button => {
-                button.addEventListener('click', function () {
-                    // Troca a classe active do botão visualmente
-                    filterButtons.forEach(btn => btn.classList.remove('active'));
-                    this.classList.add('active');
+                button.addEventListener("click", function () {
+                    filterButtons.forEach(btn => {
+                        btn.classList.remove("active");
+                    });
 
-                    const selectedCategory = this.getAttribute('data-category');
+                    this.classList.add("active");
 
-                    // Mostra ou oculta os cards baseando-se no data-category
-                    eventCards.forEach(card => {
-                        const cardCategory = card.getAttribute('data-category');
-                        if (selectedCategory === 'all' || cardCategory === selectedCategory) {
-                            card.style.display = 'block';
+                    const selectedCategory = this.getAttribute("data-category");
+
+                    document.querySelectorAll(".event-card").forEach(card => {
+                        const cardCategory = card.getAttribute("data-category");
+
+                        if (
+                            selectedCategory === "all" ||
+                            cardCategory === selectedCategory
+                        ) {
+                            card.style.display = "block";
                         } else {
-                            card.style.display = 'none';
+                            card.style.display = "none";
                         }
                     });
 
-                    // Limpa o input de busca textual para evitar conflitos
-                    document.getElementById('searchInput').value = '';
+                    document.getElementById("searchInput").value = "";
                 });
             });
 
-            // Ouvinte para a tecla Enter no campo de pesquisa textual
-            const searchInput = document.getElementById('searchInput');
+            const searchInput = document.getElementById("searchInput");
+
             if (searchInput) {
-                searchInput.addEventListener('keypress', function(e) {
-                    if (e.key === 'Enter') {
+                searchInput.addEventListener("keypress", function (e) {
+                    if (e.key === "Enter") {
                         searchEvents();
                     }
                 });
             }
         });
 
-        // --- 3. SISTEMA DE FILTRO POR PESQUISA DE TEXTO ---
         function searchEvents() {
-            const searchInput = document.getElementById('searchInput').value.toLowerCase();
-            const eventCards = document.querySelectorAll('.event-card');
-            const filterButtons = document.querySelectorAll('.filter-btn');
+            const searchInput = document
+                .getElementById("searchInput")
+                .value.toLowerCase();
 
-            // Quando digita algo, reseta os botões de categoria para a posição "Todos"
-            filterButtons.forEach(btn => btn.classList.remove('active'));
-            const allBtn = document.querySelector('.filter-btn[data-category="all"]');
-            if(allBtn) allBtn.classList.add('active');
+            const eventCards = document.querySelectorAll(".event-card");
+            const filterButtons = document.querySelectorAll(".filter-btn");
+
+            filterButtons.forEach(btn => btn.classList.remove("active"));
+
+            const allBtn = document.querySelector(
+                '.filter-btn[data-category="all"]'
+            );
+
+            if (allBtn) {
+                allBtn.classList.add("active");
+            }
 
             eventCards.forEach(card => {
-                const title = card.querySelector('h3').textContent.toLowerCase();
-                const description = card.querySelector('.event-card-description').textContent.toLowerCase();
+                const title = card
+                    .querySelector("h3")
+                    .textContent.toLowerCase();
 
-                if (title.includes(searchInput) || description.includes(searchInput)) {
-                    card.style.display = 'block';
+                const description = card
+                    .querySelector(".event-card-description")
+                    .textContent.toLowerCase();
+
+                if (
+                    title.includes(searchInput) ||
+                    description.includes(searchInput)
+                ) {
+                    card.style.display = "block";
                 } else {
-                    card.style.display = 'none';
+                    card.style.display = "none";
                 }
             });
         }
     </script>
 
-    <!-- --- 4. APIS DE TRADUÇÃO E ACESSIBILIDADE --- -->
-    <script type="text/javascript">
+    <!-- GOOGLE TRADUTOR -->
+    <script>
         function googleTranslateElementInit() {
             new google.translate.TranslateElement(
-                { pageLanguage: 'pt', autoDisplay: false },
-                'google_translate_element'
+                {
+                    pageLanguage: "pt",
+                    autoDisplay: false
+                },
+                "google_translate_element"
             );
         }
     </script>
-    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
+    <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+    <!-- VLIBRAS -->
     <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+
     <script>
-        new window.VLibras.Widget('https://vlibras.gov.br/app');
+        new window.VLibras.Widget("https://vlibras.gov.br/app");
     </script>
 
-    <!-- Chamada única para o script externo customizado -->
+    <!-- JAVASCRIPT ORIGINAL DO PROJETO -->
     <script src="js/script.js"></script>
+
+    <!-- FILA DE INTERESSE -->
     <script>
-    function toggleProfileMenu() {
-    document.getElementById("profileDropdown")
-        .classList.toggle("show");
-    }
+        let filaEventos = [];
 
-document.addEventListener("click", function(e) {
-    const menu = document.querySelector(".user-profile-menu");
+        function adicionarNaFila(nomeEvento) {
+            filaEventos.push(nomeEvento);
+            atualizarFila();
+        }
 
-    if (!menu.contains(e.target)) {
-        document.getElementById("profileDropdown")
-            .classList.remove("show");
-    }
-});
+        function removerPrimeiroEvento() {
+            if (filaEventos.length === 0) {
+                alert("A fila está vazia!");
+                return;
+            }
 
-// Sistema de Fila que permite adicionar eventos de interesse
-// Exibir os eventos na tela e remover o primeiro evento adicionado
-let filaEventos = [];
+            const removido = filaEventos.shift();
 
-function adicionarNaFila(nomeEvento) {
+            alert(`Evento removido da fila: ${removido}`);
 
-    filaEventos.push(nomeEvento);
+            atualizarFila();
+        }
 
-    atualizarFila();
-}
+        function atualizarFila() {
+            const lista = document.getElementById("fila-lista");
 
-function removerPrimeiroEvento() {
+            lista.innerHTML = "";
 
-    if (filaEventos.length === 0) {
-        alert("A fila está vazia!");
-        return;
-    }
+            filaEventos.forEach((evento, index) => {
+                lista.innerHTML += `
+                    <li>
+                        ${index + 1}º - ${evento}
+                    </li>
+                `;
+            });
+        }
 
-    const removido = filaEventos.shift();
+        document.querySelectorAll(".inscrever-btn").forEach(botao => {
+            botao.addEventListener("click", function () {
+                const card = this.closest(".event-card");
 
-    alert(`Evento removido da fila: ${removido}`);
+                const nomeEvento = card.querySelector("h3").textContent;
 
-    atualizarFila();
-}
+                adicionarNaFila(nomeEvento);
 
-function atualizarFila() {
+                alert("Evento adicionado à fila!");
+            });
+        });
+    </script>
 
-    const lista = document.getElementById("fila-lista");
+    <!-- EVENTOS CADASTRADOS NO MYSQL -->
+    <script>
+        document.addEventListener("DOMContentLoaded", async function () {
+            const grade = document.querySelector(".events-grid");
 
-    lista.innerHTML = "";
+            if (!grade) return;
 
-    filaEventos.forEach((evento, index) => {
+            const categorias = {
+                shows: "Shows",
+                bares: "Bares",
+                restaurantes: "Restaurantes",
+                cultural: "Cultural",
+                esportes: "Esportes"
+            };
 
-        lista.innerHTML += `
-            <li>
-                ${index + 1}º - ${evento}
-            </li>
-        `;
-    });
-}
+            function elemento(tag, classe, texto) {
+                const el = document.createElement(tag);
 
-// Captura o clique no botão de inscrição e adiciona o evento à fila
-document.querySelectorAll('.inscrever-btn').forEach(botao => {
+                if (classe) {
+                    el.className = classe;
+                }
 
-    botao.addEventListener('click', function(event) {
+                if (texto !== undefined && texto !== null) {
+                    el.textContent = String(texto);
+                }
 
-        const card = this.closest('.event-card');
+                return el;
+            }
 
-        const nomeEvento =
-            card.querySelector('h3').textContent;
+            function linhaMeta(icone, valor) {
+                const linha = elemento("div", "event-card-meta");
+                const span = elemento("span");
+                const i = elemento("i", "fas fa-" + icone);
 
-        adicionarNaFila(nomeEvento);
+                span.append(
+                    i,
+                    document.createTextNode(" " + valor)
+                );
 
-        alert("Evento adicionado à fila!");
-    });
+                linha.appendChild(span);
 
-});
-</script>
+                return linha;
+            }
+
+            function dataFormatada(valor) {
+                if (!valor) {
+                    return "Data não informada";
+                }
+
+                const parte = String(valor).slice(0, 10);
+                const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(parte);
+
+                if (!match) {
+                    return parte;
+                }
+
+                return `${match[3]}/${match[2]}/${match[1]}`;
+            }
+
+            function criarCard(evento) {
+                const categoria = String(
+                    evento.categoria || "cultural"
+                ).toLowerCase();
+
+                const card = elemento("div", "event-card");
+
+                card.dataset.category = categoria;
+                card.dataset.eventoId = String(evento.id);
+
+                const imagem = elemento("div", "event-card-image");
+
+                const arquivo = String(
+                    evento.imagem || evento.foto || ""
+                ).trim();
+
+                if (arquivo) {
+                    const nomeSeguro = arquivo.split(/[\\/]/).pop();
+
+                    imagem.style.backgroundImage =
+                        `url("http://localhost:3600/uploads/${encodeURIComponent(nomeSeguro)}")`;
+                }
+
+                imagem.appendChild(
+                    elemento(
+                        "span",
+                        "event-card-badge",
+                        categorias[categoria] || categoria
+                    )
+                );
+
+                const conteudo = elemento("div", "event-card-content");
+
+                conteudo.appendChild(
+                    elemento(
+                        "h3",
+                        "",
+                        evento.titulo || "Evento sem título"
+                    )
+                );
+
+                const horario = String(
+                    evento.horario || ""
+                ).slice(0, 5) || "A definir";
+
+                const dataHora = elemento("div", "event-card-meta");
+
+                const dataSpan = elemento("span");
+
+                dataSpan.append(
+                    elemento("i", "fas fa-calendar"),
+                    document.createTextNode(
+                        " " + dataFormatada(evento.data)
+                    )
+                );
+
+                const horaSpan = elemento("span");
+
+                horaSpan.append(
+                    elemento("i", "fas fa-clock"),
+                    document.createTextNode(" " + horario)
+                );
+
+                dataHora.append(dataSpan, horaSpan);
+                conteudo.appendChild(dataHora);
+
+                const local = [
+                    evento.localizacao || evento.local,
+                    evento.cidade
+                ].filter(Boolean).join(", ");
+
+                conteudo.appendChild(
+                    linhaMeta(
+                        "map-marker-alt",
+                        local || "Local a definir"
+                    )
+                );
+
+                conteudo.appendChild(
+                    elemento(
+                        "p",
+                        "event-card-description",
+                        evento.descricao || ""
+                    )
+                );
+
+                const acoes = elemento("div", "event-card-actions");
+
+                const botao = elemento(
+                    "a",
+                    "btn btn-small inscrever-btn",
+                    "Inscrever-se"
+                );
+
+                const link = String(evento.link || "").trim();
+
+                if (/^https?:\/\//i.test(link)) {
+                    botao.href = link;
+                    botao.target = "_blank";
+                    botao.rel = "noopener noreferrer";
+                } else {
+                    botao.href = "#";
+                }
+
+                acoes.appendChild(botao);
+                conteudo.appendChild(acoes);
+
+                card.append(imagem, conteudo);
+
+                return card;
+            }
+
+            // Clique nos eventos carregados do banco.
+            grade.addEventListener("click", function (e) {
+                const botao = e.target.closest(".inscrever-btn");
+
+                if (!botao) return;
+
+                const card = botao.closest(".event-card");
+
+                if (!card || !card.dataset.eventoId) return;
+
+                if (botao.getAttribute("href") === "#") {
+                    e.preventDefault();
+                }
+
+                adicionarNaFila(
+                    card.querySelector("h3").textContent
+                );
+
+                alert("Evento adicionado à fila!");
+            });
+
+            try {
+                const resposta = await fetch(
+                    "http://localhost:3600/eventos"
+                );
+
+                if (!resposta.ok) {
+                    throw new Error("HTTP " + resposta.status);
+                }
+
+                const resultado = await resposta.json();
+
+                const eventos = Array.isArray(resultado.data)
+                    ? resultado.data
+                    : [];
+
+                const ids = new Set(
+                    Array.from(
+                        grade.querySelectorAll("[data-evento-id]"),
+                        el => el.dataset.eventoId
+                    )
+                );
+
+                for (const evento of eventos) {
+                    if (
+                        !evento ||
+                        evento.id == null ||
+                        ids.has(String(evento.id))
+                    ) {
+                        continue;
+                    }
+
+                    grade.appendChild(criarCard(evento));
+                    ids.add(String(evento.id));
+                }
+
+                const filtro = document.querySelector(
+                    ".filter-btn.active"
+                );
+
+                const categoriaAtiva = filtro
+                    ? filtro.dataset.category
+                    : "all";
+
+                grade.querySelectorAll(".event-card").forEach(card => {
+                    card.style.display =
+                        categoriaAtiva === "all" ||
+                        card.dataset.category === categoriaAtiva
+                            ? "block"
+                            : "none";
+                });
+
+            } catch (erro) {
+                console.error(
+                    "Não foi possível carregar eventos do MySQL:",
+                    erro
+                );
+            }
+        });
+    </script>
 </body>
 </html>

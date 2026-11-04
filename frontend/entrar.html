@@ -315,7 +315,7 @@
 
             <div class="title-underline"></div>
 
-            <form action="#" method="POST">
+            <form id="formEntrar" action="#" method="POST">
 
                 <div class="form-group">
 
@@ -620,6 +620,25 @@
 
     <!-- JAVASCRIPT PRINCIPAL -->
 
+    <script>
+      document.getElementById('formEntrar').addEventListener('submit', async event => {
+        event.preventDefault();
+        const form = event.currentTarget;
+        const botao = form.querySelector('[type="submit"]');
+        botao.disabled = true;
+        try {
+          const resposta = await fetch('http://localhost:3600/logins/entrar', {
+            method:'POST', headers:{'Content-Type':'application/json'},
+            body: JSON.stringify({email:document.getElementById('email').value.trim(), password:document.getElementById('senha').value})
+          });
+          const json = await resposta.json();
+          if (!resposta.ok) throw new Error(json.message || 'Não foi possível entrar.');
+          sessionStorage.setItem('rota_token', json.data.token);
+          window.location.href = 'index.html';
+        } catch (erro) { alert(erro.message || 'Falha de conexão com a API.'); }
+        finally { botao.disabled = false; }
+      });
+    </script>
     <script src="js/script.js"></script>
 
 </body>

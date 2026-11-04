@@ -1,34 +1,43 @@
-const Routes = require("express");
+
+const express = require("express");
 const myController = require("../controller/parceirosController.js");
 
-const routes = Routes();
+const routes = express.Router();
 
 const endPoint = `/${myController.EndPointName()}`;
 
-routes.get(endPoint, async (req,res)=>{
-   const responseData = await myController.Get(req,res);
-   res.status(200).json(responseData);
+// LISTAR TODOS OS PARCEIROS - PÚBLICO
+routes.get(endPoint, async (req, res) => {
+    try {
+        const responseData = await myController.Get(req, res);
+
+        return res.status(200).json(responseData);
+    } catch (error) {
+        console.error("Erro ao listar parceiros:", error);
+
+        return res.status(500).json({
+            message: "Erro interno ao listar parceiros."
+        });
+    }
 });
 
-routes.get( `${endPoint}/:id` , async ( req,res ) => {
-   const responseData = await myController.GetById(req,res);
-   res.status(200).json(responseData);
-}
-);
+// CONSULTAR PARCEIRO PELO ID - PÚBLICO
+routes.get(`${endPoint}/:id`, async (req, res) => {
+    try {
+        const responseData = await myController.GetById(req, res);
 
-routes.post(endPoint,(req,res)=>{
-   const responseData = myController.Post(req,res);
-   res.status(201).json(responseData);
+        return res.status(200).json(responseData);
+    } catch (error) {
+        console.error("Erro ao consultar parceiro:", error);
+
+        return res.status(500).json({
+            message: "Erro interno ao consultar parceiro."
+        });
+    }
 });
 
-routes.put(`${endPoint}/:id`,(req,res)=>{
-    const responseData = myController.Put(req,res);
-   res.status(201).json(responseData);
-});
-
-routes.delete(`${endPoint}/:id`,(req,res)=>{
-   const responseData = myController.Delete(req,res);
-   res.status(201).json(responseData);
-});
+// CADASTRO, EDIÇÃO E EXCLUSÃO DE PARCEIROS
+// Temporariamente desativados por segurança.
+// Os registros existentes no MySQL são preservados.
 
 module.exports = routes;

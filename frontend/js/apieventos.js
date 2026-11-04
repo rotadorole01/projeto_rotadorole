@@ -1,131 +1,217 @@
+
 const API_URL = "http://localhost:3600/eventos";
 
-const eventForm = document.getElementById('eventForm');
+const eventForm = document.getElementById("eventForm");
 
-eventForm.addEventListener('submit', async function(e) {
-    e.preventDefault();
+if (eventForm) {
+    eventForm.addEventListener("submit", async function (e) {
+        e.preventDefault();
 
-    // Coletando dados do formulário
-    const titulo = document.getElementById('titulo').value;
-    const categoria = document.getElementById('categoria').value;
-    const descricao = document.getElementById('descricao').value;
-    const data = document.getElementById('data').value; // formato ISO
-    const horario = document.getElementById('horario').value;
-    const duracao = document.getElementById('duracao').value;
-    const localizacao = document.getElementById('localizacao').value;
-    const cidade = document.getElementById('cidade').value;
-    const bairro = document.getElementById('bairro').value;
-    const ingresso = document.getElementById('ingresso').value;
-    const preco = document.getElementById('preco').value;
-    const link = document.getElementById('link').value;
-    const nome = document.getElementById('nome').value;
-    const email = document.getElementById('email').value;
-    const telefone = document.getElementById('telefone').value;
+        const botaoEnviar = eventForm.querySelector('[type="submit"]');
 
-    // Input da imagem
-    const input = document.getElementById('imagem');
-    const arquivo = input.files[0];
+        if (botaoEnviar && botaoEnviar.disabled) {
+            return;
+        }
 
-    let nomeArquivo = null;
+        // Recupera o token salvo no login
+        const token = sessionStorage.getItem("rota_token");
 
-    // Se houver imagem, envia primeiro para /upload
-    if (arquivo) {
-        const formData = new FormData();
-        formData.append('title', arquivo.name);
-        formData.append('avatar', arquivo);
+        if (!token) {
+            alert(
+                "Você precisa entrar em uma conta Empresa/CNPJ " +
+                "para cadastrar eventos."
+            );
+
+            window.location.href = "entrar.html";
+            return;
+        }
+
+        if (botaoEnviar) {
+            botaoEnviar.disabled = true;
+        }
 
         try {
-            const response = await fetch("http://localhost:3600/upload", {
-                method: 'POST',
-                body: formData
+            // Coleta os dados do formulário
+            const titulo = document.getElementById("titulo").value;
+            const categoria = document.getElementById("categoria").value;
+            const descricao = document.getElementById("descricao").value;
+            const data = document.getElementById("data").value;
+            const horario = document.getElementById("horario").value;
+            const duracao = document.getElementById("duracao").value;
+            const localizacao = document.getElementById("localizacao").value;
+            const cidade = document.getElementById("cidade").value;
+            const bairro = document.getElementById("bairro").value;
+            const ingresso = document.getElementById("ingresso").value;
+            const preco = document.getElementById("preco").value;
+            const link = document.getElementById("link").value;
+            const nome = document.getElementById("nome").value;
+            const email = document.getElementById("email").value;
+            const telefone = document.getElementById("telefone").value;
+
+            // Verifica se há uma imagem selecionada
+            const input = document.getElementById("imagem");
+            const arquivo = input ? input.files[0] : null;
+
+            let nomeArquivo = null;
+
+            // Faz o upload da imagem, quando informada
+            if (arquivo) {
+                const formData = new FormData();
+
+                formData.append("title", arquivo.name);
+                formData.append("avatar", arquivo);
+
+                const respostaImagem = await fetch(
+                    "http://localhost:3600/upload",
+                    {
+                        method: "POST",
+                        headers: {
+                            Authorization: `Bearer ${token}`
+                        },
+                        body: formData
+                    }
+                );
+
+                const dadosImagem = await respostaImagem.json();
+
+                if (!respostaImagem.ok || !dadosImagem.success) {
+                    console.error("Erro no upload:", dadosImagem);
+
+                    alert(
+                        dadosImagem.message ||
+                        "Erro ao enviar a imagem do evento!"
+                    );
+
+                    return;
+                }
+
+                nomeArquivo = dadosImagem.filename;
+
+                console.log("Imagem enviada:", nomeArquivo);
+            }
+
+            // Dados enviados ao MySQL por meio da API
+            const dados = {
+                imagem: nomeArquivo,
+                titulo,
+                categoria,
+                descricao,
+                data,
+                horario,
+                duracao,
+                localizacao,
+                cidade,
+                bairro,
+                ingresso,
+                preco,
+                link,
+                nome,
+                email,
+                telefone
+            };
+
+            // Não enviamos id_empresa.
+            // O backend identifica a empresa pelo token JWT.
+
+            console.log("Dados do evento:", dados);
+
+            const response = await fetch(API_URL, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`
+                },
+                body: JSON.stringify(dados)
             });
 
-            const dataImagem = await response.json();
-            if (!dataImagem.success) {
-                alert("Erro ao enviar a imagem do evento!");
+            const resultado = await response.json();
+
+            console.log("Status HTTP:", response.status);
+            console.log("Resposta da API:", resultado);
+
+            if (resultado.exists) {
+                alert("Evento já existente!");
                 return;
             }
 
-            console.log("Arquivo enviado:", dataImagem);
-            nomeArquivo = dataImagem.filename; // pega o nome do arquivo enviado
-        } catch (err) {
-            console.error("Erro ao enviar a imagem:", err);
-            alert("Erro ao enviar a imagem do evento!");
-            return;
+            if (response.status === 401) {
+                alert(
+                    "Sua sessão expirou ou não é válida. " +
+                    "Entre novamente na sua conta."
+                );
+
+                window.location.href = "entrar.html";
+                return;
+            }
+
+            if (response.status === 403) {
+                alert(
+                    resultado.message ||
+                    "Somente contas Empresa/CNPJ podem cadastrar eventos."
+                );
+                return;
+            }
+
+            if (response.ok && resultado.message !== "Error") {
+                alert("Evento cadastrado com sucesso!");
+
+                eventForm.reset();
+            } else {
+                console.error("Erro ao cadastrar evento:", resultado);
+
+                alert(
+                    resultado.message ||
+                    "Erro ao cadastrar evento. Tente novamente."
+                );
+            }
+
+        } catch (error) {
+            console.error("Erro na comunicação com a API:", error);
+
+            alert(
+                "Não foi possível concluir o cadastro. " +
+                "Verifique a conexão com o servidor."
+            );
+
+        } finally {
+            if (botaoEnviar) {
+                botaoEnviar.disabled = false;
+            }
         }
-    }
+    });
+}
 
-    // Monta o objeto de dados do evento
-    const dados = {
-        imagem: nomeArquivo,
-        titulo,
-        categoria,
-        descricao,
-        data,
-        horario,
-        duracao,
-        localizacao,
-        cidade,
-        bairro,
-        ingresso,
-        preco,
-        link,
-        nome,
-        email,
-        telefone
-    };
-
-    console.log("Dados a enviar para o backend:", dados);
-
-    // Envia os dados completos para /eventos
-    try {
-        const response = await fetch(API_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(dados)
-        });
-
-        const resultado = await response.json();
-
-        if (resultado.success) {
-            alert('Evento cadastrado com sucesso!');
-            eventForm.reset();
-        } else if (resultado.exists) {
-            alert('Evento já existente!');
-        } else {
-            alert('Erro ao cadastrar evento. Tente novamente.');
-        }
-
-    } catch (error) {
-        console.error("Erro na conexão com o servidor:", error);
-        alert('Erro de conexão com o servidor.');
-    }
-});
-
-// Função para preencher os inputs automaticamente (exceto arquivo)
+// Preenchimento automático para testes
 function carregarDados() {
     const setInput = (id, valor) => {
         const el = document.getElementById(id);
-        if(el) el.value = valor;
+
+        if (el && el.type !== "file") {
+            el.value = valor;
+        }
     };
 
-    setInput('titulo', 'Festival de Jazz na Praça');
-    setInput('email', 'teste@fatectq.edu.br');
-    setInput('data', '2026-05-15'); 
-    setInput('categoria', 'shows');
-    setInput('descricao', 'Um evento cultural incrível com os melhores músicos da região. Entrada gratuita para todos!');
-    setInput('horario', '18:00:00');
-    setInput('duracao', '4');
-    setInput('localizacao', 'Praça Central');
-    setInput('cidade', 'Taquaritinga');
-    setInput('bairro', 'Portal da serra');
-    setInput('ingresso', 'gratuito');
-    setInput('preco', '');
-    setInput('imagem', 'FestivaldeJazz.webp'); // campo manual
-    setInput('link', '');
-    setInput('nome', 'lulu');
-    setInput('telefone', '(16) 3252-5555');
+    setInput("titulo", "Festival de Jazz na Praça");
+    setInput("email", "teste@fatectq.edu.br");
+    setInput("data", "2026-05-15");
+    setInput("categoria", "shows");
+
+    setInput(
+        "descricao",
+        "Um evento cultural incrível com os melhores músicos da região. Entrada gratuita para todos!"
+    );
+
+    setInput("horario", "18:00:00");
+    setInput("duracao", "4");
+    setInput("localizacao", "Praça Central");
+    setInput("cidade", "Taquaritinga");
+    setInput("bairro", "Portal da serra");
+    setInput("ingresso", "gratuito");
+    setInput("preco", "");
+    setInput("link", "");
+    setInput("nome", "lulu");
+    setInput("telefone", "(16) 3252-5555");
 }
 
-document.addEventListener('DOMContentLoaded', carregarDados);
-window.addEventListener('pageshow', carregarDados);
+document.addEventListener("DOMContentLoaded", carregarDados);
+window.addEventListener("pageshow", carregarDados);
