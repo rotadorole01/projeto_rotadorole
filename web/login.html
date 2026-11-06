@@ -621,7 +621,7 @@
         if (dados.password.length < 8) return alert('A senha deve ter pelo menos 8 caracteres.');
         botao.disabled = true;
         try {
-          const response = await fetch('http://localhost:3600/logins/cadastro', {
+          const response = await fetch('http://localhost:4101/logins/cadastro', {
             method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(dados)
           });
           const resultado = await response.json();

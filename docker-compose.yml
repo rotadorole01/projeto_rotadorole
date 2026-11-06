@@ -1,0 +1,46 @@
+services:
+  # back em nodejs
+  back:
+    build: ./back
+    container_name: rotadorole_back
+    #restart: always
+    restart: unless-stopped
+
+    environment:
+      - API_PORT=3000
+      - DB_HOST=dbmaria
+      - DB_USER=root
+      - DB_PASSWORD=teste@123
+      - DB_PORT=3306
+      - DB_DATABASE=rotadorole
+      - DB_RESET=false
+      - JWT_SECRET=senhasupersecreta
+
+    ports:
+      - "4101:3000"  # Acesse o sistema via http://IP_DO_SERVIDOR:8080
+    volumes:
+      - ./uploads:/app/uploads  # Mapeia a raiz inteira (bancosangue/) permitindo edição em tempo real
+      - /app/node_modules
+    #depends_on:
+    #  - dbmaria
+    networks:
+      - fatectqnet
+  # Servidor Web + API/Front PHP
+  web:
+    build: ./web
+    container_name: rotadorole_web
+    #restart: always
+    restart: unless-stopped
+    ports:
+      - "8181:80"  # Acesse o sistema via http://IP_DO_SERVIDOR:8080
+    volumes:
+      - ./web:/usr/share/nginx/html  # Mapeia a raiz inteira (bancosangue/) permitindo edição em tempo real
+    #depends_on:
+    #  - dbmaria
+    networks:
+      - fatectqnet
+
+
+networks:
+  fatectqnet:
+    external: true

@@ -627,7 +627,7 @@
         const botao = form.querySelector('[type="submit"]');
         botao.disabled = true;
         try {
-          const resposta = await fetch('http://localhost:3600/logins/entrar', {
+          const resposta = await fetch('http://localhost:4101/logins/entrar', {
             method:'POST', headers:{'Content-Type':'application/json'},
             body: JSON.stringify({email:document.getElementById('email').value.trim(), password:document.getElementById('senha').value})
           });

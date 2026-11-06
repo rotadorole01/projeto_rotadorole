@@ -18,16 +18,17 @@ const Port = process.env.API_PORT || 3600;
 const app = express();
 
 // CONFIGURAÇÃO CORS
-const corsOptions = {
-    origin: [
-        "http://127.0.0.1:5500",
-        "http://localhost:5500",
-        "http://localhost:3600"
-    ],
-    credentials: true
-};
+// const corsOptions = {
+//     origin: [
+//         "http://127.0.0.1:5500",
+//         "http://localhost:8181",
+//         "http://localhost:3600"
+//     ],
+//     credentials: true
+// };
 
-app.use(cors(corsOptions));
+// app.use(cors(corsOptions));
+app.use(cors());
 
 // RECEBER JSON
 app.use(express.json());
