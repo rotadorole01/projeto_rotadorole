@@ -178,6 +178,7 @@
             display: none;
         }
     </style>
+    <script src="js/apiConfig.js"></script>
 </head>
 <body>
     <div id="google_translate_element" style="display:none;"></div>
@@ -243,7 +244,7 @@
             const token = sessionStorage.getItem("rota_token");
             if (!link || !token) return;
             try {
-                const resposta = await fetch("http://localhost:3600/logins/perfil", {
+                const resposta = await fetch(`${API_CONFIG.BASE_URL}/logins/perfil`, {
                     headers: { Authorization: "Bearer " + token }
                 });
                 if (!resposta.ok) return;

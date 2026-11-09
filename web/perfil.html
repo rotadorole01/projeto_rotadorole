@@ -510,6 +510,7 @@
             }
         }
     </style>
+    <script src="js/apiConfig.js"></script>
 </head>
 
 <body>
@@ -864,7 +865,7 @@
     </main>
 
     <script>
-        const API = "http://localhost:3600";
+        const API = API_CONFIG.BASE_URL;
 
         const form = document.getElementById("formPerfil");
         const feedback = document.getElementById("feedback");

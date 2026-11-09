@@ -96,6 +96,7 @@
             background-color: #ffebee;
         }
     </style>
+    <script src="js/apiConfig.js"></script>
 </head>
 
 <body>
@@ -709,7 +710,7 @@
 
             try {
                 const resposta = await fetch(
-                    "http://localhost:3600/logins/perfil",
+                    `${API_CONFIG.BASE_URL}/logins/perfil`,
                     {
                         headers: {
                             Authorization: "Bearer " + token
@@ -974,7 +975,7 @@
                     const nomeSeguro = arquivo.split(/[\\/]/).pop();
 
                     imagem.style.backgroundImage =
-                        `url("http://localhost:3600/uploads/${encodeURIComponent(nomeSeguro)}")`;
+                        `url("${API_CONFIG.BASE_URL}/uploads/${encodeURIComponent(nomeSeguro)}")`;
                 }
 
                 imagem.appendChild(
@@ -1089,7 +1090,7 @@
 
             try {
                 const resposta = await fetch(
-                    "http://localhost:3600/eventos"
+                    `${API_CONFIG.BASE_URL}/eventos`
                 );
 
                 if (!resposta.ok) {

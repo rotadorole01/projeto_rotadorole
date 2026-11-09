@@ -21,6 +21,7 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { AuthContext } from "./utils/authContext";
+import { API_URL } from "./utils/api";
 
 // =====================================================
 // IDENTIDADE VISUAL
@@ -686,13 +687,8 @@ export default function CadastrarEvento() {
       // ENDEREÇO DA API
       // =================================================
 
-      const enderecoAPI =
-        Platform.OS === "web"
-          ? "http://localhost:3600"
-          : "http://192.168.0.111:3600";
-
       const resposta = await fetch(
-        `${enderecoAPI}/eventos`,
+        `${API_URL}/eventos`,
         {
           method: "POST",
           body: formulario,

@@ -1,5 +1,5 @@
 
-    const API_URL = "http://localhost:3600/eventos";
+    const API_URL = `${API_CONFIG.BASE_URL}/eventos`;
 
     const carousel = document.getElementById("carousel");
     const dotsContainer = document.getElementById("carouselDots");
@@ -43,8 +43,8 @@ function renderizarCarousel(eventos) {
             item.classList.add("active");
           }
 
-         item.style.backgroundImage = `url('http://localhost:3600/uploads/${evento.foto}')`;
-         //item.style.backgroundImage = `url(http://localhost:3600/uploads/1.png)`;
+         item.style.backgroundImage = `url("${API_CONFIG.BASE_URL}/uploads/${evento.foto}")`;
+         //item.style.backgroundImage = `url(${API_CONFIG.BASE_URL}/uploads/1.png)`;
 
         item.innerHTML = `
             <div class="carousel-item-overlay">

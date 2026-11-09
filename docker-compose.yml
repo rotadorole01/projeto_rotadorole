@@ -7,7 +7,7 @@ services:
     restart: unless-stopped
 
     environment:
-      - API_PORT=3000
+      - API_PORT=3600
       - DB_HOST=dbmaria
       - DB_USER=root
       - DB_PASSWORD=teste@123
@@ -17,7 +17,7 @@ services:
       - JWT_SECRET=senhasupersecreta
 
     ports:
-      - "4101:3000"  # Acesse o sistema via http://IP_DO_SERVIDOR:8080
+      - "3600:3600"  # API disponível em http://IP_DO_SERVIDOR:3600
     volumes:
       - ./uploads:/app/uploads  # Mapeia a raiz inteira (bancosangue/) permitindo edição em tempo real
       - /app/node_modules

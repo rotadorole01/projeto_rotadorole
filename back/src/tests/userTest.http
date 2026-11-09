@@ -1,7 +1,7 @@
 # url ou dominio
 @URL = http://localhost
 # Porta do servidor
-@PORT = 4101
+@PORT = 3600
 # endpoint ou rota do teste
 @ENDPOINT = users
 # uri - rota final do teste

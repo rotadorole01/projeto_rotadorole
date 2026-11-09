@@ -442,6 +442,7 @@
             }
         }
     </style>
+    <script src="js/apiConfig.js"></script>
 </head>
 
 <body>
@@ -712,8 +713,8 @@
     </div>
 
     <script>
-        const API_EVENTOS = "http://localhost:3600/eventos";
-        const API_LOGIN = "http://localhost:3600/logins/perfil";
+        const API_EVENTOS = `${API_CONFIG.BASE_URL}/eventos`;
+        const API_LOGIN = `${API_CONFIG.BASE_URL}/logins/perfil`;
 
         const token = sessionStorage.getItem("rota_token");
 
@@ -844,7 +845,7 @@
 
             if (arquivo) {
                 imagem.style.backgroundImage =
-                    'url("http://localhost:3600/uploads/' +
+                    `url("${API_CONFIG.BASE_URL}/uploads/` +
                     encodeURIComponent(arquivo) +
                     '")';
             }

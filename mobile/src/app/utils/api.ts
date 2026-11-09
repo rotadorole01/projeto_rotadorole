@@ -1,8 +1,13 @@
+import { Platform } from "react-native";
+
 // Cliente central da API do Rota do Rolê.
 // IMPORTANTE: no celular, use o IPv4 do computador na mesma rede Wi-Fi,
 // nunca "localhost". Configure EXPO_PUBLIC_API_URL no arquivo .env do mobile.
 export const API_URL =
-  process.env.EXPO_PUBLIC_API_URL || "http://192.168.0.100:3600";
+  (process.env.EXPO_PUBLIC_API_URL ||
+    (Platform.OS === "web"
+      ? "http://localhost:3600"
+      : "http://192.168.0.111:3600")).replace(/\/$/, "");
 
 type ApiResponse<T> = {
   message?: string;

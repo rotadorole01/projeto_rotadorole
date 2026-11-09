@@ -108,6 +108,7 @@
             window.location.replace("entrar.html");
         }
     </script>
+    <script src="js/apiConfig.js"></script>
 </head>
 
 <body>
@@ -704,7 +705,7 @@
             }
 
             try {
-                const resposta = await fetch("http://localhost:3600/logins/perfil", {
+                const resposta = await fetch(`${API_CONFIG.BASE_URL}/logins/perfil`, {
                     headers: { Authorization: `Bearer ${token}` },
                     cache: "no-store"
                 });
