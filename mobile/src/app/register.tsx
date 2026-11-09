@@ -23,14 +23,16 @@ import { cadastrar } from "./utils/api";
 // SEM MENU HAMBÚRGUER
 // =====================================================
 
+// Permite apenas números e no máximo 14 dígitos.
+function formatarCNPJ(valor: string): string {
+  return valor.replace(/\D/g, "").slice(0, 14);
+}
+
 export default function Register() {
   const router = useRouter();
   const { width } = useWindowDimensions();
 
-  // =====================================================
   // DADOS DO CADASTRO
-  // =====================================================
-
   const [namefull, setNamefull] = useState<string>("");
   const [senha, setSenha] = useState<string>("");
   const [senha2, setSenha2] = useState<string>("");
@@ -38,29 +40,21 @@ export default function Register() {
   const [cnpj, setCnpj] = useState<string>("");
   const [nomeEmpresa, setNomeEmpresa] = useState<string>("");
 
-  // =====================================================
   // TIPO DE CONTA
-  // =====================================================
-
   const [tipoConta, setTipoConta] = useState<string>(
     "Apenas Usuário - Pessoa Física"
   );
-
   const [tipoAberto, setTipoAberto] = useState<boolean>(false);
 
-  // =====================================================
   // RESPONSIVIDADE
-  // =====================================================
-
   const telaPequena = width < 700;
 
-  // =====================================================
-  // FUNÇÃO DE CADASTRO
-  // =====================================================
-
+  // CONTROLE DO CADASTRO
   const [carregando, setCarregando] = useState(false);
 
   async function onClickAcessar() {
+    if (carregando) return;
+
     if (namefull.trim() === "") {
       Alert.alert(
         "Campo obrigatório",
@@ -101,32 +95,60 @@ export default function Register() {
       return;
     }
 
-    const contaEmpresa = tipoConta === "Empresa ou Organizador - CNPJ";
-    const cnpjLimpo = cnpj.replace(/\D/g, "");
-    if (contaEmpresa && (cnpjLimpo.length !== 14 || nomeEmpresa.trim().length < 2)) {
+    const contaEmpresa =
+      tipoConta === "Empresa ou Organizador - CNPJ";
+
+    const cnpjLimpo = formatarCNPJ(cnpj);
+
+    // EXIGE EXATAMENTE 14 NÚMEROS NO CNPJ
+    if (contaEmpresa && cnpjLimpo.length !== 14) {
+      Alert.alert(
+        "CNPJ inválido",
+        "O CNPJ deve conter exatamente 14 números."
+      );
+      return;
+    }
+
+    if (contaEmpresa && nomeEmpresa.trim().length < 2) {
       Alert.alert(
         "Cadastro empresarial",
-        "Informe o nome da empresa e um CNPJ com 14 dígitos."
+        "Informe o nome da empresa."
       );
       return;
     }
 
     try {
       setCarregando(true);
+
       await cadastrar({
         name: namefull.trim(),
         email: usuario.trim(),
         password: senha,
         tipoConta: contaEmpresa ? "cnpj" : "usuario",
-        ...(contaEmpresa ? { cnpj: cnpjLimpo, nomeEmpresa: nomeEmpresa.trim() } : {}),
+        ...(contaEmpresa
+          ? {
+              cnpj: cnpjLimpo,
+              nomeEmpresa: nomeEmpresa.trim(),
+            }
+          : {}),
       });
-      Alert.alert("Cadastro realizado", "Sua conta foi criada. Agora você já pode entrar.", [
-        { text: "Ir para o login", onPress: () => router.replace("/login") },
-      ]);
+
+      Alert.alert(
+        "Cadastro realizado",
+        "Sua conta foi criada. Agora você já pode entrar.",
+        [
+          {
+            text: "Ir para o login",
+            onPress: () => router.replace("/login"),
+          },
+        ]
+      );
     } catch (error) {
       Alert.alert(
         "Não foi possível cadastrar",
-        error instanceof Error ? error.message : "Tente novamente."
+        error instanceof Error
+          ? error.message
+          : "Tente novamente."
       );
     } finally {
       setCarregando(false);
@@ -140,19 +162,13 @@ export default function Register() {
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
-
-        {/* ============================================
-            CABEÇALHO SEM MENU HAMBÚRGUER
-        ============================================ */}
-
+        {/* CABEÇALHO SEM MENU HAMBÚRGUER */}
         <LinearGradient
           colors={["#075b91", "#6b5a64", "#ff6633"]}
           start={{ x: 0, y: 0.5 }}
           end={{ x: 1, y: 0.5 }}
           style={styles.header}
         >
-          {/* LOGO */}
-
           <View style={styles.logoArea}>
             <FontAwesome
               name="map-marker"
@@ -166,20 +182,14 @@ export default function Register() {
           </View>
         </LinearGradient>
 
-        {/* ============================================
-            CONTEÚDO DA PÁGINA
-        ============================================ */}
-
+        {/* CONTEÚDO DA PÁGINA */}
         <ScrollView
           style={styles.scroll}
           contentContainerStyle={styles.scrollContent}
           showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
         >
-
-          {/* ==========================================
-              TÍTULO
-          ========================================== */}
-
+          {/* TÍTULO */}
           <View style={styles.titleArea}>
             <Text
               style={[
@@ -198,21 +208,14 @@ export default function Register() {
             </Text>
           </View>
 
-          {/* ==========================================
-              CARD DO FORMULÁRIO
-          ========================================== */}
-
+          {/* CARD DO FORMULÁRIO */}
           <View
             style={[
               styles.main,
               telaPequena && styles.mainMobile,
             ]}
           >
-
-            {/* ========================================
-                TÍTULO DO FORMULÁRIO
-            ======================================== */}
-
+            {/* TÍTULO DO FORMULÁRIO */}
             <View style={styles.sectionTitleArea}>
               <View style={styles.sectionTitleRow}>
                 <Feather
@@ -234,19 +237,14 @@ export default function Register() {
               <View style={styles.sectionLine} />
             </View>
 
-            {/* ========================================
-                TIPO DE CONTA
-            ======================================== */}
-
+            {/* TIPO DE CONTA */}
             <Text style={styles.inputText}>
               Tipo de Conta *
             </Text>
 
             <Pressable
               style={styles.select}
-              onPress={() => {
-                setTipoAberto(!tipoAberto);
-              }}
+              onPress={() => setTipoAberto(!tipoAberto)}
             >
               <Text style={styles.selectText}>
                 {tipoConta}
@@ -257,15 +255,9 @@ export default function Register() {
               </Text>
             </Pressable>
 
-            {/* ========================================
-                OPÇÕES DO TIPO DE CONTA
-            ======================================== */}
-
+            {/* OPÇÕES DO TIPO DE CONTA */}
             {tipoAberto && (
               <View style={styles.optionsContainer}>
-
-                {/* PESSOA FÍSICA */}
-
                 <Pressable
                   style={styles.option}
                   onPress={() => {
@@ -280,8 +272,6 @@ export default function Register() {
                   </Text>
                 </Pressable>
 
-                {/* EMPRESA OU ORGANIZADOR */}
-
                 <Pressable
                   style={styles.option}
                   onPress={() => {
@@ -295,14 +285,10 @@ export default function Register() {
                     Empresa ou Organizador - CNPJ
                   </Text>
                 </Pressable>
-
               </View>
             )}
 
-            {/* ========================================
-                NOME COMPLETO
-            ======================================== */}
-
+            {/* NOME COMPLETO */}
             <Text style={styles.inputText}>
               Nome Completo *
             </Text>
@@ -312,14 +298,17 @@ export default function Register() {
               placeholder="Informe o Nome Completo"
               placeholderTextColor="#999999"
               value={namefull}
-              onChangeText={(value) => {
-                setNamefull(value);
-              }}
+              onChangeText={setNamefull}
             />
 
-            {tipoConta === "Empresa ou Organizador - CNPJ" && (
+            {/* CAMPOS DE EMPRESA */}
+            {tipoConta ===
+              "Empresa ou Organizador - CNPJ" && (
               <>
-                <Text style={styles.inputText}>Nome da Empresa *</Text>
+                <Text style={styles.inputText}>
+                  Nome da Empresa *
+                </Text>
+
                 <TextInput
                   style={styles.input}
                   placeholder="Informe o nome da empresa"
@@ -328,23 +317,26 @@ export default function Register() {
                   onChangeText={setNomeEmpresa}
                 />
 
-                <Text style={styles.inputText}>CNPJ *</Text>
+                {/* CNPJ: APENAS 14 NÚMEROS */}
+                <Text style={styles.inputText}>
+                  CNPJ *
+                </Text>
+
                 <TextInput
                   style={styles.input}
                   placeholder="Informe os 14 números do CNPJ"
                   placeholderTextColor="#999999"
-                  keyboardType="numeric"
-                  maxLength={18}
+                  keyboardType="number-pad"
+                  maxLength={14}
                   value={cnpj}
-                  onChangeText={setCnpj}
+                  onChangeText={(valor) => {
+                    setCnpj(formatarCNPJ(valor));
+                  }}
                 />
               </>
             )}
 
-            {/* ========================================
-                E-MAIL
-            ======================================== */}
-
+            {/* E-MAIL */}
             <Text style={styles.inputText}>
               E-mail *
             </Text>
@@ -357,15 +349,10 @@ export default function Register() {
               autoCapitalize="none"
               autoCorrect={false}
               value={usuario}
-              onChangeText={(value) => {
-                setUsuario(value);
-              }}
+              onChangeText={setUsuario}
             />
 
-            {/* ========================================
-                SENHA
-            ======================================== */}
-
+            {/* SENHA */}
             <Text style={styles.inputText}>
               Senha *
             </Text>
@@ -376,15 +363,10 @@ export default function Register() {
               placeholderTextColor="#999999"
               secureTextEntry
               value={senha}
-              onChangeText={(value) => {
-                setSenha(value);
-              }}
+              onChangeText={setSenha}
             />
 
-            {/* ========================================
-                REPETIR SENHA
-            ======================================== */}
-
+            {/* REPETIR SENHA */}
             <Text style={styles.inputText}>
               Repetir senha *
             </Text>
@@ -395,15 +377,10 @@ export default function Register() {
               placeholderTextColor="#999999"
               secureTextEntry
               value={senha2}
-              onChangeText={(value) => {
-                setSenha2(value);
-              }}
+              onChangeText={setSenha2}
             />
 
-            {/* ========================================
-                BOTÃO CRIAR CONTA
-            ======================================== */}
-
+            {/* BOTÃO CRIAR CONTA */}
             <Pressable
               style={({ pressed }) => [
                 styles.button,
@@ -413,14 +390,13 @@ export default function Register() {
               disabled={carregando}
             >
               <Text style={styles.buttonText}>
-                {carregando ? "Cadastrando..." : "Criar Conta"}
+                {carregando
+                  ? "Cadastrando..."
+                  : "Criar Conta"}
               </Text>
             </Pressable>
 
-            {/* ========================================
-                LINK PARA LOGIN
-            ======================================== */}
-
+            {/* LINK PARA LOGIN */}
             <View style={styles.loginArea}>
               <Text style={styles.loginText}>
                 Já possui cadastro?{" "}
@@ -434,7 +410,6 @@ export default function Register() {
                 </Pressable>
               </Link>
             </View>
-
           </View>
         </ScrollView>
       </View>
@@ -443,15 +418,11 @@ export default function Register() {
 }
 
 // =====================================================
-// ESTILOS
+// ESTILOS ORIGINAIS
 // =====================================================
 
 const styles = StyleSheet.create({
-
-  // ===================================================
   // ESTRUTURA
-  // ===================================================
-
   safeArea: {
     flex: 1,
     backgroundColor: "#f5f6f8",
@@ -470,10 +441,7 @@ const styles = StyleSheet.create({
     paddingBottom: 50,
   },
 
-  // ===================================================
   // CABEÇALHO SEM MENU
-  // ===================================================
-
   header: {
     height: 75,
     paddingHorizontal: 20,
@@ -495,10 +463,7 @@ const styles = StyleSheet.create({
     marginLeft: 9,
   },
 
-  // ===================================================
   // TÍTULO DA PÁGINA
-  // ===================================================
-
   titleArea: {
     alignItems: "center",
     paddingTop: 65,
@@ -533,10 +498,7 @@ const styles = StyleSheet.create({
     maxWidth: 700,
   },
 
-  // ===================================================
   // CARD DO FORMULÁRIO
-  // ===================================================
-
   main: {
     width: "90%",
     maxWidth: 860,
@@ -563,10 +525,7 @@ const styles = StyleSheet.create({
     borderRadius: 14,
   },
 
-  // ===================================================
   // TÍTULO DO CARD
-  // ===================================================
-
   sectionTitleArea: {
     alignItems: "center",
     marginBottom: 30,
@@ -598,10 +557,7 @@ const styles = StyleSheet.create({
     marginTop: 14,
   },
 
-  // ===================================================
   // LABELS
-  // ===================================================
-
   inputText: {
     width: "100%",
     color: "#123b63",
@@ -610,10 +566,7 @@ const styles = StyleSheet.create({
     marginBottom: 9,
   },
 
-  // ===================================================
   // INPUTS
-  // ===================================================
-
   input: {
     width: "100%",
     height: 53,
@@ -627,10 +580,7 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
 
-  // ===================================================
   // SELECT - TIPO DE CONTA
-  // ===================================================
-
   select: {
     width: "100%",
     height: 53,
@@ -657,10 +607,7 @@ const styles = StyleSheet.create({
     fontSize: 11,
   },
 
-  // ===================================================
   // OPÇÕES DO SELECT
-  // ===================================================
-
   optionsContainer: {
     width: "100%",
     backgroundColor: "#ffffff",
@@ -692,10 +639,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
 
-  // ===================================================
   // BOTÃO CRIAR CONTA
-  // ===================================================
-
   button: {
     width: "100%",
     height: 56,
@@ -716,10 +660,7 @@ const styles = StyleSheet.create({
     fontWeight: "800",
   },
 
-  // ===================================================
   // LINK LOGIN
-  // ===================================================
-
   loginArea: {
     flexDirection: "row",
     flexWrap: "wrap",
@@ -738,5 +679,4 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: "700",
   },
-
 });

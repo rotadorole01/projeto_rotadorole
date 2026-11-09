@@ -1,11 +1,13 @@
 
 import { Feather, FontAwesome, Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
-import { useRouter } from "expo-router";
-import { useMemo, useState } from "react";
+import { useFocusEffect, useRouter } from "expo-router";
+import { useCallback, useMemo, useState } from "react";
 import {
+  ActivityIndicator,
   Image,
   Pressable,
+  RefreshControl,
   ScrollView,
   StyleSheet,
   Text,
@@ -14,79 +16,85 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { API_URL } from "./utils/api";
 
 // =====================================================
-// DADOS DOS EVENTOS
+// TIPOS DE DADOS
 // =====================================================
 
-const eventos = [
-  {
-    id: 1,
-    titulo: "Festival de Jazz na Praça",
-    categoria: "Shows",
-    data: "15 de Maio",
-    horario: "18:00",
-    local: "Praça Central",
-    descricao:
-      "Um evento cultural incrível com os melhores músicos da região. Entrada gratuita para todos!",
-    imagem: "https://images.unsplash.com/photo-1514525253161-7a46d19cd819",
-  },
-  {
-    id: 2,
-    titulo: "Noite de Samba com Raízes",
-    categoria: "Shows",
-    data: "22 de Maio",
-    horario: "20:00",
-    local: "Espaço Cultural Downtown",
-    descricao:
-      "Samba ao vivo com as melhores escolas da região. Venha dançar e se divertir!",
-    imagem: "https://images.unsplash.com/photo-1506157786151-b8491531f063",
-  },
-  {
-    id: 3,
-    titulo: "Festival Gastronômico da Cidade",
-    categoria: "Gastronomia",
-    data: "28 de Maio",
-    horario: "12:00",
-    local: "Parque Municipal",
-    descricao:
-      "Uma grande experiência gastronômica com pratos especiais, comidas típicas e atrações para toda a família.",
-    imagem: "https://images.unsplash.com/photo-1515003197210-e0cd71810b5f",
-  },
-  {
-    id: 4,
-    titulo: "Feira Cultural ao Ar Livre",
-    categoria: "Cultura",
-    data: "02 de Junho",
-    horario: "10:00",
-    local: "Praça da Estação",
-    descricao:
-      "Artesanato, arte, música, apresentações culturais e diversos expositores reunidos em um só lugar.",
-    imagem: "https://images.unsplash.com/photo-1528605248644-14dd04022da1",
-  },
-  {
-    id: 5,
-    titulo: "Corrida e Caminhada da Cidade",
-    categoria: "Esportes",
-    data: "08 de Junho",
-    horario: "07:00",
-    local: "Avenida Principal",
-    descricao:
-      "Evento esportivo aberto ao público com corrida, caminhada e atividades para participantes de diferentes idades.",
-    imagem: "https://images.unsplash.com/photo-1552674605-db6ffd4facb5",
-  },
-  {
-    id: 6,
-    titulo: "Festival de Música ao Pôr do Sol",
-    categoria: "Música",
-    data: "15 de Junho",
-    horario: "17:00",
-    local: "Mirante Central",
-    descricao:
-      "Uma tarde especial com música ao vivo, apresentações locais e um belo pôr do sol.",
-    imagem: "https://images.unsplash.com/photo-1492684223066-81342ee5ff30",
-  },
-];
+type Evento = {
+  id: number;
+  titulo: string;
+  categoria: string | null;
+  data: string | null;
+  horario: string | null;
+  local: string | null;
+  localizacao: string | null;
+  descricao: string | null;
+  imagem: string | null;
+  foto: string | null;
+  cidade: string | null;
+  bairro: string | null;
+  status: string | null;
+};
+
+type RespostaEventos = {
+  message?: string;
+  data?: Evento[];
+  Error?: string;
+};
+
+// =====================================================
+// FUNÇÕES AUXILIARES
+// =====================================================
+
+function formatarData(data: string | null): string {
+  if (!data) return "Data não informada";
+
+  const partes = data.slice(0, 10).split("-");
+
+  if (partes.length === 3) {
+    const [ano, mes, dia] = partes;
+
+    if (ano && mes && dia) {
+      return `${dia}/${mes}/${ano}`;
+    }
+  }
+
+  return data;
+}
+
+function formatarHorario(horario: string | null): string {
+  if (!horario) return "Horário não informado";
+
+  return horario.slice(0, 5);
+}
+
+function obterImagem(evento: Evento): string | null {
+  const imagem = evento.imagem || evento.foto;
+
+  if (!imagem) return null;
+
+  if (
+    imagem.startsWith("http://") ||
+    imagem.startsWith("https://")
+  ) {
+    return imagem;
+  }
+
+  const caminho = imagem.startsWith("/")
+    ? imagem
+    : `/uploads/${imagem}`;
+
+  return `${API_URL.replace(/\/$/, "")}${caminho}`;
+}
+
+function normalizarTexto(valor: string | null | undefined): string {
+  return (valor || "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase();
+}
 
 // =====================================================
 // PÁGINA DE EVENTOS
@@ -100,6 +108,86 @@ export default function Eventos() {
   const [menuAberto, setMenuAberto] = useState(false);
   const [busca, setBusca] = useState("");
   const [buscaAplicada, setBuscaAplicada] = useState("");
+
+  const [eventos, setEventos] = useState<Evento[]>([]);
+  const [carregando, setCarregando] = useState(true);
+  const [atualizando, setAtualizando] = useState(false);
+  const [erro, setErro] = useState("");
+
+  // ===================================================
+  // BUSCAR EVENTOS DA API
+  // ===================================================
+
+  const carregarEventos = useCallback(
+    async (mostrarCarregamento = true) => {
+      if (mostrarCarregamento) {
+        setCarregando(true);
+      }
+
+      setErro("");
+
+      try {
+        const resposta = await fetch(`${API_URL}/eventos`, {
+          method: "GET",
+          headers: {
+            Accept: "application/json",
+          },
+        });
+
+        const resultado: RespostaEventos =
+          await resposta.json();
+
+        if (!resposta.ok) {
+          throw new Error(
+            resultado.Error ||
+              resultado.message ||
+              "Erro ao buscar eventos."
+          );
+        }
+
+        if (!Array.isArray(resultado.data)) {
+          throw new Error(
+            "A API não retornou uma lista de eventos válida."
+          );
+        }
+
+        const eventosAtivos = resultado.data.filter(
+          (evento) =>
+            !evento.status ||
+            normalizarTexto(evento.status) === "ativo"
+        );
+
+        setEventos(eventosAtivos);
+      } catch (error) {
+        console.error("Erro ao carregar eventos:", error);
+
+        setErro(
+          error instanceof Error
+            ? error.message
+            : "Não foi possível carregar os eventos."
+        );
+      } finally {
+        setCarregando(false);
+        setAtualizando(false);
+      }
+    },
+    []
+  );
+
+  // Recarrega sempre que a tela recebe foco.
+  // Assim, novos eventos aparecem após o cadastro.
+  useFocusEffect(
+    useCallback(() => {
+      carregarEventos();
+
+      return () => {};
+    }, [carregarEventos])
+  );
+
+  function atualizarEventos() {
+    setAtualizando(true);
+    carregarEventos(false);
+  }
 
   // ===================================================
   // MENU HAMBÚRGUER
@@ -142,7 +230,6 @@ export default function Eventos() {
     router.navigate("/quiz");
   }
 
-  // NOVO: BOTÃO SAIR
   function irParaLogin() {
     setMenuAberto(false);
     router.replace("/login");
@@ -153,21 +240,28 @@ export default function Eventos() {
   // ===================================================
 
   const eventosFiltrados = useMemo(() => {
-    const texto = buscaAplicada.trim().toLowerCase();
+    const texto = normalizarTexto(buscaAplicada.trim());
 
     if (!texto) {
       return eventos;
     }
 
     return eventos.filter((evento) => {
-      return (
-        evento.titulo.toLowerCase().includes(texto) ||
-        evento.categoria.toLowerCase().includes(texto) ||
-        evento.local.toLowerCase().includes(texto) ||
-        evento.descricao.toLowerCase().includes(texto)
-      );
+      const conteudo = [
+        evento.titulo,
+        evento.categoria,
+        evento.local,
+        evento.localizacao,
+        evento.descricao,
+        evento.cidade,
+        evento.bairro,
+      ]
+        .map(normalizarTexto)
+        .join(" ");
+
+      return conteudo.includes(texto);
     });
-  }, [buscaAplicada]);
+  }, [eventos, buscaAplicada]);
 
   function pesquisarEventos() {
     setBuscaAplicada(busca);
@@ -180,7 +274,6 @@ export default function Eventos() {
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
-
         {/* CABEÇALHO */}
 
         <LinearGradient
@@ -218,15 +311,10 @@ export default function Eventos() {
           </Pressable>
         </LinearGradient>
 
-        {/* ==========================================
-            MENU HAMBÚRGUER
-        ========================================== */}
+        {/* MENU HAMBÚRGUER */}
 
         {menuAberto && (
           <View style={styles.menu}>
-
-            {/* INÍCIO */}
-
             <Pressable
               style={styles.itemMenu}
               onPress={irParaInicio}
@@ -236,13 +324,10 @@ export default function Eventos() {
                 size={20}
                 color="#075b91"
               />
-
               <Text style={styles.textoMenu}>
                 Início
               </Text>
             </Pressable>
-
-            {/* EVENTOS - DESTACADO EM LARANJA */}
 
             <Pressable
               style={[
@@ -256,7 +341,6 @@ export default function Eventos() {
                 size={20}
                 color="#ff5733"
               />
-
               <Text
                 style={[
                   styles.textoMenu,
@@ -267,8 +351,6 @@ export default function Eventos() {
               </Text>
             </Pressable>
 
-            {/* CADASTRAR EVENTO */}
-
             <Pressable
               style={styles.itemMenu}
               onPress={irParaCadastrarEvento}
@@ -278,13 +360,10 @@ export default function Eventos() {
                 size={20}
                 color="#075b91"
               />
-
               <Text style={styles.textoMenu}>
                 Cadastrar Evento
               </Text>
             </Pressable>
-
-            {/* MINHA CONTA */}
 
             <Pressable
               style={styles.itemMenu}
@@ -295,13 +374,10 @@ export default function Eventos() {
                 size={20}
                 color="#075b91"
               />
-
               <Text style={styles.textoMenu}>
                 Minha Conta
               </Text>
             </Pressable>
-
-            {/* SOBRE NÓS */}
 
             <Pressable
               style={styles.itemMenu}
@@ -312,13 +388,10 @@ export default function Eventos() {
                 size={20}
                 color="#075b91"
               />
-
               <Text style={styles.textoMenu}>
                 Sobre Nós
               </Text>
             </Pressable>
-
-            {/* QUIZ DO ROLÊ */}
 
             <Pressable
               style={styles.itemMenu}
@@ -329,13 +402,10 @@ export default function Eventos() {
                 size={20}
                 color="#075b91"
               />
-
               <Text style={styles.textoMenu}>
                 Quiz do Rolê
               </Text>
             </Pressable>
-
-            {/* NOVO: SAIR */}
 
             <Pressable
               style={styles.itemMenu}
@@ -346,26 +416,27 @@ export default function Eventos() {
                 size={20}
                 color="#075b91"
               />
-
               <Text style={styles.textoMenu}>
                 Sair
               </Text>
             </Pressable>
-
           </View>
         )}
 
-        {/* ==========================================
-            CONTEÚDO
-        ========================================== */}
+        {/* CONTEÚDO PRINCIPAL */}
 
         <ScrollView
           style={styles.scroll}
           showsVerticalScrollIndicator={false}
           contentContainerStyle={styles.scrollContent}
           keyboardShouldPersistTaps="handled"
+          refreshControl={
+            <RefreshControl
+              refreshing={atualizando}
+              onRefresh={atualizarEventos}
+            />
+          }
         >
-
           {/* TÍTULO */}
 
           <View
@@ -414,138 +485,209 @@ export default function Eventos() {
             </Pressable>
           </View>
 
-          {/* ========================================
-              CARDS DOS EVENTOS
-          ======================================== */}
+          {/* CARREGAMENTO */}
 
-          <View
-            style={[
-              styles.eventsGrid,
-              telaPequena && styles.eventsGridMobile,
-            ]}
-          >
-            {eventosFiltrados.map((evento) => (
-              <View
-                key={evento.id}
-                style={[
-                  styles.eventCard,
-                  telaPequena && styles.eventCardMobile,
-                ]}
+          {carregando && (
+            <View style={styles.emptyArea}>
+              <ActivityIndicator
+                size="large"
+                color="#07569a"
+              />
+              <Text style={styles.emptyText}>
+                Carregando eventos...
+              </Text>
+            </View>
+          )}
+
+          {/* ERRO DE CONEXÃO */}
+
+          {!carregando && erro !== "" && (
+            <View style={styles.emptyArea}>
+              <Ionicons
+                name="alert-circle-outline"
+                size={36}
+                color="#ff5733"
+              />
+
+              <Text style={styles.emptyTitle}>
+                Não foi possível carregar os eventos
+              </Text>
+
+              <Text style={styles.emptyText}>
+                {erro}
+              </Text>
+
+              <Pressable
+                style={styles.searchButton}
+                onPress={() => carregarEventos()}
               >
+                <Text style={styles.searchButtonText}>
+                  Tentar novamente
+                </Text>
+              </Pressable>
+            </View>
+          )}
 
-                {/* IMAGEM */}
+          {/* CARDS DOS EVENTOS */}
 
-                <View
-                  style={[
-                    styles.imageArea,
-                    telaPequena && styles.imageAreaMobile,
-                  ]}
-                >
-                  <Image
-                    source={{ uri: evento.imagem }}
-                    style={styles.eventImage}
-                    resizeMode="cover"
+          {!carregando && !erro && (
+            <View
+              style={[
+                styles.eventsGrid,
+                telaPequena && styles.eventsGridMobile,
+              ]}
+            >
+              {eventosFiltrados.map((evento) => {
+                const imagemEvento = obterImagem(evento);
+
+                const localEvento =
+                  evento.localizacao ||
+                  evento.local ||
+                  "Local não informado";
+
+                return (
+                  <View
+                    key={evento.id}
+                    style={[
+                      styles.eventCard,
+                      telaPequena &&
+                        styles.eventCardMobile,
+                    ]}
+                  >
+                    {/* IMAGEM */}
+
+                    <View
+                      style={[
+                        styles.imageArea,
+                        telaPequena &&
+                          styles.imageAreaMobile,
+                      ]}
+                    >
+                      {imagemEvento ? (
+                        <Image
+                          source={{ uri: imagemEvento }}
+                          style={styles.eventImage}
+                          resizeMode="cover"
+                        />
+                      ) : (
+                        <View
+                          style={styles.imagePlaceholder}
+                        >
+                          <Ionicons
+                            name="image-outline"
+                            size={48}
+                            color="#9ba7b5"
+                          />
+                        </View>
+                      )}
+
+                      {/* CATEGORIA */}
+
+                      <View style={styles.categoryBadge}>
+                        <Text
+                          style={styles.categoryBadgeText}
+                        >
+                          {evento.categoria ||
+                            "Evento"}
+                        </Text>
+                      </View>
+                    </View>
+
+                    {/* CONTEÚDO */}
+
+                    <View
+                      style={[
+                        styles.cardContent,
+                        telaPequena &&
+                          styles.cardContentMobile,
+                      ]}
+                    >
+                      <Text style={styles.eventTitle}>
+                        {evento.titulo}
+                      </Text>
+
+                      {/* DATA E HORÁRIO */}
+
+                      <View style={styles.infoRow}>
+                        <Feather
+                          name="calendar"
+                          size={16}
+                          color="#68788c"
+                        />
+
+                        <Text style={styles.infoText}>
+                          {formatarData(evento.data)}
+                        </Text>
+
+                        <Feather
+                          name="clock"
+                          size={16}
+                          color="#68788c"
+                        />
+
+                        <Text style={styles.infoText}>
+                          {formatarHorario(evento.horario)}
+                        </Text>
+                      </View>
+
+                      {/* LOCAL */}
+
+                      <View style={styles.infoRow}>
+                        <Feather
+                          name="map-pin"
+                          size={16}
+                          color="#68788c"
+                        />
+
+                        <Text style={styles.infoText}>
+                          {localEvento}
+                        </Text>
+                      </View>
+
+                      {/* DESCRIÇÃO */}
+
+                      <Text style={styles.description}>
+                        {evento.descricao ||
+                          "Sem descrição disponível."}
+                      </Text>
+
+                      {/* BOTÃO ORIGINAL */}
+
+                      <Pressable
+                        style={styles.subscribeButton}
+                      >
+                        <Text style={styles.subscribeText}>
+                          Inscrever-se
+                        </Text>
+                      </Pressable>
+                    </View>
+                  </View>
+                );
+              })}
+
+              {/* NENHUM EVENTO */}
+
+              {eventosFiltrados.length === 0 && (
+                <View style={styles.emptyArea}>
+                  <Ionicons
+                    name="search-outline"
+                    size={36}
+                    color="#68788c"
                   />
 
-                  {/* CATEGORIA */}
-
-                  <View style={styles.categoryBadge}>
-                    <Text style={styles.categoryBadgeText}>
-                      {evento.categoria}
-                    </Text>
-                  </View>
-                </View>
-
-                {/* CONTEÚDO DO CARD */}
-
-                <View
-                  style={[
-                    styles.cardContent,
-                    telaPequena && styles.cardContentMobile,
-                  ]}
-                >
-                  <Text style={styles.eventTitle}>
-                    {evento.titulo}
+                  <Text style={styles.emptyTitle}>
+                    Nenhum evento encontrado
                   </Text>
 
-                  {/* DATA E HORÁRIO */}
-
-                  <View style={styles.infoRow}>
-                    <Feather
-                      name="calendar"
-                      size={16}
-                      color="#68788c"
-                    />
-
-                    <Text style={styles.infoText}>
-                      {evento.data}
-                    </Text>
-
-                    <Feather
-                      name="clock"
-                      size={16}
-                      color="#68788c"
-                    />
-
-                    <Text style={styles.infoText}>
-                      {evento.horario}
-                    </Text>
-                  </View>
-
-                  {/* LOCAL */}
-
-                  <View style={styles.infoRow}>
-                    <Feather
-                      name="map-pin"
-                      size={16}
-                      color="#68788c"
-                    />
-
-                    <Text style={styles.infoText}>
-                      {evento.local}
-                    </Text>
-                  </View>
-
-                  {/* DESCRIÇÃO */}
-
-                  <Text style={styles.description}>
-                    {evento.descricao}
+                  <Text style={styles.emptyText}>
+                    {buscaAplicada
+                      ? "Tente pesquisar por outro nome, categoria ou local."
+                      : "Nenhum evento ativo foi encontrado."}
                   </Text>
-
-                  {/* BOTÃO INSCREVER-SE */}
-
-                  <Pressable style={styles.subscribeButton}>
-                    <Text style={styles.subscribeText}>
-                      Inscrever-se
-                    </Text>
-                  </Pressable>
-
                 </View>
-              </View>
-            ))}
-
-            {/* NENHUM EVENTO ENCONTRADO */}
-
-            {eventosFiltrados.length === 0 && (
-              <View style={styles.emptyArea}>
-                <Ionicons
-                  name="search-outline"
-                  size={36}
-                  color="#68788c"
-                />
-
-                <Text style={styles.emptyTitle}>
-                  Nenhum evento encontrado
-                </Text>
-
-                <Text style={styles.emptyText}>
-                  Tente pesquisar por outro nome,
-                  categoria ou local.
-                </Text>
-              </View>
-            )}
-
-          </View>
+              )}
+            </View>
+          )}
         </ScrollView>
       </View>
     </SafeAreaView>
@@ -557,9 +699,6 @@ export default function Eventos() {
 // =====================================================
 
 const styles = StyleSheet.create({
-
-  // ESTRUTURA
-
   safeArea: {
     flex: 1,
     backgroundColor: "#f5f6f8",
@@ -577,8 +716,6 @@ const styles = StyleSheet.create({
   scrollContent: {
     paddingBottom: 50,
   },
-
-  // CABEÇALHO
 
   header: {
     height: 75,
@@ -608,8 +745,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
 
-  // MENU HAMBÚRGUER
-
   menu: {
     backgroundColor: "#ffffff",
     borderBottomWidth: 1,
@@ -627,8 +762,6 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: "#eeeeee",
   },
-
-  // NOVO: EVENTOS SELECIONADO EM LARANJA
 
   itemMenuAtivo: {
     backgroundColor: "#fff0e8",
@@ -648,8 +781,6 @@ const styles = StyleSheet.create({
     color: "#ff5733",
     fontWeight: "800",
   },
-
-  // TÍTULO
 
   titleArea: {
     alignItems: "center",
@@ -681,8 +812,6 @@ const styles = StyleSheet.create({
     marginTop: 18,
   },
 
-  // BUSCA
-
   searchArea: {
     width: "70%",
     maxWidth: 860,
@@ -711,8 +840,9 @@ const styles = StyleSheet.create({
   },
 
   searchButton: {
-    width: 100,
+    minWidth: 100,
     height: 48,
+    paddingHorizontal: 12,
     backgroundColor: "#ff5733",
     borderRadius: 8,
     alignItems: "center",
@@ -724,8 +854,6 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: "800",
   },
-
-  // GRID DE EVENTOS
 
   eventsGrid: {
     width: "70%",
@@ -746,8 +874,6 @@ const styles = StyleSheet.create({
     gap: 20,
     paddingHorizontal: 15,
   },
-
-  // CARD
 
   eventCard: {
     width: 390,
@@ -771,8 +897,6 @@ const styles = StyleSheet.create({
     borderRadius: 14,
   },
 
-  // IMAGEM
-
   imageArea: {
     height: 200,
     position: "relative",
@@ -787,7 +911,13 @@ const styles = StyleSheet.create({
     height: "100%",
   },
 
-  // CATEGORIA
+  imagePlaceholder: {
+    width: "100%",
+    height: "100%",
+    backgroundColor: "#e9edf2",
+    alignItems: "center",
+    justifyContent: "center",
+  },
 
   categoryBadge: {
     position: "absolute",
@@ -804,8 +934,6 @@ const styles = StyleSheet.create({
     fontWeight: "800",
     fontSize: 13,
   },
-
-  // CONTEÚDO DO CARD
 
   cardContent: {
     padding: 20,
@@ -844,8 +972,6 @@ const styles = StyleSheet.create({
     marginBottom: 18,
   },
 
-  // BOTÃO INSCREVER-SE
-
   subscribeButton: {
     width: 110,
     height: 38,
@@ -861,13 +987,12 @@ const styles = StyleSheet.create({
     fontWeight: "800",
   },
 
-  // BUSCA SEM RESULTADOS
-
   emptyArea: {
     width: "100%",
     alignItems: "center",
     paddingHorizontal: 20,
     paddingVertical: 45,
+    gap: 12,
   },
 
   emptyTitle: {
@@ -884,5 +1009,6 @@ const styles = StyleSheet.create({
     textAlign: "center",
     lineHeight: 21,
     marginTop: 8,
+    marginBottom: 12,
   },
 });
