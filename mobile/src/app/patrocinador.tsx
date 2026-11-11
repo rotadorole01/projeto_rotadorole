@@ -549,9 +549,10 @@ export default function Patrocinador() {
         nomeEmpresa: empresa.trim(),
       });
       mostrarMensagem(
-        "Empresa cadastrada",
-        "A conta empresarial foi criada. Você já pode entrar com o e-mail e a senha informados. Os dados de interesse em patrocínio ainda não são enviados ao servidor."
+        "Cadastro recebido com sucesso!",
+        "Nossa equipe recebeu sua solicitação de patrocínio e entrará em contato para informar sobre a aprovação e, caso aprovado, definir os detalhes da parceria.\n\nAguarde nosso retorno!"
       );
+
     } catch (erro) {
       mostrarMensagem(
         "Não foi possível cadastrar",
