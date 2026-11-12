@@ -91,3 +91,18 @@ export async function listarCategorias() {
 export async function obterPerfil(token: string) {
   return request<ApiResponse<Usuario>>("/logins/perfil", {}, token);
 }
+
+
+// Consulta protegida: o backend decide se o login é patrocinador aprovado.
+export type PainelPatrocinador = {
+  empresa: string;
+  responsavel: string;
+  status: "aprovado";
+  metricasDisponiveis: boolean;
+  observacao: string;
+};
+export async function obterPainelPatrocinador(token: string) {
+  return request<ApiResponse<PainelPatrocinador>>(
+    "/patrocinador/painel", {}, token
+  );
+}

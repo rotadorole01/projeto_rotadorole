@@ -7,6 +7,7 @@ const categoriasRoutes = require("./categoriasRoutes.js");
 const parceirosRoutes = require("./parceirosRoutes.js");
 const loginsRoutes = require("./loginsRoutes.js");
 const usersRoutes = require("./usersRoutes.js");
+const painelPatrocinadorRoutes = require("./painelPatrocinadorRoutes.js");
 
 const routes = Routes();
 
@@ -18,6 +19,7 @@ routes.use(categoriasRoutes);
 routes.use(parceirosRoutes);
 routes.use(loginsRoutes);
 routes.use(usersRoutes);
+routes.use(painelPatrocinadorRoutes);
 
 // TESTE DO SERVIDOR
 

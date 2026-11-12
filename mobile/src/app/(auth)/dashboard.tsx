@@ -2,7 +2,8 @@
 import { FontAwesome, FontAwesome5, Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { obterPainelPatrocinador } from "../utils/api";
 import {
   Pressable,
   ScrollView,
@@ -22,6 +23,18 @@ export default function DashBoard() {
   const auth = useContext(AuthContext);
 
   const [menuAberto, setMenuAberto] = useState(false);
+  const [patrocinadorAprovado, setPatrocinadorAprovado] = useState(false);
+
+  useEffect(() => {
+    let ativo = true;
+    setPatrocinadorAprovado(false);
+    if (auth.token && auth.usuario?.tipo_conta === "cnpj") {
+      obterPainelPatrocinador(auth.token)
+        .then(() => { if (ativo) setPatrocinadorAprovado(true); })
+        .catch(() => { if (ativo) setPatrocinadorAprovado(false); });
+    }
+    return () => { ativo = false; };
+  }, [auth.token, auth.usuario?.id, auth.usuario?.tipo_conta]);
 
   // Controla a cor do botão patrocinador
   const [patrocinadorHover, setPatrocinadorHover] = useState(false);
@@ -247,6 +260,17 @@ export default function DashBoard() {
                 Quiz do Rolê
               </Text>
             </Pressable>
+
+            {/* PAINEL: visível somente após aprovação confirmada pela API */}
+            {patrocinadorAprovado && (
+              <Pressable
+                style={styles.itemMenu}
+                onPress={() => { setMenuAberto(false); route.navigate("/painel-patrocinador"); }}
+              >
+                <Ionicons name="stats-chart-outline" size={20} color="#075b91" />
+                <Text style={styles.textoMenu}>Painel do Patrocinador</Text>
+              </Pressable>
+            )}
 
             {/* SAIR */}
 
