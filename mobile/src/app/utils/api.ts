@@ -7,7 +7,7 @@ export const API_URL =
   (process.env.EXPO_PUBLIC_API_URL ||
     (Platform.OS === "web"
       ? "http://localhost:3600"
-      : "http://192.168.0.111:3600")).replace(/\/$/, "");
+      : "http://192.168.10.42:3600")).replace(/\/$/, "");
 
 type ApiResponse<T> = {
   message?: string;
