@@ -193,41 +193,27 @@
                 <ul style="list-style:none; display:flex; gap:2rem; margin:0; align-items:center;">
                     <li><a href="index.html">Início</a></li>
                     <li><a href="eventos.html">Eventos</a></li>
+                    <li><a href="nos.html">Sobre Nós</a></li>
                     <li><a href="cadastro.html" class="link-cadastrar-evento" hidden>Cadastrar Evento</a></li>
                 </ul>
-                <div class="user-profile-menu">
-                    <button onclick="toggleProfileMenu()"
-                            class="profile-menu-btn"
-                            id="profileMenuBtn">
-                        <i class="fas fa-user-circle"
-                           style="font-size:1.5rem; color:var(--accent-color,#f7b801);">
-                        </i>
+                <a href="entrar.html" id="linkEntrar" class="profile-menu-btn" style="display:flex; background:rgba(255,255,255,0.12); text-decoration:none;">
+                    <i class="fas fa-sign-in-alt" style="color:#f7b801 !important;"></i>
+                    <span>Entrar</span>
+                </a>
+                <div class="user-profile-menu" id="menuUsuario" hidden>
+                    <button onclick="toggleProfileMenu()" class="profile-menu-btn" id="profileMenuBtn" type="button">
+                        <i class="fas fa-user-circle" style="font-size:1.5rem; color:var(--accent-color,#f7b801);"></i>
                         <span>Minha Conta</span>
                         <i class="fas fa-caret-down"></i>
                     </button>
                     <div id="profileDropdown" class="profile-dropdown">
-                        <a href="perfil.html">
-                            <i class="fas fa-id-card"></i>
-                            Meu Perfil
-                        </a>
-                        <a href="meus-eventos.html" id="linkMeusEventos" hidden>
-                            <i class="fas fa-calendar-check"></i>
-                            Meus Eventos
-                        </a>
+                        <a href="perfil.html"><i class="fas fa-id-card"></i> Meu Perfil</a>
+                        <a href="meus-eventos.html" id="linkMeusEventos" hidden><i class="fas fa-calendar-check"></i> Meus Eventos</a>
                         <hr>
-                        <a href="login.html">
-                            <i class="fas fa-user-plus"></i>
-                            Criar Conta
-                        </a>
-                        <a href="entrar.html" onclick="sessionStorage.removeItem('rota_token')">
-                            <i class="fas fa-sign-in-alt"></i>
-                            Trocar Conta
-                        </a>
+                        <a href="login.html"><i class="fas fa-user-plus"></i> Criar Conta</a>
+                        <a href="entrar.html" onclick="sessionStorage.removeItem('rota_token')"><i class="fas fa-sign-in-alt"></i> Trocar Conta</a>
                         <hr>
-                        <a href="index.html" class="logout-btn" onclick="sessionStorage.removeItem('rota_token')">
-                            <i class="fas fa-sign-out-alt"></i>
-                            Sair
-                        </a>
+                        <a href="index.html" class="logout-btn" onclick="sessionStorage.removeItem('rota_token')"><i class="fas fa-sign-out-alt"></i> Sair</a>
                     </div>
                 </div>
                 <button id="themeToggle" title="Alternar Modo Escuro">
@@ -236,25 +222,39 @@
             </nav>
         </div>
     </header>
-    <!-- EXIBIR MEUS EVENTOS SOMENTE PARA EMPRESA/CNPJ -->
+    <!-- ESTADO DE LOGIN E PERMISSÕES DO MENU -->
+    <style>
+        #menuUsuario[hidden], #linkEntrar[hidden], .link-cadastrar-evento[hidden], #linkMeusEventos[hidden] { display: none !important; }
+    </style>
     <script>
-        (async function configurarMenuEmpresa() {
-            const link = document.getElementById("linkMeusEventos");
-            const linksCadastro = document.querySelectorAll(".link-cadastrar-evento");
-            const token = sessionStorage.getItem("rota_token");
-            if (!link || !token) return;
+        (async function configurarCabecalho() {
+            const entrar = document.getElementById('linkEntrar');
+            const menu = document.getElementById('menuUsuario');
+            const meusEventos = document.getElementById('linkMeusEventos');
+            const cadastrarEventos = document.querySelectorAll('.link-cadastrar-evento');
+            const token = sessionStorage.getItem('rota_token');
+            if (!token) return;
             try {
                 const resposta = await fetch(`${API_CONFIG.BASE_URL}/logins/perfil`, {
-                    headers: { Authorization: "Bearer " + token }
+                    headers: { Authorization: `Bearer ${token}` }
                 });
-                if (!resposta.ok) return;
+                if (!resposta.ok) {
+                    if (resposta.status === 401 || resposta.status === 403) {
+                        sessionStorage.removeItem('rota_token');
+                    }
+                    return;
+                }
                 const resultado = await resposta.json();
-                if (resultado.data && resultado.data.tipo_conta === "cnpj") {
-                    link.hidden = false;
-                    linksCadastro.forEach(elemento => { elemento.hidden = false; });
+                if (!resultado.data) return;
+                entrar.hidden = true;
+                menu.hidden = false;
+                document.documentElement.classList.add('rota-autenticado');
+                cadastrarEventos.forEach(link => { link.hidden = false; });
+                if (resultado.data.tipo_conta === 'cnpj') {
+                    meusEventos.hidden = false;
                 }
             } catch (erro) {
-                console.warn("Não foi possível verificar a conta para o menu:", erro);
+                console.warn('Não foi possível confirmar a sessão:', erro);
             }
         })();
     </script>
@@ -387,7 +387,7 @@
                     <h4>Apoio Institucional</h4>
                     <div class="fatec-banner">
                         <a href="https://fatectq.cps.sp.gov.br/"
-                           target="\_blank"
+                           target="_blank"
                            rel="noopener noreferrer">
                             <img src="img/Fatec_Taquaritinga_Logo.png"
                                  alt="Logo Fatec Taquaritinga"

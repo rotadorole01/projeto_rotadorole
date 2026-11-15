@@ -1,4 +1,3 @@
-
 import { Feather, FontAwesome, Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { useFocusEffect, useRouter } from "expo-router";
@@ -17,10 +16,6 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { API_URL } from "./utils/api";
-
-// =====================================================
-// TIPOS DE DADOS
-// =====================================================
 
 type Evento = {
   id: number;
@@ -43,10 +38,6 @@ type RespostaEventos = {
   data?: Evento[];
   Error?: string;
 };
-
-// =====================================================
-// FUNÇÕES AUXILIARES
-// =====================================================
 
 function formatarData(data: string | null): string {
   if (!data) return "Data não informada";
@@ -75,16 +66,11 @@ function obterImagem(evento: Evento): string | null {
 
   if (!imagem) return null;
 
-  if (
-    imagem.startsWith("http://") ||
-    imagem.startsWith("https://")
-  ) {
+  if (imagem.startsWith("http://") || imagem.startsWith("https://")) {
     return imagem;
   }
 
-  const caminho = imagem.startsWith("/")
-    ? imagem
-    : `/uploads/${imagem}`;
+  const caminho = imagem.startsWith("/") ? imagem : `/uploads/${imagem}`;
 
   return `${API_URL.replace(/\/$/, "")}${caminho}`;
 }
@@ -96,9 +82,9 @@ function normalizarTexto(valor: string | null | undefined): string {
     .toLowerCase();
 }
 
-// =====================================================
-// PÁGINA DE EVENTOS
-// =====================================================
+const tituloEventoDestaque = normalizarTexto(
+  "Apresentação dos Projetos Integradores"
+);
 
 export default function Eventos() {
   const router = useRouter();
@@ -113,10 +99,6 @@ export default function Eventos() {
   const [carregando, setCarregando] = useState(true);
   const [atualizando, setAtualizando] = useState(false);
   const [erro, setErro] = useState("");
-
-  // ===================================================
-  // BUSCAR EVENTOS DA API
-  // ===================================================
 
   const carregarEventos = useCallback(
     async (mostrarCarregamento = true) => {
@@ -134,8 +116,7 @@ export default function Eventos() {
           },
         });
 
-        const resultado: RespostaEventos =
-          await resposta.json();
+        const resultado: RespostaEventos = await resposta.json();
 
         if (!resposta.ok) {
           throw new Error(
@@ -146,16 +127,22 @@ export default function Eventos() {
         }
 
         if (!Array.isArray(resultado.data)) {
-          throw new Error(
-            "A API não retornou uma lista de eventos válida."
-          );
+          throw new Error("A API não retornou uma lista de eventos válida.");
         }
 
         const eventosAtivos = resultado.data.filter(
           (evento) =>
-            !evento.status ||
-            normalizarTexto(evento.status) === "ativo"
+            !evento.status || normalizarTexto(evento.status) === "ativo"
         );
+
+        eventosAtivos.sort((a, b) => {
+          const destaqueA =
+            normalizarTexto(a.titulo).trim() === tituloEventoDestaque;
+          const destaqueB =
+            normalizarTexto(b.titulo).trim() === tituloEventoDestaque;
+
+          return Number(destaqueB) - Number(destaqueA);
+        });
 
         setEventos(eventosAtivos);
       } catch (error) {
@@ -174,8 +161,7 @@ export default function Eventos() {
     []
   );
 
-  // Recarrega sempre que a tela recebe foco.
-  // Assim, novos eventos aparecem após o cadastro.
+  // Recarrega sempre que a tela recebe foco, inclusive após cadastrar um evento.
   useFocusEffect(
     useCallback(() => {
       carregarEventos();
@@ -189,17 +175,9 @@ export default function Eventos() {
     carregarEventos(false);
   }
 
-  // ===================================================
-  // MENU HAMBÚRGUER
-  // ===================================================
-
   function abrirMenu() {
     setMenuAberto((anterior) => !anterior);
   }
-
-  // ===================================================
-  // NAVEGAÇÃO
-  // ===================================================
 
   function irParaInicio() {
     setMenuAberto(false);
@@ -235,10 +213,6 @@ export default function Eventos() {
     router.replace("/login");
   }
 
-  // ===================================================
-  // PESQUISA DE EVENTOS
-  // ===================================================
-
   const eventosFiltrados = useMemo(() => {
     const texto = normalizarTexto(buscaAplicada.trim());
 
@@ -267,34 +241,18 @@ export default function Eventos() {
     setBuscaAplicada(busca);
   }
 
-  // ===================================================
-  // INTERFACE
-  // ===================================================
-
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
-        {/* CABEÇALHO */}
-
         <LinearGradient
           colors={["#075b91", "#6b5a64", "#ff6633"]}
           start={{ x: 0, y: 0.5 }}
           end={{ x: 1, y: 0.5 }}
           style={styles.header}
         >
-          <Pressable
-            style={styles.logoArea}
-            onPress={irParaInicio}
-          >
-            <FontAwesome
-              name="map-marker"
-              size={30}
-              color="#ffffff"
-            />
-
-            <Text style={styles.logo}>
-              Rota do Rolê
-            </Text>
+          <Pressable style={styles.logoArea} onPress={irParaInicio}>
+            <FontAwesome name="map-marker" size={30} color="#ffffff" />
+            <Text style={styles.logo}>Rota do Rolê</Text>
           </Pressable>
 
           <Pressable
@@ -311,42 +269,19 @@ export default function Eventos() {
           </Pressable>
         </LinearGradient>
 
-        {/* MENU HAMBÚRGUER */}
-
         {menuAberto && (
           <View style={styles.menu}>
-            <Pressable
-              style={styles.itemMenu}
-              onPress={irParaInicio}
-            >
-              <Ionicons
-                name="home-outline"
-                size={20}
-                color="#075b91"
-              />
-              <Text style={styles.textoMenu}>
-                Início
-              </Text>
+            <Pressable style={styles.itemMenu} onPress={irParaInicio}>
+              <Ionicons name="home-outline" size={20} color="#075b91" />
+              <Text style={styles.textoMenu}>Início</Text>
             </Pressable>
 
             <Pressable
-              style={[
-                styles.itemMenu,
-                styles.itemMenuAtivo,
-              ]}
+              style={[styles.itemMenu, styles.itemMenuAtivo]}
               onPress={irParaEventos}
             >
-              <Ionicons
-                name="calendar-outline"
-                size={20}
-                color="#ff5733"
-              />
-              <Text
-                style={[
-                  styles.textoMenu,
-                  styles.textoMenuAtivo,
-                ]}
-              >
+              <Ionicons name="calendar-outline" size={20} color="#ff5733" />
+              <Text style={[styles.textoMenu, styles.textoMenuAtivo]}>
                 Eventos
               </Text>
             </Pressable>
@@ -360,70 +295,38 @@ export default function Eventos() {
                 size={20}
                 color="#075b91"
               />
-              <Text style={styles.textoMenu}>
-                Cadastrar Evento
-              </Text>
+              <Text style={styles.textoMenu}>Cadastrar Evento</Text>
             </Pressable>
 
-            <Pressable
-              style={styles.itemMenu}
-              onPress={irParaMinhaConta}
-            >
-              <Ionicons
-                name="person-outline"
-                size={20}
-                color="#075b91"
-              />
-              <Text style={styles.textoMenu}>
-                Minha Conta
-              </Text>
+            <Pressable style={styles.itemMenu} onPress={irParaMinhaConta}>
+              <Ionicons name="person-outline" size={20} color="#075b91" />
+              <Text style={styles.textoMenu}>Minha Conta</Text>
             </Pressable>
 
-            <Pressable
-              style={styles.itemMenu}
-              onPress={irParaSobreNos}
-            >
+            <Pressable style={styles.itemMenu} onPress={irParaSobreNos}>
               <Ionicons
                 name="information-circle-outline"
                 size={20}
                 color="#075b91"
               />
-              <Text style={styles.textoMenu}>
-                Sobre Nós
-              </Text>
+              <Text style={styles.textoMenu}>Sobre Nós</Text>
             </Pressable>
 
-            <Pressable
-              style={styles.itemMenu}
-              onPress={irParaQuiz}
-            >
+            <Pressable style={styles.itemMenu} onPress={irParaQuiz}>
               <Ionicons
                 name="help-circle-outline"
                 size={20}
                 color="#075b91"
               />
-              <Text style={styles.textoMenu}>
-                Quiz do Rolê
-              </Text>
+              <Text style={styles.textoMenu}>Quiz do Rolê</Text>
             </Pressable>
 
-            <Pressable
-              style={styles.itemMenu}
-              onPress={irParaLogin}
-            >
-              <Ionicons
-                name="log-out-outline"
-                size={20}
-                color="#075b91"
-              />
-              <Text style={styles.textoMenu}>
-                Sair
-              </Text>
+            <Pressable style={styles.itemMenu} onPress={irParaLogin}>
+              <Ionicons name="log-out-outline" size={20} color="#075b91" />
+              <Text style={styles.textoMenu}>Sair</Text>
             </Pressable>
           </View>
         )}
-
-        {/* CONTEÚDO PRINCIPAL */}
 
         <ScrollView
           style={styles.scroll}
@@ -437,33 +340,17 @@ export default function Eventos() {
             />
           }
         >
-          {/* TÍTULO */}
-
           <View
-            style={[
-              styles.titleArea,
-              telaPequena && styles.titleAreaMobile,
-            ]}
+            style={[styles.titleArea, telaPequena && styles.titleAreaMobile]}
           >
-            <Text
-              style={[
-                styles.titulo,
-                telaPequena && styles.tituloMobile,
-              ]}
-            >
+            <Text style={[styles.titulo, telaPequena && styles.tituloMobile]}>
               Todos os Eventos
             </Text>
-
             <View style={styles.titleLine} />
           </View>
 
-          {/* BUSCA */}
-
           <View
-            style={[
-              styles.searchArea,
-              telaPequena && styles.searchAreaMobile,
-            ]}
+            style={[styles.searchArea, telaPequena && styles.searchAreaMobile]}
           >
             <TextInput
               style={styles.searchInput}
@@ -475,31 +362,17 @@ export default function Eventos() {
               returnKeyType="search"
             />
 
-            <Pressable
-              style={styles.searchButton}
-              onPress={pesquisarEventos}
-            >
-              <Text style={styles.searchButtonText}>
-                Buscar
-              </Text>
+            <Pressable style={styles.searchButton} onPress={pesquisarEventos}>
+              <Text style={styles.searchButtonText}>Buscar</Text>
             </Pressable>
           </View>
 
-          {/* CARREGAMENTO */}
-
           {carregando && (
             <View style={styles.emptyArea}>
-              <ActivityIndicator
-                size="large"
-                color="#07569a"
-              />
-              <Text style={styles.emptyText}>
-                Carregando eventos...
-              </Text>
+              <ActivityIndicator size="large" color="#07569a" />
+              <Text style={styles.emptyText}>Carregando eventos...</Text>
             </View>
           )}
-
-          {/* ERRO DE CONEXÃO */}
 
           {!carregando && erro !== "" && (
             <View style={styles.emptyArea}>
@@ -513,22 +386,16 @@ export default function Eventos() {
                 Não foi possível carregar os eventos
               </Text>
 
-              <Text style={styles.emptyText}>
-                {erro}
-              </Text>
+              <Text style={styles.emptyText}>{erro}</Text>
 
               <Pressable
                 style={styles.searchButton}
                 onPress={() => carregarEventos()}
               >
-                <Text style={styles.searchButtonText}>
-                  Tentar novamente
-                </Text>
+                <Text style={styles.searchButtonText}>Tentar novamente</Text>
               </Pressable>
             </View>
           )}
-
-          {/* CARDS DOS EVENTOS */}
 
           {!carregando && !erro && (
             <View
@@ -539,28 +406,21 @@ export default function Eventos() {
             >
               {eventosFiltrados.map((evento) => {
                 const imagemEvento = obterImagem(evento);
-
                 const localEvento =
-                  evento.localizacao ||
-                  evento.local ||
-                  "Local não informado";
+                  evento.localizacao || evento.local || "Local não informado";
 
                 return (
                   <View
                     key={evento.id}
                     style={[
                       styles.eventCard,
-                      telaPequena &&
-                        styles.eventCardMobile,
+                      telaPequena && styles.eventCardMobile,
                     ]}
                   >
-                    {/* IMAGEM */}
-
                     <View
                       style={[
                         styles.imageArea,
-                        telaPequena &&
-                          styles.imageAreaMobile,
+                        telaPequena && styles.imageAreaMobile,
                       ]}
                     >
                       {imagemEvento ? (
@@ -570,9 +430,7 @@ export default function Eventos() {
                           resizeMode="cover"
                         />
                       ) : (
-                        <View
-                          style={styles.imagePlaceholder}
-                        >
+                        <View style={styles.imagePlaceholder}>
                           <Ionicons
                             name="image-outline"
                             size={48}
@@ -581,103 +439,55 @@ export default function Eventos() {
                         </View>
                       )}
 
-                      {/* CATEGORIA */}
-
                       <View style={styles.categoryBadge}>
-                        <Text
-                          style={styles.categoryBadgeText}
-                        >
-                          {evento.categoria ||
-                            "Evento"}
+                        <Text style={styles.categoryBadgeText}>
+                          {evento.categoria || "Evento"}
                         </Text>
                       </View>
                     </View>
 
-                    {/* CONTEÚDO */}
-
                     <View
                       style={[
                         styles.cardContent,
-                        telaPequena &&
-                          styles.cardContentMobile,
+                        telaPequena && styles.cardContentMobile,
                       ]}
                     >
-                      <Text style={styles.eventTitle}>
-                        {evento.titulo}
-                      </Text>
-
-                      {/* DATA E HORÁRIO */}
+                      <Text style={styles.eventTitle}>{evento.titulo}</Text>
 
                       <View style={styles.infoRow}>
-                        <Feather
-                          name="calendar"
-                          size={16}
-                          color="#68788c"
-                        />
-
+                        <Feather name="calendar" size={16} color="#68788c" />
                         <Text style={styles.infoText}>
                           {formatarData(evento.data)}
                         </Text>
 
-                        <Feather
-                          name="clock"
-                          size={16}
-                          color="#68788c"
-                        />
-
+                        <Feather name="clock" size={16} color="#68788c" />
                         <Text style={styles.infoText}>
                           {formatarHorario(evento.horario)}
                         </Text>
                       </View>
 
-                      {/* LOCAL */}
-
                       <View style={styles.infoRow}>
-                        <Feather
-                          name="map-pin"
-                          size={16}
-                          color="#68788c"
-                        />
-
-                        <Text style={styles.infoText}>
-                          {localEvento}
-                        </Text>
+                        <Feather name="map-pin" size={16} color="#68788c" />
+                        <Text style={styles.infoText}>{localEvento}</Text>
                       </View>
 
-                      {/* DESCRIÇÃO */}
-
                       <Text style={styles.description}>
-                        {evento.descricao ||
-                          "Sem descrição disponível."}
+                        {evento.descricao || "Sem descrição disponível."}
                       </Text>
 
-                      {/* BOTÃO ORIGINAL */}
-
-                      <Pressable
-                        style={styles.subscribeButton}
-                      >
-                        <Text style={styles.subscribeText}>
-                          Inscrever-se
-                        </Text>
+                      <Pressable style={styles.subscribeButton}>
+                        <Text style={styles.subscribeText}>Inscrever-se</Text>
                       </Pressable>
                     </View>
                   </View>
                 );
               })}
 
-              {/* NENHUM EVENTO */}
-
               {eventosFiltrados.length === 0 && (
                 <View style={styles.emptyArea}>
-                  <Ionicons
-                    name="search-outline"
-                    size={36}
-                    color="#68788c"
-                  />
+                  <Ionicons name="search-outline" size={36} color="#68788c" />
 
-                  <Text style={styles.emptyTitle}>
-                    Nenhum evento encontrado
-                  </Text>
+                  <Text style={styles.emptyTitle}>Nenhum evento encontrado</Text>
 
                   <Text style={styles.emptyText}>
                     {buscaAplicada
@@ -693,10 +503,6 @@ export default function Eventos() {
     </SafeAreaView>
   );
 }
-
-// =====================================================
-// ESTILOS
-// =====================================================
 
 const styles = StyleSheet.create({
   safeArea: {
