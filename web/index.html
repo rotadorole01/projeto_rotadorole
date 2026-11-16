@@ -91,6 +91,8 @@
             transition: transform 0.5s ease-in-out;
         }
         #partnersCarousel .carousel-item {
+            flex: 0 0 100%;
+            width: 100%;
             min-width: 100%;
             height: 100%;
             background-size: cover;
@@ -209,6 +211,7 @@
                     <div id="profileDropdown" class="profile-dropdown">
                         <a href="perfil.html"><i class="fas fa-id-card"></i> Meu Perfil</a>
                         <a href="meus-eventos.html" id="linkMeusEventos" hidden><i class="fas fa-calendar-check"></i> Meus Eventos</a>
+                        <a href="painel.patrocinador.html" id="linkPainelPatrocinador" hidden><i class="fas fa-chart-bar"></i> Painel do Patrocinador</a>
                         <hr>
                         <a href="login.html"><i class="fas fa-user-plus"></i> Criar Conta</a>
                         <a href="entrar.html" onclick="sessionStorage.removeItem('rota_token')"><i class="fas fa-sign-in-alt"></i> Trocar Conta</a>
@@ -224,13 +227,14 @@
     </header>
     <!-- ESTADO DE LOGIN E PERMISSÕES DO MENU -->
     <style>
-        #menuUsuario[hidden], #linkEntrar[hidden], .link-cadastrar-evento[hidden], #linkMeusEventos[hidden] { display: none !important; }
+        #menuUsuario[hidden], #linkEntrar[hidden], .link-cadastrar-evento[hidden], #linkMeusEventos[hidden], #linkPainelPatrocinador[hidden] { display: none !important; }
     </style>
     <script>
         (async function configurarCabecalho() {
             const entrar = document.getElementById('linkEntrar');
             const menu = document.getElementById('menuUsuario');
             const meusEventos = document.getElementById('linkMeusEventos');
+                const painelPatrocinador = document.getElementById('linkPainelPatrocinador');
             const cadastrarEventos = document.querySelectorAll('.link-cadastrar-evento');
             const token = sessionStorage.getItem('rota_token');
             if (!token) return;
@@ -252,13 +256,23 @@
                 cadastrarEventos.forEach(link => { link.hidden = false; });
                 if (resultado.data.tipo_conta === 'cnpj') {
                     meusEventos.hidden = false;
+                    try {
+                        const permissao = await fetch(`${API_CONFIG.BASE_URL}/patrocinador/painel`, {
+                            headers: { Authorization: `Bearer ${token}` },
+                            cache: 'no-store'
+                        });
+                        if (sessionStorage.getItem('rota_token') === token && permissao.ok) {
+                            painelPatrocinador.hidden = false;
+                        }
+                    } catch (erroPainel) {
+                        console.warn('Não foi possível consultar a permissão do painel:', erroPainel);
+                    }
                 }
             } catch (erro) {
                 console.warn('Não foi possível confirmar a sessão:', erro);
             }
         })();
     </script>
-    
 <!-- CARROSSEL PRINCIPAL -->
 <div class="container">
     <div class="carousel-container" id="frontImgCarousel">
@@ -270,27 +284,23 @@
                     <p>Eventos e oportunidades para a comunidade.</p>
                 </div>
             </div>
-
             <div class="front-carousel-item"
-                 style="background-image:url('img/fatec-inscricoes.png');">
+                 style="background-image:url('img/Banner promocional Rota do Rolê.png');">
                 <div class="carousel-item-overlay">
-                    <h3>Inscrições Fatec</h3>
-                    <p>Fique por dentro das novidades acadêmicas.</p>
+                    <h3>Seja um Patrocinador</h3>
+                    <p>Divulgue sua marca.</p>
                 </div>
             </div>
         </div>
-
         <button class="carousel-btn prev"
                 id="frontPrevBtn">&#10094;</button>
         <button class="carousel-btn next"
                 id="frontNextBtn">&#10095;</button>
-
         <div class="carousel-controls" id="frontCarouselDots">
             <span class="front-carousel-dot active"></span>
             <span class="front-carousel-dot"></span>
         </div>
     </div>
-
     <div id="legacyCarouselHooks" aria-hidden="true">
         <div id="carousel"></div>
         <button id="prevBtn" type="button"></button>
@@ -298,7 +308,6 @@
         <div id="carouselDots"></div>
     </div>
 </div>
-
     <!-- CONTAINER PRINCIPAL FECHADO CORRETAMENTE -->
     <!-- CATEGORIAS -->
     <section id="categorias">
@@ -336,14 +345,14 @@
                  id="partnersCarousel"
                  style="height:300px;">
                 <div class="carousel-track" id="partnersTrack">
-                    <div class="carousel-item"
+                    <div class="carousel-item active"
                          style="background-image:url('img/Patrocinadores.webp'); filter:hue-rotate(45deg);">
                         <div class="carousel-item-overlay">
                             <h3>Fatec Taquaritinga</h3>
                             <p>Nosso Patrocinador Educativo e Institucional!</p>
                         </div>
                     </div>
-                    <div class="carousel-item active"
+                    <div class="carousel-item"
                          style="background-image:url('https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=1200&q=80');">
                         <div class="carousel-item-overlay">
                             <h3>Apoio Local - Estabelecimentos</h3>
@@ -351,6 +360,12 @@
                                 Conheça nossos parceiros que tornam
                                 a Rota do Rolê possível!
                             </p>
+                        </div>
+                    </div>
+                    <div class="carousel-item"
+                         style="background-image:url('img/PatrocinadoresMotos.png'); background-size:contain; background-repeat:no-repeat; background-color:#ffffff;">
+                        <div class="carousel-item-overlay">
+                            <h3>Motos</h3>
                         </div>
                     </div>
                 </div>
@@ -367,6 +382,7 @@
                           onclick="currentPartnerSlide(0)"></span>
                     <span class="dot"
                           onclick="currentPartnerSlide(1)"></span>
+                    <span class="dot" onclick="currentPartnerSlide(2)"></span>
                 </div>
             </div>
             <div style="text-align:center; margin-top:2rem;">
@@ -571,6 +587,7 @@
                 }, 4000);
             }
         }
+        showPartnerSlide(0);
         resetPartnerTimer();
     </script>
     <!-- TRADUÇÃO -->

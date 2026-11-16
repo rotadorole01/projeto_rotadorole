@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Painel do Patrocinador | Rota do Rolê</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="js/apiConfig.js" defer></script>
+
+    <style>
+        :root {
+            --azul: #005596;
+            --laranja: #ff6333;
+            --titulo: #183b63;
+            --texto: #526985;
+            --fundo: #f3f5f7;
+            --destaque: #eaf3fb;
+            --amarelo: #ffc400;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        [hidden] {
+            display: none !important;
+        }
+
+        body {
+            margin: 0;
+            font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+            background: var(--fundo);
+            color: var(--titulo);
+        }
+
+        a {
+            color: inherit;
+        }
+
+        a:focus-visible,
+        button:focus-visible {
+            outline: 2px solid currentColor;
+            outline-offset: 3px;
+        }
+
+        button {
+            font: inherit;
+            cursor: pointer;
+        }
+
+        .cabecalho {
+            position: relative;
+            z-index: 1;
+            background: linear-gradient(100deg, #074e80, #f86938);
+            color: #fff;
+            box-shadow: 0 2px 8px #183b631a;
+        }
+
+        .cabecalho-inner {
+            width: min(1160px, calc(100% - 40px));
+            min-height: 74px;
+            margin-inline: auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .marca {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1.8rem;
+            font-weight: 750;
+            white-space: nowrap;
+        }
+
+        .cabecalho a {
+            text-decoration: none;
+        }
+
+        .navegacao {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            font-size: .94rem;
+            font-weight: 650;
+        }
+
+        .navegacao > a:hover {
+            text-decoration: underline;
+        }
+
+        .botao-conta {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #ffffff24;
+            border: 0;
+            border-radius: 6px;
+            padding: 9px 12px;
+            color: #fff;
+            white-space: nowrap;
+        }
+
+        .botao-conta i {
+            color: var(--amarelo);
+        }
+
+        .icone-conta {
+            font-size: 1.45rem;
+        }
+
+        .conta {
+            position: relative;
+        }
+
+        .menu-conta {
+            position: absolute;
+            right: 0;
+            top: calc(100% + 8px);
+            min-width: 224px;
+            background: #fff;
+            color: var(--titulo);
+            box-shadow: 0 4px 16px #183b6333;
+            border-radius: 9px;
+            padding: 6px;
+        }
+
+        .menu-conta a {
+            display: block;
+            padding: 9px 12px;
+            border-radius: 5px;
+        }
+
+        .menu-conta a:hover,
+        .menu-conta [aria-current="page"] {
+            background: var(--destaque);
+            color: var(--azul);
+        }
+
+        .menu-conta hr {
+            border: 0;
+            border-top: 1px solid #dbe4ee;
+            margin: 4px 6px;
+        }
+
+        .menu-conta .sair {
+            color: #ad2424;
+        }
+
+        .alternar-menu {
+            display: none;
+            color: #fff;
+            background: transparent;
+            border: 0;
+            padding: 8px;
+            font-size: 1.4rem;
+        }
+
+        main {
+            width: min(860px, calc(100% - 36px));
+            margin: 38px auto 64px;
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--azul);
+            font-size: clamp(1.5rem, 4vw, 2.05rem);
+            margin: 0 0 26px;
+        }
+
+        h1::after {
+            content: "";
+            display: block;
+            width: 60px;
+            height: 4px;
+            border-radius: 4px;
+            margin: 14px auto 0;
+            background: var(--laranja);
+        }
+
+        .cartao {
+            background: #fff;
+            border: 1px solid #e6e9ed;
+            border-radius: 15px;
+            padding: clamp(20px, 3vw, 30px);
+            box-shadow: 0 3px 6px #00000028;
+            margin-bottom: 22px;
+        }
+
+        .selo {
+            display: inline-block;
+            color: var(--azul);
+            background: #e5f0fa;
+            border-radius: 6px;
+            padding: 7px 10px;
+            font-size: .7rem;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+
+        h2 {
+            margin: 0 0 12px;
+            color: var(--azul);
+            font-size: 1.16rem;
+        }
+
+        .empresa {
+            margin-top: 15px;
+            font-size: 1.45rem;
+            color: var(--titulo);
+        }
+
+        p {
+            line-height: 1.6;
+            margin: 0;
+            color: var(--texto);
+            font-size: .925rem;
+        }
+
+        .aviso {
+            display: flex;
+            gap: 11px;
+            align-items: flex-start;
+            background: var(--destaque);
+            border-radius: 9px;
+            padding: 13px 14px;
+            margin: 16px 0 20px;
+        }
+
+        .aviso i {
+            margin-top: 4px;
+            color: var(--azul);
+        }
+
+        .aviso p {
+            font-size: .8rem;
+            color: var(--titulo);
+        }
+
+        figure {
+            margin: 0;
+        }
+
+        .legenda {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 18px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 7px 14px;
+            font-size: .75rem;
+            color: var(--texto);
+        }
+
+        .ponto {
+            display: inline-block;
+            width: 9px;
+            height: 9px;
+            margin-right: 5px;
+            border-radius: 50%;
+            background: var(--azul);
+        }
+
+        .ponto-laranja,
+        .barra-laranja {
+            background: var(--laranja);
+        }
+
+        .grafico {
+            display: grid;
+            grid-template-columns: repeat(6, minmax(0, 1fr));
+            margin: 0;
+            padding: 0;
+            list-style: none;
+            border-bottom: 1px solid #d5dfeb;
+        }
+
+        .mes {
+            text-align: center;
+            color: var(--texto);
+            font-size: .75rem;
+        }
+
+        .barras {
+            display: flex;
+            height: 156px;
+            align-items: end;
+            justify-content: center;
+            gap: 4px;
+        }
+
+        .barra {
+            width: 29%;
+            max-width: 30px;
+            height: var(--valor);
+            border-radius: 4px 4px 0 0;
+        }
+
+        .barra-azul {
+            background: var(--azul);
+        }
+
+        .mes span {
+            display: block;
+            margin: 5px 0 3px;
+        }
+
+        figcaption {
+            margin-top: 15px;
+            font-size: .75rem;
+            color: var(--texto);
+        }
+
+        #estado {
+            text-align: center;
+        }
+
+        @media (max-width: 800px) {
+            .cabecalho-inner {
+                min-height: 70px;
+            }
+
+            .marca {
+                font-size: 1.32rem;
+            }
+
+            .alternar-menu {
+                display: inline-flex;
+            }
+
+            .navegacao {
+                display: none;
+                flex-direction: column;
+                align-items: stretch;
+                gap: 12px;
+                position: absolute;
+                top: 100%;
+                inset-inline: 0;
+                padding: 15px 20px;
+                background: #174d73;
+            }
+
+            .navegacao.aberta {
+                display: flex;
+            }
+
+            .menu-conta {
+                position: static;
+                margin-top: 8px;
+                min-width: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header class="cabecalho">
+        <div class="cabecalho-inner">
+            <a href="index.html" class="marca">
+                <svg width="25" height="30" viewBox="0 0 24 30" fill="currentColor" aria-hidden="true">
+                    <path fill-rule="evenodd" d="M12 1a10 10 0 0 0-10 10c0 6 10 18 10 18s10-12 10-18A10 10 0 0 0 12 1Zm0 6a4 4 0 1 0 0 8 4 4 0 0 0 0-8Z"/>
+                </svg>
+                Rota do Rolê
+            </a>
+
+            <button type="button" id="alternarMenu" class="alternar-menu"
+                    aria-label="Menu de navegação" aria-expanded="false" aria-controls="navegacao">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true">
+                    <path d="M3 6h18M3 12h18M3 18h18"/>
+                </svg>
+            </button>
+
+            <nav id="navegacao" class="navegacao" aria-label="Navegação principal">
+                <a href="index.html">Início</a>
+                <a href="eventos.html">Eventos</a>
+                <a href="nos.html">Sobre Nós</a>
+                <a href="cadastro.html" id="cadastrarEvento" hidden>Cadastrar Evento</a>
+
+                <a href="entrar.html" id="linkEntrar" class="botao-conta">
+                    <i class="fas fa-sign-in-alt" aria-hidden="true"></i>
+                    Entrar
+                </a>
+
+                <div class="conta" id="conta" hidden>
+                    <button type="button" id="alternarConta" class="botao-conta"
+                            aria-expanded="false" aria-controls="menuConta">
+                        <i class="fas fa-user-circle icone-conta" aria-hidden="true"></i>
+                        Minha Conta
+                        <i class="fas fa-caret-down" aria-hidden="true"></i>
+                    </button>
+
+                    <div id="menuConta" class="menu-conta" hidden>
+                        <a href="perfil.html">Meu Perfil</a>
+                        <a href="meus-eventos.html" id="meusEventos" hidden>Meus Eventos</a>
+                        <a href="painel.patrocinador.html" aria-current="page">Painel do Patrocinador</a>
+                        <hr>
+                        <a href="login.html">Criar Conta</a>
+                        <a href="entrar.html" data-encerrar-sessao>Trocar Conta</a>
+                        <a href="index.html" class="sair" data-encerrar-sessao>Sair</a>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <p id="estado" role="status">Verificando seu acesso ao painel…</p>
+
+        <div id="painel" hidden>
+            <h1>Painel do Patrocinador</h1>
+
+            <section class="cartao" aria-labelledby="empresa">
+                <span class="selo">Patrocinador aprovado</span>
+                <h2 class="empresa" id="empresa">Gustavo Motos</h2>
+                <p id="boasVindas">Bem-vindo(a)!</p>
+                <p>Sua empresa faz parte dos parceiros da Rota do Rolê.</p>
+            </section>
+
+            <section class="cartao" aria-labelledby="visibilidade">
+                <h2 id="visibilidade">Visibilidade e divulgação</h2>
+                <p>O patrocínio pode contribuir para ampliar o alcance da marca, gerar interesse e fortalecer a presença do negócio na região.</p>
+
+                <div class="aviso">
+                    <i class="fas fa-info-circle" aria-hidden="true"></i>
+                    <p>Demonstração visual: os números abaixo são fictícios. O projeto ainda não registra acessos, novos seguidores nem visitas ao estabelecimento.</p>
+                </div>
+
+                <figure>
+                    <ul class="legenda" aria-label="Legenda do gráfico">
+                        <li><span class="ponto" aria-hidden="true"></span>Referência (exemplo)</li>
+                        <li><span class="ponto ponto-laranja" aria-hidden="true"></span>Com divulgação (exemplo)</li>
+                    </ul>
+                    <ol id="grafico" class="grafico" aria-label="Comparação de janeiro a junho"></ol>
+                    <figcaption>Índice ilustrativo (escala de 0 a 100). Não representa desempenho medido.</figcaption>
+                </figure>
+            </section>
+
+            <section class="cartao" aria-labelledby="passos">
+                <h2 id="passos">Próximos passos</h2>
+                <p>Após integrar um contador de visualizações e dados de campanhas, este painel poderá mostrar resultados reais específicos da sua empresa.</p>
+            </section>
+        </div>
+    </main>
+
+    <script>
+        const alternarMenu = document.getElementById('alternarMenu');
+        const navegacao = document.getElementById('navegacao');
+        const alternarConta = document.getElementById('alternarConta');
+        const menuConta = document.getElementById('menuConta');
+        const estado = document.getElementById('estado');
+        const painel = document.getElementById('painel');
+
+        function definirMenuConta(aberto) {
+            menuConta.hidden = !aberto;
+            alternarConta.setAttribute('aria-expanded', String(aberto));
+        }
+
+        function definirNavegacao(aberta) {
+            navegacao.classList.toggle('aberta', aberta);
+            alternarMenu.setAttribute('aria-expanded', String(aberta));
+            if (!aberta) definirMenuConta(false);
+        }
+
+        alternarMenu.addEventListener('click', () => {
+            definirNavegacao(!navegacao.classList.contains('aberta'));
+        });
+
+        alternarConta.addEventListener('click', () => definirMenuConta(menuConta.hidden));
+
+        document.addEventListener('click', evento => {
+            if (!document.getElementById('conta').contains(evento.target)) {
+                definirMenuConta(false);
+            }
+        });
+
+        document.addEventListener('keydown', evento => {
+            if (evento.key !== 'Escape') return;
+
+            if (!menuConta.hidden) {
+                definirMenuConta(false);
+                alternarConta.focus();
+            } else if (navegacao.classList.contains('aberta')) {
+                definirNavegacao(false);
+                alternarMenu.focus();
+            }
+        });
+
+        document.querySelectorAll('[data-encerrar-sessao]').forEach(link => {
+            link.addEventListener('click', () => {
+                sessionStorage.removeItem('rota_token');
+                ocultarPainel();
+            });
+        });
+
+        function ocultarPainel() {
+            painel.hidden = true;
+            estado.hidden = false;
+            estado.textContent = 'Verificando seu acesso ao painel…';
+            document.getElementById('boasVindas').textContent = 'Bem-vindo(a)!';
+            document.getElementById('empresa').textContent = 'Gustavo Motos';
+            document.getElementById('conta').hidden = true;
+            document.getElementById('cadastrarEvento').hidden = true;
+            document.getElementById('meusEventos').hidden = true;
+            document.getElementById('linkEntrar').hidden = false;
+            definirNavegacao(false);
+        }
+
+        const valoresGrafico = [
+            ['Jan', 42, 44],
+            ['Fev', 44, 55],
+            ['Mar', 41, 70],
+            ['Abr', 47, 79],
+            ['Mai', 45, 91],
+            ['Jun', 49, 99],
+        ];
+
+        const meses = valoresGrafico.map(([mes, referencia, divulgacao]) => {
+            const item = document.createElement('li');
+            item.className = 'mes';
+            item.innerHTML = `
+                <div class="barras" aria-hidden="true">
+                    <div class="barra barra-azul"></div>
+                    <div class="barra barra-laranja"></div>
+                </div>
+                <span></span>
+            `;
+            item.setAttribute('aria-label', `${mes}: referência ${referencia}, com divulgação ${divulgacao}`);
+            item.querySelector('span').textContent = mes;
+            item.querySelector('.barra-azul').style.setProperty('--valor', `${referencia}%`);
+            item.querySelector('.barra-laranja').style.setProperty('--valor', `${divulgacao}%`);
+            return item;
+        });
+
+        document.getElementById('grafico').replaceChildren(...meses);
+
+        async function carregarPainel() {
+            ocultarPainel();
+
+            const token = sessionStorage.getItem('rota_token');
+            if (!token) {
+                window.location.replace('entrar.html');
+                return;
+            }
+
+            try {
+                const resposta = await fetch(`${API_CONFIG.BASE_URL}/logins/perfil`, {
+                    headers: { Authorization: `Bearer ${token}` },
+                    cache: 'no-store',
+                });
+
+                if (sessionStorage.getItem('rota_token') !== token) return;
+
+                if (resposta.status === 401) {
+                    sessionStorage.removeItem('rota_token');
+                    window.location.replace('entrar.html');
+                    return;
+                }
+
+                if (resposta.status === 403 || resposta.status === 404) {
+                    window.location.replace('index.html');
+                    return;
+                }
+
+                if (!resposta.ok) throw new Error('Falha ao consultar o perfil');
+
+                const { data: perfil } = await resposta.json();
+                if (sessionStorage.getItem('rota_token') !== token) return;
+                // A autorização é definida exclusivamente pelo backend,
+                // conforme PATROCINADOR_APROVADO_ID no arquivo .env.
+                const autorizacao = await fetch(`${API_CONFIG.BASE_URL}/patrocinador/painel`, {
+                    headers: { Authorization: `Bearer ${token}` },
+                    cache: 'no-store'
+                });
+
+                if (sessionStorage.getItem('rota_token') !== token) return;
+
+                if (autorizacao.status === 401) {
+                    sessionStorage.removeItem('rota_token');
+                    window.location.replace('entrar.html');
+                    return;
+                }
+
+                if (autorizacao.status === 403 || autorizacao.status === 404) {
+                    window.location.replace('index.html');
+                    return;
+                }
+
+                if (!autorizacao.ok) throw new Error('Falha ao verificar permissão do painel');
+
+                const dadosPainel = await autorizacao.json();
+                const empresa = dadosPainel.data?.empresa || perfil.nome_fantasia || perfil.nome_empresa;
+                const nome = dadosPainel.data?.responsavel || perfil.nome_completo || perfil.nome || perfil.name;
+
+                if (empresa) {
+                    document.getElementById('empresa').textContent = empresa;
+                }
+
+                if (nome) {
+                    document.getElementById('boasVindas').textContent = `Bem-vindo(a), ${nome}!`;
+                }
+
+                document.getElementById('linkEntrar').hidden = true;
+                document.getElementById('conta').hidden = false;
+                document.getElementById('cadastrarEvento').hidden = false;
+                document.getElementById('meusEventos').hidden = perfil.tipo_conta !== 'cnpj';
+                estado.hidden = true;
+                painel.hidden = false;
+            } catch (erro) {
+                estado.textContent = 'Não foi possível verificar seu acesso. Confira a conexão com a API e recarregue a página.';
+                console.warn('Falha ao confirmar o acesso ao painel:', erro);
+            }
+        }
+
+        window.addEventListener('pageshow', carregarPainel);
+        window.addEventListener('pagehide', ocultarPainel);
+    </script>
+</body>
+</html>

@@ -143,7 +143,7 @@ async function startServer() {
                 `Servidor rodando na porta: ${Port}`
             );
             console.log(
-                "Projeto Integrador - 11/06/2026"
+                "Projeto Integrador - 19/11/2026"
             );
             console.log("Yasmin e Gustavo");
         });
