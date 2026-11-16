@@ -16,7 +16,7 @@ import {
 } from "react-native";
 
 import { SafeAreaView } from "react-native-safe-area-context";
-import { cadastrar } from "./utils/api";
+import { cadastrar } from "../utils/api";
 
 // =====================================================
 // CADASTRO DE USUÁRIO - ROTA DO ROLÊ

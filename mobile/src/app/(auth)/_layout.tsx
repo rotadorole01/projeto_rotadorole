@@ -1,6 +1,6 @@
 import { Redirect, Stack } from "expo-router";
 import { useContext } from "react";
-import { AuthContext } from "../utils/authContext";
+import { AuthContext } from "../../utils/authContext";
 
 export default function AuthLayout() {
   const auth = useContext(AuthContext);

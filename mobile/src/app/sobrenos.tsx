@@ -11,7 +11,7 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { AuthContext } from "./utils/authContext";
+import { AuthContext } from "../utils/authContext";
 
 // =====================================================
 // SOBRE NÓS - ROTA DO ROLÊ

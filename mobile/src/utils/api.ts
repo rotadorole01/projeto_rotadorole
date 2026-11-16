@@ -60,6 +60,7 @@ export type LoginResult = {
 };
 
 export async function entrar(email: string, password: string) {
+  console.log( email, password);
   return request<LoginResult>("/logins/entrar", {
     method: "POST",
     body: JSON.stringify({ email, password }),

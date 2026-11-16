@@ -14,8 +14,8 @@ import { Feather, FontAwesome } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-import { AuthContext } from "./utils/authContext";
-import { entrar } from "./utils/api";
+import { AuthContext } from "../utils/authContext";
+import { entrar } from "../utils/api";
 
 export default function Login() {
   const router = useRouter();
@@ -30,14 +30,19 @@ export default function Login() {
   const [carregando, setCarregando] = useState(false);
 
   async function onClickAcessar() {
+    
     if (!usuario.trim() || !senha) {
       Alert.alert("Atenção", "Informe seu e-mail e sua senha.");
       return;
     }
     try {
       setCarregando(true);
+      console.log( "chamando api.")
       const resposta = await entrar(usuario.trim(), senha);
+      console.log( resposta );
+      
       await auth.logIn(resposta.data.token, resposta.data.usuario);
+      
       router.replace("/dashboard");
     } catch (error) {
       Alert.alert(

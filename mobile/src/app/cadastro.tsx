@@ -20,8 +20,8 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { AuthContext } from "./utils/authContext";
-import { API_URL } from "./utils/api";
+import { AuthContext } from "../utils/authContext";
+import { API_URL } from "../utils/api";
 
 // =====================================================
 // IDENTIDADE VISUAL

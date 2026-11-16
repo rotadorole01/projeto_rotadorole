@@ -28,7 +28,7 @@ const app = express();
 // };
 
 // app.use(cors(corsOptions));
-app.use(cors());
+app.use(cors("0"));
 
 // RECEBER JSON
 app.use(express.json());

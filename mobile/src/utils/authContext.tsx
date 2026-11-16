@@ -48,6 +48,7 @@ export default function AuthProvider({ children }: PropsWithChildren) {
   }, []);
 
   const logIn = async (newToken: string, newUsuario: Usuario) => {
+    console.log( "funcao logIn.")
     await AsyncStorage.setItem(
       STORAGE_KEY,
       JSON.stringify({ token: newToken, usuario: newUsuario })
