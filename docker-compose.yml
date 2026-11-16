@@ -17,7 +17,7 @@ services:
       - JWT_SECRET=senhasupersecreta
 
     ports:
-      - "3600:3600"  # API disponível em http://IP_DO_SERVIDOR:3600
+      - "13021:3600"  # API disponível em http://IP_DO_SERVIDOR:3600
     volumes:
       - ./uploads:/app/uploads  # Mapeia a raiz inteira (bancosangue/) permitindo edição em tempo real
       - /app/node_modules
@@ -32,14 +32,13 @@ services:
     #restart: always
     restart: unless-stopped
     ports:
-      - "8181:80"  # Acesse o sistema via http://IP_DO_SERVIDOR:8080
+      - "15021:80"  # Acesse o sistema via http://IP_DO_SERVIDOR:8080
     volumes:
       - ./web:/usr/share/nginx/html  # Mapeia a raiz inteira (bancosangue/) permitindo edição em tempo real
     #depends_on:
     #  - dbmaria
     networks:
       - fatectqnet
-
 
 networks:
   fatectqnet:

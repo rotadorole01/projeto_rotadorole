@@ -3,7 +3,7 @@
 // Por padrão, o host é o mesmo usado para acessar a WEB, inclusive na rede local.
 const API_CONFIG = Object.freeze({
     HOST: window.location.hostname || "localhost",
-    PORT: 3600,
+    PORT: 13021,
     get BASE_URL() {
         return `http://${this.HOST}:${this.PORT}`;
     }
