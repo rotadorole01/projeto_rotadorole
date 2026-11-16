@@ -18,7 +18,7 @@ if (eventForm) {
 
         if (!token) {
             alert(
-                "Você precisa entrar em uma conta Empresa/CNPJ " +
+                "Você precisa entrar na sua conta " +
                 "para cadastrar eventos."
             );
 
@@ -110,8 +110,8 @@ if (eventForm) {
                 telefone
             };
 
-            // Não enviamos id_empresa.
-            // O backend identifica a empresa pelo token JWT.
+            // O backend identifica o usuário pelo token JWT.
+            // Não é necessário enviar id_empresa.
 
             console.log("Dados do evento:", dados);
 
@@ -147,7 +147,7 @@ if (eventForm) {
             if (response.status === 403) {
                 alert(
                     resultado.message ||
-                    "Somente contas Empresa/CNPJ podem cadastrar eventos."
+                    "Você não tem permissão para realizar esta operação."
                 );
                 return;
             }

@@ -2,8 +2,8 @@
 const myModel = require("../model/eventosModel.js");
 const loginsModel = require("../model/loginsModel.js");
 
-// Verifica se o usuário autenticado possui conta Empresa/CNPJ
-async function verificarEmpresa(req) {
+// Verifica se o usuário possui uma conta autenticada
+async function verificarUsuario(req) {
   const usuarioId = req.usuarioId;
 
   if (!Number.isSafeInteger(usuarioId) || usuarioId < 1) {
@@ -20,14 +20,7 @@ async function verificarEmpresa(req) {
     throw erro;
   }
 
-  if (usuario.tipo_conta !== "cnpj") {
-    const erro = new Error(
-      "Esta funcionalidade é exclusiva para contas Empresa/CNPJ."
-    );
-    erro.status = 403;
-    throw erro;
-  }
-
+  // Pessoa Física e Empresa/CNPJ podem cadastrar eventos
   return usuario.id;
 }
 
@@ -44,45 +37,45 @@ async function GetById(req, res) {
   return responseData;
 }
 
-// Listar eventos da empresa autenticada
+// Listar eventos do usuário autenticado
 async function GetMeusEventos(req, res) {
-  const idEmpresa = await verificarEmpresa(req);
-  const responseData = await myModel.GetMeusEventos(idEmpresa);
+  const usuarioId = await verificarUsuario(req);
+  const responseData = await myModel.GetMeusEventos(usuarioId);
   return responseData;
 }
 
-// Cadastrar evento vinculado à empresa autenticada
+// Cadastrar evento vinculado ao usuário autenticado
 async function Post(req, res) {
-  const idEmpresa = await verificarEmpresa(req);
+  const usuarioId = await verificarUsuario(req);
   const payload = req.body;
 
-  const responseData = await myModel.Post(payload, idEmpresa);
+  const responseData = await myModel.Post(payload, usuarioId);
   return responseData;
 }
 
-// Editar evento da própria empresa
+// Editar evento do próprio usuário
 async function Put(req, res) {
-  const idEmpresa = await verificarEmpresa(req);
+  const usuarioId = await verificarUsuario(req);
   const id = req.params.id;
   const payload = req.body;
 
   const responseData = await myModel.Put(
     payload,
     id,
-    idEmpresa
+    usuarioId
   );
 
   return responseData;
 }
 
-// Excluir evento da própria empresa
+// Excluir evento do próprio usuário
 async function Delete(req, res) {
-  const idEmpresa = await verificarEmpresa(req);
+  const usuarioId = await verificarUsuario(req);
   const id = req.params.id;
 
   const responseData = await myModel.Delete(
     id,
-    idEmpresa
+    usuarioId
   );
 
   return responseData;
