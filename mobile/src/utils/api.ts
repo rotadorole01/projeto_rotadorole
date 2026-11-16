@@ -7,7 +7,7 @@ export const API_URL =
   (process.env.EXPO_PUBLIC_API_URL ||
     (Platform.OS === "web"
       ? "http://localhost:3600"
-      : "http://192.168.0.111:3600")).replace(/\/$/, "");
+      : "http://192.168.10.42:3600")).replace(/\/$/, "");
 
 type ApiResponse<T> = {
   message?: string;
@@ -91,4 +91,19 @@ export async function listarCategorias() {
 
 export async function obterPerfil(token: string) {
   return request<ApiResponse<Usuario>>("/logins/perfil", {}, token);
+}
+
+
+// Consulta protegida: o backend decide se o login é patrocinador aprovado.
+export type PainelPatrocinador = {
+  empresa: string;
+  responsavel: string;
+  status: "aprovado";
+  metricasDisponiveis: boolean;
+  observacao: string;
+};
+export async function obterPainelPatrocinador(token: string) {
+  return request<ApiResponse<PainelPatrocinador>>(
+    "/patrocinador/painel", {}, token
+  );
 }

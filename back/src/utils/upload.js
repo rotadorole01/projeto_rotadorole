@@ -4,9 +4,14 @@ const path = require("path");
 const fs = require("fs");
 const crypto = require("crypto");
 
-const pastaUploads = path.resolve(__dirname, "../../uploads");
+const pastaUploads = path.resolve(
+    __dirname,
+    "../uploads"
+);
 
-fs.mkdirSync(pastaUploads, { recursive: true });
+fs.mkdirSync(pastaUploads, {
+    recursive: true
+});
 
 const tiposPermitidos = {
     "image/jpeg": ".jpg",
@@ -22,7 +27,8 @@ const storage = multer.diskStorage({
     filename: function (req, file, cb) {
         const extensao = tiposPermitidos[file.mimetype];
 
-        const nomeArquivo = `${crypto.randomUUID()}${extensao}`;
+        const nomeArquivo =
+            `${crypto.randomUUID()}${extensao}`;
 
         cb(null, nomeArquivo);
     }
@@ -38,7 +44,9 @@ const uploads = multer({
     fileFilter: function (req, file, cb) {
         if (!tiposPermitidos[file.mimetype]) {
             return cb(
-                new Error("Envie somente imagens JPG, PNG ou WebP.")
+                new Error(
+                    "Envie somente imagens JPG, PNG ou WebP."
+                )
             );
         }
 

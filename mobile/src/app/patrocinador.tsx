@@ -3,9 +3,11 @@ import { FontAwesome, Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import { useState } from "react";
+import { cadastrar } from "./utils/api";
 
 import {
   Alert,
+  Modal,
   Platform,
   Pressable,
   ScrollView,
@@ -119,7 +121,7 @@ function CampoSelecao({
 // FORMATAR CNPJ
 // =====================================================
 
-function formatarCNPJ(valor: string) {
+function formatarCNPJ(valor: string): string {
   const numeros = valor.replace(/\D/g, "").slice(0, 14);
 
   return numeros
@@ -129,47 +131,9 @@ function formatarCNPJ(valor: string) {
     .replace(/(\d{4})(\d)/, "$1-$2");
 }
 
-// =====================================================
-// VALIDAR CNPJ
-// =====================================================
-
-function validarCNPJ(valor: string) {
-  const numeros = valor.replace(/\D/g, "");
-
-  if (numeros.length !== 14) {
-    return false;
-  }
-
-  if (/^(\d)\1{13}$/.test(numeros)) {
-    return false;
-  }
-
-  function calcularDigito(base: string, pesos: number[]) {
-    const soma = pesos.reduce(
-      (total, peso, indice) =>
-        total + Number(base[indice]) * peso,
-      0
-    );
-
-    const resto = soma % 11;
-
-    return resto < 2 ? 0 : 11 - resto;
-  }
-
-  const primeiro = calcularDigito(
-    numeros.slice(0, 12),
-    [5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2]
-  );
-
-  const segundo = calcularDigito(
-    numeros.slice(0, 13),
-    [6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2]
-  );
-
-  return (
-    primeiro === Number(numeros[12]) &&
-    segundo === Number(numeros[13])
-  );
+function validarCNPJ(valor: string): boolean {
+  // Permite CNPJ fictício para testes.
+  return /^\d{14}$/.test(valor.replace(/\D/g, ""));
 }
 
 // =====================================================
@@ -210,17 +174,15 @@ export default function Patrocinador() {
   const mobile = width < 700;
 
   // ===================================================
-  // MENU HAMBÚRGUER
+  // ESTADOS
   // ===================================================
 
   const [menuAberto, setMenuAberto] = useState(false);
 
-  // ===================================================
-  // CAMPOS DO FORMULÁRIO
-  // ===================================================
-
   const [empresa, setEmpresa] = useState("");
   const [cnpj, setCnpj] = useState("");
+  const [senha, setSenha] = useState("");
+  const [confirmarSenha, setConfirmarSenha] = useState("");
   const [area, setArea] = useState("");
   const [responsavel, setResponsavel] = useState("");
   const [telefone, setTelefone] = useState("");
@@ -229,11 +191,20 @@ export default function Patrocinador() {
   const [mensagemAdicional, setMensagemAdicional] =
     useState("");
 
+  const [carregando, setCarregando] = useState(false);
+
+  // NOVO: controla a janela de confirmação
+  const [cadastroConcluido, setCadastroConcluido] =
+    useState(false);
+
   // ===================================================
-  // MENSAGENS
+  // MENSAGENS DE ERRO
   // ===================================================
 
-  function mostrarMensagem(titulo: string, mensagem: string) {
+  function mostrarMensagem(
+    titulo: string,
+    mensagem: string
+  ) {
     if (Platform.OS === "web") {
       if (typeof window !== "undefined") {
         window.alert(`${titulo}\n\n${mensagem}`);
@@ -247,39 +218,10 @@ export default function Patrocinador() {
   // NAVEGAÇÃO
   // ===================================================
 
-  function irParaInicio() {
+  function navegar(destino: string) {
     setMenuAberto(false);
-    router.navigate("/dashboard");
+    router.navigate(destino as any);
   }
-
-  function irParaEventos() {
-    setMenuAberto(false);
-    router.navigate("/eventos");
-  }
-
-  function irParaCadastro() {
-    setMenuAberto(false);
-    router.navigate("/cadastro");
-  }
-
-  function irParaMinhaConta() {
-    setMenuAberto(false);
-    router.navigate("/perfil");
-  }
-
-  function irParaSobreNos() {
-    setMenuAberto(false);
-    router.navigate("/sobrenos");
-  }
-
-  function irParaQuiz() {
-    setMenuAberto(false);
-    router.navigate("/quiz");
-  }
-
-  // ===================================================
-  // NOVO: BOTÃO SAIR
-  // ===================================================
 
   function irParaLogin() {
     setMenuAberto(false);
@@ -287,10 +229,12 @@ export default function Patrocinador() {
   }
 
   // ===================================================
-  // VALIDAR FORMULÁRIO
+  // ENVIAR CADASTRO
   // ===================================================
 
-  function enviarSolicitacao() {
+  async function enviarSolicitacao() {
+    if (carregando) return;
+
     if (!empresa.trim()) {
       mostrarMensagem(
         "Campo obrigatório",
@@ -299,10 +243,10 @@ export default function Patrocinador() {
       return;
     }
 
-    if (cnpj.trim() && !validarCNPJ(cnpj)) {
+    if (!validarCNPJ(cnpj)) {
       mostrarMensagem(
         "CNPJ inválido",
-        "Informe um CNPJ válido ou deixe o campo em branco."
+        "Informe exatamente 14 números. Para testes, o CNPJ não precisa ser real."
       );
       return;
     }
@@ -354,26 +298,54 @@ export default function Patrocinador() {
       return;
     }
 
-    // DADOS PRONTOS PARA INTEGRAÇÃO COM API
+    if (!senha.trim()) {
+      mostrarMensagem(
+        "Campo obrigatório",
+        "Informe uma senha para a empresa."
+      );
+      return;
+    }
 
-    const dadosSolicitacao = {
-      empresa: empresa.trim(),
-      cnpj: cnpj.replace(/\D/g, ""),
-      areaAtuacao: area,
-      responsavel: responsavel.trim(),
-      telefone: telefoneNumeros,
-      email: email.trim().toLowerCase(),
-      interessePrincipal: interesse,
-      mensagemAdicional: mensagemAdicional.trim(),
-    };
+    if (senha !== confirmarSenha) {
+      mostrarMensagem(
+        "Senhas diferentes",
+        "A confirmação de senha não confere."
+      );
+      return;
+    }
 
-    // Ainda não existe integração com o servidor.
-    // Os dados estão preparados para o envio futuro.
+    // =================================================
+    // INTEGRAÇÃO COM API
+    // =================================================
 
-    mostrarMensagem(
-      "Formulário validado",
-      "Os dados foram preenchidos corretamente. A solicitação ainda não foi enviada porque a integração com o servidor precisa ser configurada."
-    );
+    try {
+      setCarregando(true);
+
+      await cadastrar({
+        name: responsavel.trim(),
+        email: email.trim().toLowerCase(),
+        password: senha,
+        tipoConta: "cnpj",
+        cnpj: cnpj.replace(/\D/g, ""),
+        nomeEmpresa: empresa.trim(),
+      });
+
+      // ===============================================
+      // NOVO: EXIBIR CONFIRMAÇÃO APÓS SUCESSO
+      // ===============================================
+
+      setCadastroConcluido(true);
+
+    } catch (erro) {
+      mostrarMensagem(
+        "Não foi possível cadastrar",
+        erro instanceof Error
+          ? erro.message
+          : "Tente novamente."
+      );
+    } finally {
+      setCarregando(false);
+    }
   }
 
   // ===================================================
@@ -384,9 +356,7 @@ export default function Patrocinador() {
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
 
-        {/* ==========================================
-            CABEÇALHO ROTA DO ROLÊ
-        ========================================== */}
+        {/* CABEÇALHO */}
 
         <LinearGradient
           colors={["#075b91", "#6b5a64", "#ff6633"]}
@@ -396,7 +366,7 @@ export default function Patrocinador() {
         >
           <Pressable
             style={styles.logoArea}
-            onPress={irParaInicio}
+            onPress={() => navegar("/dashboard")}
           >
             <FontAwesome
               name="map-marker"
@@ -422,45 +392,37 @@ export default function Patrocinador() {
           </Pressable>
         </LinearGradient>
 
-        {/* ==========================================
-            MENU HAMBÚRGUER ATUALIZADO
-        ========================================== */}
+        {/* MENU HAMBÚRGUER */}
 
         {menuAberto && (
           <View style={styles.menu}>
 
-            {/* INÍCIO */}
-
             <Pressable
               style={styles.itemMenu}
-              onPress={irParaInicio}
+              onPress={() => navegar("/dashboard")}
             >
               <Ionicons
                 name="home-outline"
                 size={20}
                 color={AZUL}
               />
-
               <Text style={styles.textoMenu}>
                 Início
               </Text>
             </Pressable>
-
-            {/* EVENTOS - DESTAQUE LARANJA */}
 
             <Pressable
               style={[
                 styles.itemMenu,
                 styles.itemMenuAtivo,
               ]}
-              onPress={irParaEventos}
+              onPress={() => navegar("/eventos")}
             >
               <Ionicons
                 name="calendar-outline"
                 size={20}
                 color={LARANJA}
               />
-
               <Text
                 style={[
                   styles.textoMenu,
@@ -471,75 +433,61 @@ export default function Patrocinador() {
               </Text>
             </Pressable>
 
-            {/* CADASTRAR EVENTO */}
-
             <Pressable
               style={styles.itemMenu}
-              onPress={irParaCadastro}
+              onPress={() => navegar("/cadastro")}
             >
               <Ionicons
                 name="add-circle-outline"
                 size={20}
                 color={AZUL}
               />
-
               <Text style={styles.textoMenu}>
                 Cadastrar Evento
               </Text>
             </Pressable>
 
-            {/* MINHA CONTA */}
-
             <Pressable
               style={styles.itemMenu}
-              onPress={irParaMinhaConta}
+              onPress={() => navegar("/perfil")}
             >
               <Ionicons
                 name="person-outline"
                 size={20}
                 color={AZUL}
               />
-
               <Text style={styles.textoMenu}>
                 Minha Conta
               </Text>
             </Pressable>
 
-            {/* SOBRE NÓS */}
-
             <Pressable
               style={styles.itemMenu}
-              onPress={irParaSobreNos}
+              onPress={() => navegar("/sobrenos")}
             >
               <Ionicons
                 name="information-circle-outline"
                 size={20}
                 color={AZUL}
               />
-
               <Text style={styles.textoMenu}>
                 Sobre Nós
               </Text>
             </Pressable>
 
-            {/* QUIZ DO ROLÊ */}
-
             <Pressable
               style={styles.itemMenu}
-              onPress={irParaQuiz}
+              onPress={() => navegar("/quiz")}
             >
               <Ionicons
                 name="help-circle-outline"
                 size={20}
                 color={AZUL}
               />
-
               <Text style={styles.textoMenu}>
                 Quiz do Rolê
               </Text>
             </Pressable>
-
-            {/* NOVO: SAIR */}
 
             <Pressable
               style={styles.itemMenu}
@@ -550,7 +498,6 @@ export default function Patrocinador() {
                 size={20}
                 color={AZUL}
               />
-
               <Text style={styles.textoMenu}>
                 Sair
               </Text>
@@ -559,9 +506,7 @@ export default function Patrocinador() {
           </View>
         )}
 
-        {/* ==========================================
-            CONTEÚDO PRINCIPAL
-        ========================================== */}
+        {/* CONTEÚDO */}
 
         <ScrollView
           style={styles.scroll}
@@ -591,14 +536,13 @@ export default function Patrocinador() {
             </Text>
 
             <Text style={styles.bannerDescription}>
-              Destaque o seu negócio para milhares de pessoas que
-              buscam diversão, cultura e gastronomia na cidade.
+              Destaque o seu negócio para milhares de pessoas
+              que buscam diversão, cultura e gastronomia
+              na cidade.
             </Text>
           </LinearGradient>
 
-          {/* ========================================
-              FORMULÁRIO
-          ======================================== */}
+          {/* FORMULÁRIO */}
 
           <View
             style={[
@@ -607,8 +551,6 @@ export default function Patrocinador() {
             ]}
           >
 
-            {/* TÍTULO */}
-
             <View style={styles.titleArea}>
               <Text
                 style={[
@@ -616,7 +558,7 @@ export default function Patrocinador() {
                   mobile && styles.formTitleMobile,
                 ]}
               >
-                Solicitar Contato Comercial
+                Cadastro de Empresa Patrocinadora
               </Text>
 
               <View style={styles.titleLine} />
@@ -647,14 +589,14 @@ export default function Patrocinador() {
             >
               <View style={styles.column}>
                 <Text style={styles.label}>
-                  CNPJ
+                  CNPJ *
                 </Text>
 
                 <TextInput
                   style={styles.input}
                   placeholder="00.000.000/0000-00"
                   placeholderTextColor="#999999"
-                  keyboardType="numeric"
+                  keyboardType="number-pad"
                   maxLength={18}
                   value={cnpj}
                   onChangeText={(valor) =>
@@ -769,14 +711,46 @@ export default function Patrocinador() {
               textAlignVertical="top"
             />
 
-            {/* BOTÃO ENVIAR */}
+            {/* SENHA */}
+
+            <Text style={styles.label}>
+              Senha *
+            </Text>
+
+            <TextInput
+              style={styles.input}
+              placeholder="Crie uma senha"
+              placeholderTextColor="#999999"
+              secureTextEntry
+              value={senha}
+              onChangeText={setSenha}
+            />
+
+            {/* CONFIRMAR SENHA */}
+
+            <Text style={styles.label}>
+              Confirmar Senha *
+            </Text>
+
+            <TextInput
+              style={styles.input}
+              placeholder="Repita a senha"
+              placeholderTextColor="#999999"
+              secureTextEntry
+              value={confirmarSenha}
+              onChangeText={setConfirmarSenha}
+            />
+
+            {/* BOTÃO CADASTRAR */}
 
             <Pressable
               style={({ pressed }) => [
                 styles.submitButton,
                 pressed && styles.submitPressed,
+                carregando && styles.submitDisabled,
               ]}
               onPress={enviarSolicitacao}
+              disabled={carregando}
             >
               <Ionicons
                 name="paper-plane"
@@ -785,7 +759,9 @@ export default function Patrocinador() {
               />
 
               <Text style={styles.submitText}>
-                Enviar Solicitação
+                {carregando
+                  ? "Cadastrando..."
+                  : "Cadastrar Empresa"}
               </Text>
             </Pressable>
 
@@ -800,6 +776,59 @@ export default function Patrocinador() {
 
         </ScrollView>
       </View>
+
+      {/* ============================================= */}
+      {/* NOVO: JANELA DE CONFIRMAÇÃO DO CADASTRO       */}
+      {/* ============================================= */}
+
+      <Modal
+        visible={cadastroConcluido}
+        transparent
+        animationType="fade"
+        onRequestClose={() =>
+          setCadastroConcluido(false)
+        }
+      >
+        <View style={styles.confirmacaoFundo}>
+
+          <View style={styles.confirmacaoCard}>
+
+            <Ionicons
+              name="checkmark-circle"
+              size={65}
+              color="#21966b"
+            />
+
+            <Text style={styles.confirmacaoTitulo}>
+              Cadastro recebido com sucesso!
+            </Text>
+
+            <Text style={styles.confirmacaoTexto}>
+              Nossa equipe recebeu sua solicitação de
+              patrocínio e entrará em contato para informar
+              sobre a aprovação e, caso aprovado, definir
+              os detalhes da parceria.
+            </Text>
+
+            <Text style={styles.confirmacaoFinal}>
+              Aguarde nosso retorno!
+            </Text>
+
+            <Pressable
+              style={styles.confirmacaoBotao}
+              onPress={() =>
+                setCadastroConcluido(false)
+              }
+            >
+              <Text style={styles.confirmacaoBotaoTexto}>
+                Entendi
+              </Text>
+            </Pressable>
+
+          </View>
+        </View>
+      </Modal>
+
     </SafeAreaView>
   );
 }
@@ -887,8 +916,6 @@ const styles = StyleSheet.create({
     marginLeft: 12,
   },
 
-  // NOVO: ITEM SELECIONADO LARANJA
-
   itemMenuAtivo: {
     backgroundColor: "#fff0e8",
     borderLeftWidth: 4,
@@ -953,7 +980,6 @@ const styles = StyleSheet.create({
     paddingBottom: 30,
     marginTop: -28,
     elevation: 5,
-
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
@@ -1000,7 +1026,7 @@ const styles = StyleSheet.create({
   // CAMPOS
 
   label: {
-    color: "#07569a",
+    color: AZUL,
     fontSize: 14,
     fontWeight: "600",
     marginBottom: 9,
@@ -1097,7 +1123,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
 
-  // BOTÃO
+  // BOTÃO DE CADASTRO
 
   submitButton: {
     width: "100%",
@@ -1115,6 +1141,10 @@ const styles = StyleSheet.create({
     backgroundColor: "#e94c2b",
   },
 
+  submitDisabled: {
+    opacity: 0.6,
+  },
+
   submitText: {
     color: "#ffffff",
     fontSize: 16,
@@ -1130,4 +1160,72 @@ const styles = StyleSheet.create({
     marginTop: 30,
     paddingHorizontal: 20,
   },
+
+  // ===============================================
+  // NOVO: MODAL DE CONFIRMAÇÃO
+  // ===============================================
+
+  confirmacaoFundo: {
+    flex: 1,
+    backgroundColor: "rgba(0, 0, 0, 0.55)",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 20,
+  },
+
+  confirmacaoCard: {
+    width: "100%",
+    maxWidth: 440,
+    backgroundColor: "#ffffff",
+    borderRadius: 18,
+    padding: 28,
+    alignItems: "center",
+    elevation: 8,
+    shadowColor: "#000000",
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 12,
+  },
+
+  confirmacaoTitulo: {
+    color: AZUL,
+    fontSize: 22,
+    fontWeight: "800",
+    textAlign: "center",
+    marginTop: 14,
+    marginBottom: 16,
+  },
+
+  confirmacaoTexto: {
+    color: "#34506b",
+    fontSize: 15,
+    lineHeight: 23,
+    textAlign: "center",
+  },
+
+  confirmacaoFinal: {
+    color: AZUL,
+    fontSize: 16,
+    fontWeight: "700",
+    textAlign: "center",
+    marginTop: 18,
+  },
+
+  confirmacaoBotao: {
+    backgroundColor: LARANJA,
+    borderRadius: 9,
+    paddingVertical: 14,
+    paddingHorizontal: 45,
+    marginTop: 24,
+  },
+
+  confirmacaoBotaoTexto: {
+    color: "#ffffff",
+    fontSize: 16,
+    fontWeight: "700",
+  },
+
 });

@@ -126,10 +126,12 @@
                 <ul style="list-style: none; display: flex; gap: 2rem; margin: 0; align-items: center;">
                     <li><a href="index.html">Início</a></li>
                     <li><a href="eventos.html">Eventos</a></li>
+                    <li><a href="nos.html">Sobre Nós</a></li>
                     <li><a href="cadastro.html" id="linkCadastrarHeader" hidden>Cadastrar Evento</a></li>
                 </ul>
 
-                <div class="user-profile-menu">
+                <a href="entrar.html" id="linkEntrarCabecalho" class="profile-menu-btn" style="display:inline-flex; align-items:center; gap:8px; background:rgba(255,255,255,0.12); color:white; text-decoration:none;" aria-label="Entrar na conta"><i class="fas fa-sign-in-alt" style="color:#f7b801 !important;"></i><span>Entrar</span></a>
+                <div class="user-profile-menu" style="display:none;">
                     <button
                         type="button"
                         onclick="toggleProfileMenu()"
@@ -690,7 +692,9 @@
             }
         });
 
-        // A API confirma se a conta é Empresa/CNPJ antes de exibir o formulário.
+       
+        // Permite cadastrar eventos para qualquer usuário autenticado:
+        // Pessoa Física (PF) ou Empresa (CNPJ).
         (async function verificarAcessoCadastro() {
             const token = sessionStorage.getItem("rota_token");
             const aviso = document.getElementById("avisoAcesso");
@@ -705,45 +709,83 @@
             }
 
             try {
-                const resposta = await fetch(`${API_CONFIG.BASE_URL}/logins/perfil`, {
-                    headers: { Authorization: `Bearer ${token}` },
-                    cache: "no-store"
-                });
+                const resposta = await fetch(
+                    `${API_CONFIG.BASE_URL}/logins/perfil`,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`
+                        },
+                        cache: "no-store"
+                    }
+                );
 
-                if (resposta.status === 401 || resposta.status === 404) {
+                if (
+                    resposta.status === 401 ||
+                    resposta.status === 403 ||
+                    resposta.status === 404
+                ) {
                     sessionStorage.removeItem("rota_token");
                     window.location.replace("entrar.html");
                     return;
                 }
 
                 if (!resposta.ok) {
-                    throw new Error("Não foi possível validar sua conta (HTTP " + resposta.status + ").");
+                    throw new Error(
+                        "Não foi possível validar sua conta (HTTP " +
+                        resposta.status + ")."
+                    );
                 }
 
                 const resultado = await resposta.json();
                 const usuario = resultado.data;
 
-                if (!usuario || usuario.tipo_conta !== "cnpj") {
-                    alert("Somente contas Empresa/CNPJ podem acessar o cadastro de eventos.");
-                    window.location.replace("index.html");
+                if (!usuario || !usuario.id) {
+                    sessionStorage.removeItem("rota_token");
+                    window.location.replace("entrar.html");
                     return;
                 }
 
-                // Acesso confirmado pelo servidor.
-                if (linkMeusEventos) linkMeusEventos.hidden = false;
-                if (linkHeader) linkHeader.hidden = false;
-                if (linkRodape) linkRodape.hidden = false;
-                if (aviso) aviso.hidden = true;
-                if (formulario) formulario.style.display = "block";
-            } catch (erro) {
-                console.error("Erro ao verificar permissão para cadastrar evento:", erro);
+                // Qualquer usuário autenticado pode cadastrar eventos.
+                // Não é necessário possuir CNPJ.
+                if (linkMeusEventos) {
+                    linkMeusEventos.hidden = false;
+                }
+
+                if (linkHeader) {
+                    linkHeader.hidden = false;
+                }
+
+                if (linkRodape) {
+                    linkRodape.hidden = false;
+                }
+
                 if (aviso) {
-                    aviso.innerHTML = "Não foi possível confirmar sua permissão. " +
+                    aviso.hidden = true;
+                }
+
+                if (formulario) {
+                    formulario.style.display = "block";
+                }
+
+                console.log(
+                    "Acesso ao cadastro de eventos autorizado."
+                );
+
+            } catch (erro) {
+                console.error(
+                    "Erro ao verificar acesso ao cadastro:",
+                    erro
+                );
+
+                if (aviso) {
+                    aviso.innerHTML =
+                        "Não foi possível confirmar sua conta. " +
                         "Verifique se a API está ligada e " +
                         '<a href="cadastro.html">tente novamente</a>.';
                 }
             }
         })();
+
     </script>
 
     <!-- GOOGLE TRADUTOR -->
@@ -770,5 +812,6 @@
     <script>
         new window.VLibras.Widget("https://vlibras.gov.br/app");
     </script>
+    <script src="js/cabecalho-auth.js"></script>
 </body>
 </html>

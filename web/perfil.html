@@ -525,9 +525,11 @@
             <nav class="navegacao" aria-label="Navegação principal">
                 <a href="index.html">Início</a>
                 <a href="eventos.html">Eventos</a>
+                <a href="nos.html">Sobre Nós</a>
                 <a href="cadastro.html">Cadastrar Evento</a>
 
-                <div class="user-profile-menu">
+                <a href="entrar.html" id="linkEntrarCabecalho" class="profile-menu-btn" style="display:inline-flex; align-items:center; gap:8px; background:rgba(255,255,255,0.12); color:white; text-decoration:none;" aria-label="Entrar na conta"><i class="fas fa-sign-in-alt" style="color:#f7b801 !important;"></i><span>Entrar</span></a>
+                <div class="user-profile-menu" style="display:none;">
                     <button
                         type="button"
                         class="profile-menu-btn"
@@ -1182,5 +1184,6 @@
 
         mudarTipo();
     </script>
+    <script src="js/cabecalho-auth.js"></script>
 </body>
 </html>

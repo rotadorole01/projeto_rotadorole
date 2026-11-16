@@ -1,9 +1,10 @@
 
 import { Feather, FontAwesome, Ionicons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import {
   Alert,
   Image,
@@ -31,7 +32,7 @@ const FUNDO = "#f5f6f8";
 const CINZA = "#68788c";
 
 // =====================================================
-// DADOS DO PERFIL
+// TIPOS E DADOS INICIAIS
 // =====================================================
 
 type DadosPerfil = {
@@ -61,7 +62,69 @@ const perfilInicial: DadosPerfil = {
 };
 
 // =====================================================
-// COMPONENTE TÍTULO
+// IDENTIFICAR USUÁRIO LOGADO
+// =====================================================
+
+function extrairUsuario(valor: unknown): Record<string, any> | null {
+  if (!valor) return null;
+
+  if (typeof valor === "string") {
+    try {
+      return extrairUsuario(JSON.parse(valor));
+    } catch {
+      return null;
+    }
+  }
+
+  if (typeof valor !== "object" || Array.isArray(valor)) {
+    return null;
+  }
+
+  const obj = valor as Record<string, any>;
+
+  if (obj.user) return extrairUsuario(obj.user);
+  if (obj.usuario) return extrairUsuario(obj.usuario);
+  if (obj.data) return extrairUsuario(obj.data);
+
+  return obj;
+}
+
+function montarPerfil(usuario: Record<string, any>): DadosPerfil {
+  const texto = (valor: unknown) =>
+    valor === null || valor === undefined ? "" : String(valor);
+
+  const nascimento = texto(
+    usuario.nascimento ??
+    usuario.data_nascimento ??
+    usuario.dataNascimento
+  );
+
+  const nascimentoBR = /^\d{4}-\d{2}-\d{2}/.test(nascimento)
+    ? `${nascimento.slice(8, 10)}/${nascimento.slice(5, 7)}/${nascimento.slice(0, 4)}`
+    : nascimento;
+
+  return {
+    nome: texto(usuario.nome ?? usuario.nome_completo ?? usuario.name),
+    email: texto(usuario.email),
+    telefone: texto(usuario.telefone ?? usuario.celular),
+    nascimento: nascimentoBR,
+    cidade: texto(usuario.cidade),
+    bairro: texto(usuario.bairro),
+    biografia: texto(usuario.biografia ?? usuario.bio),
+    foto: usuario.foto ?? usuario.foto_perfil ?? null,
+    notificacoes:
+      usuario.notificacoes === undefined
+        ? true
+        : Boolean(usuario.notificacoes),
+    novidades:
+      usuario.novidades === undefined
+        ? true
+        : Boolean(usuario.novidades),
+  };
+}
+
+// =====================================================
+// COMPONENTE TÍTULO DA SEÇÃO
 // =====================================================
 
 function TituloSecao({
@@ -80,7 +143,7 @@ function TituloSecao({
 }
 
 // =====================================================
-// COMPONENTE CAMPO
+// COMPONENTE CAMPO DE PERFIL
 // =====================================================
 
 function CampoPerfil({
@@ -128,7 +191,7 @@ function CampoPerfil({
 }
 
 // =====================================================
-// PÁGINA MINHA CONTA
+// TELA MINHA CONTA
 // =====================================================
 
 export default function Perfil() {
@@ -143,21 +206,85 @@ export default function Perfil() {
   // ===================================================
 
   const [menuAberto, setMenuAberto] = useState(false);
-
+  const [perfil, setPerfil] = useState<DadosPerfil>(perfilInicial);
   const [perfilSalvo, setPerfilSalvo] =
     useState<DadosPerfil>(perfilInicial);
 
-  const [perfil, setPerfil] =
-    useState<DadosPerfil>(perfilInicial);
-
   const [editando, setEditando] = useState(false);
+  const [carregando, setCarregando] = useState(true);
 
   // ===================================================
-  // MENU HAMBÚRGUER
+  // CARREGAR DADOS DO USUÁRIO LOGADO
   // ===================================================
 
-  function abrirMenu() {
-    setMenuAberto((anterior) => !anterior);
+  useEffect(() => {
+    let ativo = true;
+
+    async function carregarUsuario() {
+      try {
+        const contexto = auth as unknown as
+          Record<string, any> | null;
+
+        let usuario = extrairUsuario(
+          contexto?.user ??
+          contexto?.usuario ??
+          contexto?.userData ??
+          contexto?.currentUser ??
+          contexto?.dadosUsuario
+        );
+
+        // Busca na sessão salva se os dados
+        // não estiverem disponíveis no contexto.
+
+        if (
+          !usuario ||
+          (!usuario.nome && !usuario.email && !usuario.name)
+        ) {
+          const salvo = await AsyncStorage.getItem("my-key");
+          const dados = extrairUsuario(salvo);
+
+          if (
+            dados &&
+            (dados.nome || dados.name || dados.email)
+          ) {
+            usuario = dados;
+          }
+        }
+
+        if (!ativo) return;
+
+        if (usuario) {
+          const dadosPerfil = montarPerfil(usuario);
+
+          setPerfil(dadosPerfil);
+          setPerfilSalvo(dadosPerfil);
+        }
+      } catch (erro) {
+        console.error("Erro ao carregar usuário:", erro);
+      } finally {
+        if (ativo) setCarregando(false);
+      }
+    }
+
+    carregarUsuario();
+
+    return () => {
+      ativo = false;
+    };
+  }, [auth]);
+
+  // ===================================================
+  // MENSAGENS
+  // ===================================================
+
+  function mensagem(titulo: string, descricao: string) {
+    if (Platform.OS === "web") {
+      if (typeof window !== "undefined") {
+        window.alert(`${titulo}\n\n${descricao}`);
+      }
+    } else {
+      Alert.alert(titulo, descricao);
+    }
   }
 
   // ===================================================
@@ -175,69 +302,29 @@ export default function Perfil() {
   }
 
   // ===================================================
-  // MENSAGENS
-  // ===================================================
-
-  function mensagem(titulo: string, descricao: string) {
-    if (Platform.OS === "web") {
-      if (typeof window !== "undefined") {
-        window.alert(`${titulo}\n\n${descricao}`);
-      }
-    } else {
-      Alert.alert(titulo, descricao);
-    }
-  }
-
-  // ===================================================
   // NAVEGAÇÃO
   // ===================================================
 
-  function irParaInicio() {
+  function navegar(rota: string) {
     setMenuAberto(false);
-    router.navigate("/dashboard");
+    router.navigate(rota as any);
   }
-
-  function irParaEventos() {
-    setMenuAberto(false);
-    router.navigate("/eventos");
-  }
-
-  function irParaCadastro() {
-    setMenuAberto(false);
-    router.navigate("/cadastro");
-  }
-
-  function irParaMinhaConta() {
-    setMenuAberto(false);
-  }
-
-  function irParaSobreNos() {
-    setMenuAberto(false);
-    router.navigate("/sobrenos");
-  }
-
-  function irParaQuiz() {
-    setMenuAberto(false);
-    router.navigate("/quiz");
-  }
-
-  // ===================================================
-  // SAIR DA CONTA
-  // ===================================================
 
   async function sair() {
-    setMenuAberto(false);
-
     try {
+      setMenuAberto(false);
       await auth.logOut();
+      setPerfil(perfilInicial);
+      setPerfilSalvo(perfilInicial);
       router.replace("/login");
     } catch (erro) {
       console.error("Erro ao sair:", erro);
+      mensagem("Erro", "Não foi possível sair da conta.");
     }
   }
 
   // ===================================================
-  // EDITAR PERFIL
+  // EDIÇÃO DO PERFIL
   // ===================================================
 
   function iniciarEdicao() {
@@ -251,7 +338,7 @@ export default function Perfil() {
   }
 
   // ===================================================
-  // ESCOLHER FOTO
+  // FOTO DE PERFIL
   // ===================================================
 
   async function escolherFoto() {
@@ -286,8 +373,8 @@ export default function Perfil() {
       atualizarCampo("foto", arquivo.uri);
     } catch (erro) {
       mensagem(
-        "Erro ao selecionar imagem",
-        "Não foi possível acessar a galeria."
+        "Erro",
+        "Não foi possível selecionar a imagem."
       );
     }
   }
@@ -310,7 +397,7 @@ export default function Perfil() {
     if (!emailValido.test(perfil.email.trim())) {
       mensagem(
         "E-mail inválido",
-        "Informe um endereço de e-mail válido."
+        "Informe um e-mail válido."
       );
       return;
     }
@@ -322,7 +409,7 @@ export default function Perfil() {
       if (!partes) {
         mensagem(
           "Data inválida",
-          "Informe a data no formato DD/MM/AAAA."
+          "Use o formato DD/MM/AAAA."
         );
         return;
       }
@@ -332,14 +419,13 @@ export default function Perfil() {
       const ano = Number(partes[3]);
 
       const data = new Date(ano, mes - 1, dia);
-      const hoje = new Date();
 
       if (
         ano < 1900 ||
         data.getDate() !== dia ||
         data.getMonth() !== mes - 1 ||
         data.getFullYear() !== ano ||
-        data > hoje
+        data > new Date()
       ) {
         mensagem(
           "Data inválida",
@@ -349,7 +435,7 @@ export default function Perfil() {
       }
     }
 
-    const novosDados: DadosPerfil = {
+    const novosDados = {
       ...perfil,
       nome: perfil.nome.trim(),
       email: perfil.email.trim(),
@@ -359,8 +445,9 @@ export default function Perfil() {
       biografia: perfil.biografia.trim(),
     };
 
-    // Salvamento local temporário.
-    // Integração com API ainda não implementada.
+    // Salva apenas no estado da tela.
+    // A persistência no MySQL depende de uma
+    // rota autenticada de atualização na API.
 
     setPerfilSalvo(novosDados);
     setPerfil(novosDados);
@@ -368,21 +455,56 @@ export default function Perfil() {
 
     mensagem(
       "Alterações aplicadas",
-      "Os dados foram atualizados nesta tela. Para mantê-los após fechar o aplicativo, será necessário conectar o banco de dados."
+      "As informações foram atualizadas nesta tela. A integração com o banco ainda é necessária para salvá-las definitivamente."
     );
   }
 
   // ===================================================
-  // INTERFACE PRINCIPAL
+  // MENU
+  // ===================================================
+
+  const itensMenu = [
+    {
+      titulo: "Início",
+      icone: "home-outline" as const,
+      rota: "/dashboard",
+    },
+    {
+      titulo: "Eventos",
+      icone: "calendar-outline" as const,
+      rota: "/eventos",
+    },
+    {
+      titulo: "Cadastrar Evento",
+      icone: "add-circle-outline" as const,
+      rota: "/cadastro",
+    },
+    {
+      titulo: "Minha Conta",
+      icone: "person" as const,
+      rota: "/perfil",
+    },
+    {
+      titulo: "Sobre Nós",
+      icone: "information-circle-outline" as const,
+      rota: "/sobrenos",
+    },
+    {
+      titulo: "Quiz do Rolê",
+      icone: "help-circle-outline" as const,
+      rota: "/quiz",
+    },
+  ];
+
+  // ===================================================
+  // INTERFACE
   // ===================================================
 
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
 
-        {/* ==========================================
-            CABEÇALHO
-        ========================================== */}
+        {/* CABEÇALHO */}
 
         <LinearGradient
           colors={["#075b91", "#6b5a64", "#ff6633"]}
@@ -392,23 +514,19 @@ export default function Perfil() {
         >
           <Pressable
             style={styles.logoArea}
-            onPress={irParaInicio}
+            onPress={() => navegar("/dashboard")}
           >
             <FontAwesome
               name="map-marker"
               size={30}
               color="#ffffff"
             />
-
-            <Text style={styles.logo}>
-              Rota do Rolê
-            </Text>
+            <Text style={styles.logo}>Rota do Rolê</Text>
           </Pressable>
 
           <Pressable
             style={styles.botaoMenu}
-            onPress={abrirMenu}
-            accessibilityLabel="Abrir menu"
+            onPress={() => setMenuAberto(!menuAberto)}
           >
             <Ionicons
               name={menuAberto ? "close" : "menu"}
@@ -418,121 +536,42 @@ export default function Perfil() {
           </Pressable>
         </LinearGradient>
 
-        {/* ==========================================
-            MENU HAMBÚRGUER
-        ========================================== */}
+        {/* MENU HAMBÚRGUER */}
 
         {menuAberto && (
           <View style={styles.menu}>
+            {itensMenu.map((item) => {
+              const ativo = item.rota === "/perfil";
 
-            {/* INÍCIO */}
-
-            <Pressable
-              style={styles.itemMenu}
-              onPress={irParaInicio}
-            >
-              <Ionicons
-                name="home-outline"
-                size={20}
-                color={AZUL}
-              />
-
-              <Text style={styles.textoMenu}>
-                Início
-              </Text>
-            </Pressable>
-
-            {/* EVENTOS */}
-
-            <Pressable
-              style={styles.itemMenu}
-              onPress={irParaEventos}
-            >
-              <Ionicons
-                name="calendar-outline"
-                size={20}
-                color={AZUL}
-              />
-
-              <Text style={styles.textoMenu}>
-                Eventos
-              </Text>
-            </Pressable>
-
-            {/* CADASTRAR EVENTO */}
-
-            <Pressable
-              style={styles.itemMenu}
-              onPress={irParaCadastro}
-            >
-              <Ionicons
-                name="add-circle-outline"
-                size={20}
-                color={AZUL}
-              />
-
-              <Text style={styles.textoMenu}>
-                Cadastrar Evento
-              </Text>
-            </Pressable>
-
-            {/* ========================================
-                MINHA CONTA - SELECIONADO EM LARANJA
-            ======================================== */}
-
-            <Pressable
-              style={[
-                styles.itemMenu,
-                styles.itemMenuAtivo,
-              ]}
-              onPress={irParaMinhaConta}
-            >
-              <Ionicons
-                name="person"
-                size={20}
-                color={LARANJA}
-              />
-
-              <Text style={styles.textoMenuAtivo}>
-                Minha Conta
-              </Text>
-            </Pressable>
-
-            {/* SOBRE NÓS */}
-
-            <Pressable
-              style={styles.itemMenu}
-              onPress={irParaSobreNos}
-            >
-              <Ionicons
-                name="information-circle-outline"
-                size={20}
-                color={AZUL}
-              />
-
-              <Text style={styles.textoMenu}>
-                Sobre Nós
-              </Text>
-            </Pressable>
-
-            {/* QUIZ DO ROLÊ */}
-
-            <Pressable
-              style={styles.itemMenu}
-              onPress={irParaQuiz}
-            >
-              <Ionicons
-                name="help-circle-outline"
-                size={20}
-                color={AZUL}
-              />
-
-              <Text style={styles.textoMenu}>
-                Quiz do Rolê
-              </Text>
-            </Pressable>
-
-            {/* SAIR */}
+              return (
+                <Pressable
+                  key={item.rota}
+                  style={[
+                    styles.itemMenu,
+                    ativo && styles.itemMenuAtivo,
+                  ]}
+                  onPress={() =>
+                    ativo
+                      ? setMenuAberto(false)
+                      : navegar(item.rota)
+                  }
+                >
+                  <Ionicons
+                    name={item.icone}
+                    size={20}
+                    color={ativo ? LARANJA : AZUL}
+                  />
+                  <Text
+                    style={[
+                      styles.textoMenu,
+                      ativo && styles.textoMenuAtivo,
+                    ]}
+                  >
+                    {item.titulo}
+                  </Text>
+                </Pressable>
+              );
+            })}
 
             <Pressable
               style={styles.itemMenu}
@@ -543,18 +582,12 @@ export default function Perfil() {
                 size={20}
                 color={LARANJA}
               />
-
-              <Text style={styles.textoSair}>
-                Sair
-              </Text>
+              <Text style={styles.textoSair}>Sair</Text>
             </Pressable>
-
           </View>
         )}
 
-        {/* ==========================================
-            CONTEÚDO PRINCIPAL
-        ========================================== */}
+        {/* CONTEÚDO */}
 
         <ScrollView
           style={styles.scroll}
@@ -562,9 +595,6 @@ export default function Perfil() {
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
         >
-
-          {/* TÍTULO PRINCIPAL */}
-
           <View style={styles.titleArea}>
             <Text
               style={[
@@ -584,8 +614,6 @@ export default function Perfil() {
             </Text>
           </View>
 
-          {/* CARD PRINCIPAL */}
-
           <View
             style={[
               styles.main,
@@ -593,9 +621,7 @@ export default function Perfil() {
             ]}
           >
 
-            {/* ========================================
-                FOTO E IDENTIFICAÇÃO
-            ======================================== */}
+            {/* PERFIL DO USUÁRIO */}
 
             <View style={styles.profileHeader}>
               <Pressable
@@ -630,12 +656,14 @@ export default function Perfil() {
               </Pressable>
 
               <Text style={styles.profileName}>
-                {perfil.nome || "Meu Perfil"}
+                {carregando
+                  ? "Carregando..."
+                  : perfil.nome || "Meu Perfil"}
               </Text>
 
               <Text style={styles.profileEmail}>
                 {perfil.email ||
-                  "Adicione suas informações pessoais"}
+                  "Informações não disponíveis"}
               </Text>
 
               <View style={styles.statusArea}>
@@ -644,7 +672,6 @@ export default function Perfil() {
                   size={16}
                   color={AZUL}
                 />
-
                 <Text style={styles.statusText}>
                   Área do usuário
                 </Text>
@@ -654,13 +681,13 @@ export default function Perfil() {
                 <Pressable
                   style={styles.editButton}
                   onPress={iniciarEdicao}
+                  disabled={carregando}
                 >
                   <Feather
                     name="edit-2"
                     size={17}
                     color="#ffffff"
                   />
-
                   <Text style={styles.editButtonText}>
                     Editar Perfil
                   </Text>
@@ -681,9 +708,7 @@ export default function Perfil() {
               )}
             </View>
 
-            {/* ========================================
-                INFORMAÇÕES PESSOAIS
-            ======================================== */}
+            {/* INFORMAÇÕES PESSOAIS */}
 
             <TituloSecao
               titulo="Informações Pessoais"
@@ -700,10 +725,10 @@ export default function Perfil() {
                 <CampoPerfil
                   titulo="Nome Completo *"
                   valor={perfil.nome}
-                  onChange={(valor) =>
-                    atualizarCampo("nome", valor)
+                  onChange={(v) =>
+                    atualizarCampo("nome", v)
                   }
-                  placeholder="Informe seu nome completo"
+                  placeholder="Nome completo"
                   editando={editando}
                 />
               </View>
@@ -712,8 +737,8 @@ export default function Perfil() {
                 <CampoPerfil
                   titulo="Data de Nascimento"
                   valor={perfil.nascimento}
-                  onChange={(valor) =>
-                    atualizarCampo("nascimento", valor)
+                  onChange={(v) =>
+                    atualizarCampo("nascimento", v)
                   }
                   placeholder="DD/MM/AAAA"
                   editando={editando}
@@ -731,8 +756,8 @@ export default function Perfil() {
                 <CampoPerfil
                   titulo="E-mail *"
                   valor={perfil.email}
-                  onChange={(valor) =>
-                    atualizarCampo("email", valor)
+                  onChange={(v) =>
+                    atualizarCampo("email", v)
                   }
                   placeholder="seuemail@exemplo.com"
                   editando={editando}
@@ -744,8 +769,8 @@ export default function Perfil() {
                 <CampoPerfil
                   titulo="Telefone"
                   valor={perfil.telefone}
-                  onChange={(valor) =>
-                    atualizarCampo("telefone", valor)
+                  onChange={(v) =>
+                    atualizarCampo("telefone", v)
                   }
                   placeholder="(16) 99999-9999"
                   editando={editando}
@@ -754,9 +779,7 @@ export default function Perfil() {
               </View>
             </View>
 
-            {/* ========================================
-                LOCALIZAÇÃO
-            ======================================== */}
+            {/* LOCALIZAÇÃO */}
 
             <TituloSecao
               titulo="Minha Localização"
@@ -773,8 +796,8 @@ export default function Perfil() {
                 <CampoPerfil
                   titulo="Cidade"
                   valor={perfil.cidade}
-                  onChange={(valor) =>
-                    atualizarCampo("cidade", valor)
+                  onChange={(v) =>
+                    atualizarCampo("cidade", v)
                   }
                   placeholder="Ex: Taquaritinga"
                   editando={editando}
@@ -785,8 +808,8 @@ export default function Perfil() {
                 <CampoPerfil
                   titulo="Bairro"
                   valor={perfil.bairro}
-                  onChange={(valor) =>
-                    atualizarCampo("bairro", valor)
+                  onChange={(v) =>
+                    atualizarCampo("bairro", v)
                   }
                   placeholder="Informe seu bairro"
                   editando={editando}
@@ -794,9 +817,7 @@ export default function Perfil() {
               </View>
             </View>
 
-            {/* ========================================
-                SOBRE MIM
-            ======================================== */}
+            {/* BIOGRAFIA */}
 
             <TituloSecao
               titulo="Sobre Mim"
@@ -806,17 +827,15 @@ export default function Perfil() {
             <CampoPerfil
               titulo="Biografia"
               valor={perfil.biografia}
-              onChange={(valor) =>
-                atualizarCampo("biografia", valor)
+              onChange={(v) =>
+                atualizarCampo("biografia", v)
               }
-              placeholder="Conte um pouco sobre você, seus interesses e os tipos de rolê que mais gosta..."
+              placeholder="Conte um pouco sobre você..."
               editando={editando}
               multiline
             />
 
-            {/* ========================================
-                PREFERÊNCIAS
-            ======================================== */}
+            {/* PREFERÊNCIAS */}
 
             <TituloSecao
               titulo="Minhas Preferências"
@@ -824,15 +843,11 @@ export default function Perfil() {
             />
 
             <View style={styles.preferencesArea}>
-
-              {/* NOTIFICAÇÕES */}
-
               <View style={styles.preferenceRow}>
                 <View style={styles.preferenceInfo}>
                   <Text style={styles.preferenceTitle}>
                     Notificações de Eventos
                   </Text>
-
                   <Text style={styles.preferenceDescription}>
                     Preferência para receber avisos
                     sobre eventos e atividades.
@@ -841,8 +856,8 @@ export default function Perfil() {
 
                 <Switch
                   value={perfil.notificacoes}
-                  onValueChange={(valor) =>
-                    atualizarCampo("notificacoes", valor)
+                  onValueChange={(v) =>
+                    atualizarCampo("notificacoes", v)
                   }
                   disabled={!editando}
                   trackColor={{
@@ -857,14 +872,11 @@ export default function Perfil() {
                 />
               </View>
 
-              {/* NOVIDADES */}
-
               <View style={styles.preferenceRow}>
                 <View style={styles.preferenceInfo}>
                   <Text style={styles.preferenceTitle}>
                     Novidades e Recomendações
                   </Text>
-
                   <Text style={styles.preferenceDescription}>
                     Preferência para receber novidades
                     da Rota do Rolê.
@@ -873,8 +885,8 @@ export default function Perfil() {
 
                 <Switch
                   value={perfil.novidades}
-                  onValueChange={(valor) =>
-                    atualizarCampo("novidades", valor)
+                  onValueChange={(v) =>
+                    atualizarCampo("novidades", v)
                   }
                   disabled={!editando}
                   trackColor={{
@@ -888,12 +900,9 @@ export default function Perfil() {
                   }
                 />
               </View>
-
             </View>
 
-            {/* ========================================
-                SEGURANÇA
-            ======================================== */}
+            {/* SEGURANÇA */}
 
             <TituloSecao
               titulo="Segurança da Conta"
@@ -911,17 +920,14 @@ export default function Perfil() {
                 <Text style={styles.securityTitle}>
                   Senha de Acesso
                 </Text>
-
                 <Text style={styles.securityDescription}>
-                  A troca de senha deverá ser conectada
-                  ao sistema de autenticação do aplicativo.
+                  A alteração de senha depende da
+                  integração com a autenticação.
                 </Text>
               </View>
             </View>
 
-            {/* ========================================
-                BOTÕES SALVAR E CANCELAR
-            ======================================== */}
+            {/* BOTÕES DE EDIÇÃO */}
 
             {editando && (
               <View
@@ -931,10 +937,7 @@ export default function Perfil() {
                 ]}
               >
                 <Pressable
-                  style={({ pressed }) => [
-                    styles.saveButton,
-                    pressed && styles.buttonPressed,
-                  ]}
+                  style={styles.saveButton}
                   onPress={salvarPerfil}
                 >
                   <Ionicons
@@ -942,7 +945,6 @@ export default function Perfil() {
                     size={20}
                     color="#ffffff"
                   />
-
                   <Text style={styles.saveButtonText}>
                     Salvar Alterações
                   </Text>
@@ -957,7 +959,6 @@ export default function Perfil() {
                     size={20}
                     color={LARANJA}
                   />
-
                   <Text style={styles.cancelButtonText}>
                     Cancelar
                   </Text>
@@ -967,13 +968,10 @@ export default function Perfil() {
 
           </View>
 
-          {/* RODAPÉ */}
-
           <Text style={styles.footerText}>
             Rota do Rolê — Sua cidade, seus eventos,
             sua experiência.
           </Text>
-
         </ScrollView>
       </View>
     </SafeAreaView>
@@ -985,9 +983,6 @@ export default function Perfil() {
 // =====================================================
 
 const styles = StyleSheet.create({
-
-  // ESTRUTURA
-
   safeArea: {
     flex: 1,
     backgroundColor: FUNDO,
@@ -1005,8 +1000,6 @@ const styles = StyleSheet.create({
   scrollContent: {
     paddingBottom: 55,
   },
-
-  // CABEÇALHO
 
   header: {
     height: 75,
@@ -1036,10 +1029,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
 
-  // =====================================================
-  // MENU HAMBÚRGUER
-  // =====================================================
-
   menu: {
     backgroundColor: "#ffffff",
     borderBottomWidth: 1,
@@ -1058,8 +1047,6 @@ const styles = StyleSheet.create({
     borderBottomColor: "#eeeeee",
   },
 
-  // ITEM SELECIONADO EM LARANJA
-
   itemMenuAtivo: {
     backgroundColor: "#fff4ef",
   },
@@ -1071,13 +1058,9 @@ const styles = StyleSheet.create({
     marginLeft: 12,
   },
 
-  // TEXTO SELECIONADO EM LARANJA
-
   textoMenuAtivo: {
     color: LARANJA,
-    fontSize: 15,
     fontWeight: "bold",
-    marginLeft: 12,
   },
 
   textoSair: {
@@ -1086,8 +1069,6 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     marginLeft: 12,
   },
-
-  // TÍTULO PRINCIPAL
 
   titleArea: {
     alignItems: "center",
@@ -1124,8 +1105,6 @@ const styles = StyleSheet.create({
     lineHeight: 23,
   },
 
-  // CARD PRINCIPAL
-
   main: {
     width: "90%",
     maxWidth: 850,
@@ -1135,7 +1114,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 35,
     paddingVertical: 35,
     elevation: 4,
-
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
@@ -1151,8 +1129,6 @@ const styles = StyleSheet.create({
     paddingVertical: 28,
     borderRadius: 14,
   },
-
-  // CABEÇALHO DO PERFIL
 
   profileHeader: {
     alignItems: "center",
@@ -1233,8 +1209,6 @@ const styles = StyleSheet.create({
     fontWeight: "700",
   },
 
-  // BOTÃO EDITAR
-
   editButton: {
     backgroundColor: AZUL,
     minHeight: 43,
@@ -1264,8 +1238,6 @@ const styles = StyleSheet.create({
     fontWeight: "700",
   },
 
-  // SEÇÕES
-
   sectionHeader: {
     flexDirection: "row",
     alignItems: "center",
@@ -1279,8 +1251,6 @@ const styles = StyleSheet.create({
     fontSize: 19,
     fontWeight: "800",
   },
-
-  // CAMPOS
 
   campoArea: {
     width: "100%",
@@ -1318,8 +1288,6 @@ const styles = StyleSheet.create({
     textAlignVertical: "top",
   },
 
-  // COLUNAS RESPONSIVAS
-
   row: {
     width: "100%",
     flexDirection: "row",
@@ -1335,8 +1303,6 @@ const styles = StyleSheet.create({
     flex: 1,
     minWidth: 0,
   },
-
-  // PREFERÊNCIAS
 
   preferencesArea: {
     borderWidth: 1,
@@ -1373,8 +1339,6 @@ const styles = StyleSheet.create({
     lineHeight: 18,
   },
 
-  // SEGURANÇA
-
   securityArea: {
     flexDirection: "row",
     alignItems: "center",
@@ -1404,8 +1368,6 @@ const styles = StyleSheet.create({
     lineHeight: 18,
   },
 
-  // BOTÕES
-
   buttonsRow: {
     width: "100%",
     flexDirection: "row",
@@ -1428,10 +1390,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     gap: 8,
     paddingHorizontal: 12,
-  },
-
-  buttonPressed: {
-    backgroundColor: "#e94c2b",
   },
 
   saveButtonText: {
@@ -1460,8 +1418,6 @@ const styles = StyleSheet.create({
     fontWeight: "700",
   },
 
-  // RODAPÉ
-
   footerText: {
     color: CINZA,
     fontSize: 12,
@@ -1469,5 +1425,4 @@ const styles = StyleSheet.create({
     marginTop: 28,
     paddingHorizontal: 20,
   },
-
 });
