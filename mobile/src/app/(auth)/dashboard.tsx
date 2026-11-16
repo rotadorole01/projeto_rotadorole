@@ -20,10 +20,22 @@ const slidesParceiros = [
     imagem: `${API_URL.replace(/\/$/, "")}/uploads/gustavo-motos.jpeg`,
   },
   {
+    titulo: "Fatec Taquaritinga",
+    imagem: `${API_URL.replace(/\/$/, "")}/uploads/Patrocinadores.webp`,
+  },
+  {
+    titulo: "Projetos Integradores",
+    imagem: `${API_URL.replace(/\/$/, "")}/uploads/integrador.jpeg`,
+  },
+  {
     titulo: "Espaço para Parceiros",
     imagem: null,
   },
 ];
+
+const indicesComFoto = slidesParceiros.flatMap((slide, indice) =>
+  slide.imagem ? [indice] : []
+);
 
 export default function DashBoard() {
   const route = useRouter();
@@ -35,6 +47,19 @@ export default function DashBoard() {
   const [indiceParceiro, setIndiceParceiro] = useState(0);
 
   const parceiroAtual = slidesParceiros[indiceParceiro];
+
+  useEffect(() => {
+    if (indicesComFoto.length < 2) return;
+
+    const temporizador = setTimeout(() => {
+      const posicaoAtual = indicesComFoto.indexOf(indiceParceiro);
+      const proximaPosicao = (posicaoAtual + 1) % indicesComFoto.length;
+
+      setIndiceParceiro(indicesComFoto[proximaPosicao]);
+    }, 4000);
+
+    return () => clearTimeout(temporizador);
+  }, [indiceParceiro]);
 
   useEffect(() => {
     let ativo = true;
@@ -57,7 +82,6 @@ export default function DashBoard() {
 
   function mudarParceiro(direcao: -1 | 1) {
     const total = slidesParceiros.length;
-
     setIndiceParceiro((anterior) => (anterior + direcao + total) % total);
   }
 
@@ -109,7 +133,6 @@ export default function DashBoard() {
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.pagina}>
-        {/* Cabeçalho */}
         <LinearGradient
           colors={["#075b91", "#6b5a64", "#ff6633"]}
           start={{ x: 0, y: 0.5 }}
@@ -134,7 +157,6 @@ export default function DashBoard() {
           </Pressable>
         </LinearGradient>
 
-        {/* Menu hambúrguer */}
         {menuAberto && (
           <View style={styles.menu}>
             <Pressable
@@ -204,7 +226,6 @@ export default function DashBoard() {
           contentContainerStyle={styles.conteudo}
           showsVerticalScrollIndicator={false}
         >
-          {/* Banner principal */}
           <View style={styles.bannerPrincipal}>
             <Pressable style={styles.setaBanner}>
               <Ionicons name="chevron-back" size={28} color="#ffffff" />
@@ -223,7 +244,6 @@ export default function DashBoard() {
             </Pressable>
           </View>
 
-          {/* Categorias */}
           <View style={styles.secao}>
             <Text style={styles.tituloSecao}>Explore por Categoria</Text>
             <View style={styles.linhaTitulo} />
@@ -251,7 +271,6 @@ export default function DashBoard() {
             </View>
           </View>
 
-          {/* Carrossel de parceiros */}
           <View style={styles.secaoParceiros}>
             <Text style={styles.tituloSecao}>Nossos Parceiros</Text>
             <View style={styles.linhaTitulo} />
